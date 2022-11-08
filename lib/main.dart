@@ -11,7 +11,9 @@ import 'package:line_icons/line_icons.dart';
 import 'package:lna/screens/login.dart';
 
 void main() async {
-  runApp(const ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

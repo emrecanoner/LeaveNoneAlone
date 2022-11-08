@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
-import 'package:lna/models/mysql.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 final gWidth = Get.width;
