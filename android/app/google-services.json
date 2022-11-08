@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "445226122932",
+    "firebase_url": "https://leavenonealone-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "leavenonealone",
+    "storage_bucket": "leavenonealone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445226122932:android:84e199c99056357f3121e1",
+        "android_client_info": {
+          "package_name": "com.example.lna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445226122932-ifa6uc08bv19maj1skgs8uf55mr5frg5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWcedrNfDZU4sEXYJXvIQkX3ld97Hlgdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445226122932-ifa6uc08bv19maj1skgs8uf55mr5frg5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
