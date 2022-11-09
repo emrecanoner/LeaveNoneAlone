@@ -1,10 +1,12 @@
 import 'dart:collection';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:lna/screens/splash/splash_screen.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
@@ -16,6 +18,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final userF = FirebaseAuth.instance.currentUser;
   String? pNumber;
   var tfPhoneNumber = TextEditingController();
 
@@ -131,7 +134,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      pNumber = tfPhoneNumber.text;
+                      FirebaseAuth.instance.signOut();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreen(),
+                          ));
                     });
                     //addPhoneNumber();
                   },

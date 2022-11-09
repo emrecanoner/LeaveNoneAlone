@@ -54,6 +54,7 @@ dependencies:
   mysql1: ^0.20.0
   fluttertoast: ^8.1.1
   firebase_auth: ^4.1.1
+  flutter_svg: ^1.1.6
 
 
 dev_dependencies:
@@ -99,9 +100,23 @@ flutter:
   fonts:
     - family: Poppins-Bold
       fonts:
-        - asset: assets/fonts/Poppins-Bold.ttf
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf
     - family: Poppins-Regular
       fonts:
-        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+    - family: Mulish
+      fonts:
+        - asset: assets/fonts/mulish/Mulish-Regular.ttf
+        - asset: assets/fonts/mulish/Mulish-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/mulish/Mulish-Light.ttf
+          weight: 300
+    - family: Muli
+      fonts:
+        - asset: assets/fonts/mulish/Mulish-Regular.ttf
+        - asset: assets/fonts/mulish/Mulish-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/mulish/Mulish-Light.ttf
+          weight: 300
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

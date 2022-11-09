@@ -11,7 +11,13 @@ final gHeight = Get.height;
 final Color buttonColor = Color(0xffffaa17);
 final Color iconColor = Color(0xff7e899d);
 final Color text1Color = Color.fromRGBO(255, 90, 90, 90);
+const kPrimaryGradiantColor = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xffffaa17), Color(0xff7e899d)]);
 //
+
+const kAnimationDuration = Duration(milliseconds: 200);
 
 var maskFormatter = MaskTextInputFormatter(
     mask: '(###) ### ## ##',

@@ -48,11 +48,52 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(top: 20),
                 width: gWidth,
-                height: gHeight / 4,
-                child: Image.asset("assets/images/lnabig.png"),
+                height: gHeight / 30,
+                child: Center(
+                  child: Text(
+                    "Leave",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: buttonColor,
+                      fontStyle: FontStyle.italic,
+                      //fontFamily: 'Poppins-Regular',
+                    ),
+                  ),
+                ),
               ),
+              Container(
+                width: gWidth,
+                height: gHeight / 18,
+                child: Center(
+                  child: Text(
+                    "None",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontStyle: FontStyle.italic,
+                        fontFamily: 'Poppins-Regular'),
+                  ),
+                ),
+              ),
+              Container(
+                width: gWidth,
+                height: gHeight / 30,
+                child: Center(
+                  child: Text(
+                    "Alone",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: buttonColor,
+                        fontStyle: FontStyle.italic,
+                        fontFamily: 'Poppins-Regular'),
+                  ),
+                ),
+              ),
+              SizedBox(height: 50),
               Container(
                 margin: EdgeInsets.only(top: 10, right: 260),
                 width: gWidth / 4,
@@ -108,9 +149,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               ),
                               labelText: 'Phone Number',
                               labelStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400)),
+                                color: Colors.grey,
+                                fontSize: 15,
+                                //fontWeight: FontWeight.w400,
+                              )),
                         ),
                       )
                     ],
@@ -158,8 +200,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   borderSide:
                                       BorderSide(color: Colors.grey, width: 2),
                                 ),
-                                hintText: 'OTP',
-                                hintStyle: TextStyle(
+                                labelText: 'OTP',
+                                labelStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w400)),
@@ -171,7 +213,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
                 visible: otpVisibility,
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 20),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 15),
                 width: gWidth,
@@ -307,7 +349,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
+          backgroundColor: buttonColor,
           textColor: Colors.white,
           fontSize: 16,
         );
