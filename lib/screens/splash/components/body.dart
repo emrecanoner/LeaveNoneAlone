@@ -5,8 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:lna/components/default_button.dart';
-import 'package:lna/components/splash_content.dart';
+import 'package:lna/screens/sign_in/sign_in_screen.dart';
+import 'package:lna/screens/splash/components/default_button.dart';
+import 'package:lna/screens/splash/components/splash_content.dart';
 import 'package:lna/screens/login.dart';
 import 'package:lna/screens/register.dart';
 import 'package:lna/screens/splash/splash_screen.dart';
@@ -70,7 +71,7 @@ class _BodyState extends State<Body> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginPage(),
+                        builder: (context) => SignInScreen(),
                       ));
                 },
               ),

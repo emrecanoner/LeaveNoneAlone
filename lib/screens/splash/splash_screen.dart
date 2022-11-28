@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lna/components/body.dart';
+import 'package:lna/screens/splash/components/body.dart';
 import 'package:lna/screens/register.dart';
 
 class SplashScreen extends StatelessWidget {

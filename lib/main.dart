@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lna/screens/login.dart';
@@ -11,6 +12,7 @@ import 'package:lna/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lna/screens/main_screen.dart';
 import 'package:lna/screens/splash/splash_screen.dart';
+import 'package:lna/screens/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,10 +32,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: Grock.navigationKey,
       scaffoldMessengerKey: Grock.scaffoldMessengerKey,
       title: 'Login - LNA',
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Muli',
-      ),
+      theme: theme(),
       home: MainPage(),
     );
   }
