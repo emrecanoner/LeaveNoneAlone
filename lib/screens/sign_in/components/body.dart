@@ -1,12 +1,18 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:lna/components/custom_snackbar.dart';
 import 'package:lna/components/form_error.dart';
 import 'package:lna/screens/otp_verify_screen.dart';
+import 'package:lna/screens/splash/animated_splash_screen.dart';
 import 'package:lna/screens/splash/components/default_button.dart';
 import 'package:lna/utils/constant.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class Body extends StatelessWidget {
   const Body({super.key});
@@ -60,7 +66,7 @@ class SignForm extends StatefulWidget {
 class _SignFormState extends State<SignForm> {
   TextEditingController phoneN = TextEditingController();
   TextEditingController otp = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  //final formKey = GlobalKey<FormState>();
   final List<String> errors = ["Demo Error"];
   bool isHiddenPassword = true;
   bool otpVisibility = false;
@@ -71,25 +77,44 @@ class _SignFormState extends State<SignForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          buildPhoneNumberFormField(),
-          SizedBox(height: gHeight / 40),
-          buildOTPFormField(),
-          // FormErrors(errors: errors),
-          SizedBox(height: gHeight / 20),
-          DefaultButton(
-            press: () {
-              if (otpVisibility) {
-                verifyOTP();
-              } else {
-                loginWithPhone();
-              }
-            },
-            text: otpVisibility ? 'Verify' : 'Login',
-          )
-        ],
+      child: Expanded(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(height: gHeight / 40),
+              buildPhoneNumberFormField(),
+              SizedBox(height: gHeight / 40),
+              buildOTPFormField(),
+              // FormErrors(errors: errors),
+              SizedBox(height: gHeight / 20),
+              DefaultButton(
+                press: () {
+                  if (phoneN.text.length < 10) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: CustomSnackBarContent(
+                            errorMessage:
+                                'You entered a missing number, correct it immediately.'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    );
+                  } else {
+                    if (otpVisibility) {
+                      verifyOTP();
+                    } else {
+                      loginWithPhone();
+                    }
+                  }
+                },
+                text: otpVisibility ? 'Verify' : 'Login',
+              ),
+              SizedBox(height: gHeight / 40),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -206,7 +231,7 @@ class _SignFormState extends State<SignForm> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => OtpVerifyScreen(),
+          builder: (context) => SplashScreenWAnimated(),
         ),
       );
     });
