@@ -90,12 +90,23 @@ class _SignFormState extends State<SignForm> {
               SizedBox(height: gHeight / 20),
               DefaultButton(
                 press: () {
-                  if (phoneN.text.length < 10) {
+                  if (phoneN.text.length < 10 && phoneN.text.length > 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: CustomSnackBarContent(
                             errorMessage:
                                 'You entered a missing number, correct it immediately.'),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                      ),
+                    );
+                  } else if (phoneN.text.length == 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: CustomSnackBarContent(
+                            errorMessage:
+                                "You didn't enter a number, write it immediately."),
                         behavior: SnackBarBehavior.floating,
                         backgroundColor: Colors.transparent,
                         elevation: 0,
@@ -155,14 +166,24 @@ class _SignFormState extends State<SignForm> {
       child: Container(
         child: TextFormField(
           keyboardType: TextInputType.number,
-/*           validator: (value) {
+          maxLength: 6,
+          /*validator: (value) {
             if (value!.isEmpty) {
               setState(() {
-                errors.add("Please enter your OTP code");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: CustomSnackBarContent(
+                        errorMessage:
+                            'You entered a missing OTP, correct it immediately.'),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
+                );
               });
             }
             return null;
-          }, */
+          },*/
           controller: otp,
           showCursor: false,
           decoration: InputDecoration(
@@ -199,6 +220,16 @@ class _SignFormState extends State<SignForm> {
         });
       },
       verificationFailed: (FirebaseAuthException e) {
+        /*if (e.code == 'invalid-phone-number') {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: CustomSnackBarContent(
+                errorMessage:
+                    'You entered a invalid number, correct it immediately.'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ));
+        }*/
         print(e.message);
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -213,27 +244,54 @@ class _SignFormState extends State<SignForm> {
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: otp.text);
-
-    await auth.signInWithCredential(credential).then(
-      (value) {
-        print("You are logged in successfully");
-        Fluttertoast.showToast(
-          msg: "You are logged in successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: buttonColor,
-          textColor: Colors.white,
-          fontSize: 16,
+    if (credential.smsCode.toString().length == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: CustomSnackBarContent(
+            errorMessage: 'You must enter OTP number, write it immediately.'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ));
+    } else if (credential.smsCode.toString().length < 6 &&
+        credential.smsCode.toString().length > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: CustomSnackBarContent(
+            errorMessage:
+                'You entered missing OTP number, correct it immediately.'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ));
+    } else if (credential.smsCode.toString() != otp.text) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: CustomSnackBarContent(
+            errorMessage: "OTP number doens't match, correct it immediately."),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ));
+    } else {
+      await auth.signInWithCredential(credential).then(
+        (value) {
+          print("You are logged in successfully");
+          Fluttertoast.showToast(
+            msg: "You are logged in successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: buttonColor,
+            textColor: Colors.white,
+            fontSize: 16,
+          );
+        },
+      ).whenComplete(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SplashScreenWAnimated(),
+          ),
         );
-      },
-    ).whenComplete(() {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SplashScreenWAnimated(),
-        ),
-      );
-    });
+      });
+    }
   }
 }

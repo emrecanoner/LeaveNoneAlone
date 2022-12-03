@@ -31,7 +31,10 @@ class CustomSnackBarContent extends StatelessWidget {
                   children: [
                     Text(
                       'Oh Snap!',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontFamily: 'Muli'),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -41,6 +44,7 @@ class CustomSnackBarContent extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white,
+                        fontFamily: 'Muli',
                       ),
                     ),
                   ],
