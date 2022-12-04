@@ -13,6 +13,8 @@ import 'package:lna/screens/splash/animated_splash_screen.dart';
 import 'package:lna/screens/splash/components/default_button.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:lna/screens/database/insert.dart';
 
 class Body extends StatelessWidget {
   const Body({super.key});
@@ -70,7 +72,8 @@ class _SignFormState extends State<SignForm> {
   final List<String> errors = ["Demo Error"];
   bool isHiddenPassword = true;
   bool otpVisibility = false;
-
+  bool registerVisibility = true;
+  
   FirebaseAuth auth = FirebaseAuth.instance;
 
   String verificationID = "";
@@ -102,16 +105,17 @@ class _SignFormState extends State<SignForm> {
                       ),
                     );
                   } else {
-                    if (otpVisibility) {
+                    if (otpVisibility==true&&registerVisibility==false) {
                       verifyOTP();
                     } else {
-                      loginWithPhone();
+                      phoneNExists();
                     }
                   }
                 },
                 text: otpVisibility ? 'Verify' : 'Login',
               ),
               SizedBox(height: gHeight / 40),
+              RegisterButton(),
             ],
           ),
         ),
@@ -147,6 +151,22 @@ class _SignFormState extends State<SignForm> {
           color: buttonColor,
         ),
       ),
+    );
+  }
+  Visibility RegisterButton(){
+    return Visibility(
+      child: DefaultButton(
+        text: 'Register',
+        press: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Register(),
+            ),
+          ).then((value) => phoneN.clear());
+        }
+      ),
+      visible: registerVisibility,
     );
   }
 
@@ -202,6 +222,7 @@ class _SignFormState extends State<SignForm> {
         print(e.message);
       },
       codeSent: (String verificationId, int? resendToken) {
+        registerVisibility = false;
         otpVisibility = true;
         verificationID = verificationId;
         setState(() {});
@@ -236,4 +257,46 @@ class _SignFormState extends State<SignForm> {
       );
     });
   }
+
+  void phoneNExists() async{
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('Users').get();
+    
+
+    if(snapshot.exists){
+      List<User> items = [];
+      Map<dynamic,dynamic> data = snapshot.value as Map;
+
+      data.forEach((key, value) {
+        items.add(User(value['user_name'],value['phone_number']));
+      });
+
+      for (var element in items) {
+        if(element.phone==phoneN.text){
+          loginWithPhone();
+          break;
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: CustomSnackBarContent(
+              errorMessage:
+                "Number doesn't exist. Try to register"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+          );
+        }
+      }
+    }else{
+      print('no data');
+    }
+  }
+}
+
+class User {
+  final String name;
+  final String phone;
+
+  User(this.name, this.phone);
 }
