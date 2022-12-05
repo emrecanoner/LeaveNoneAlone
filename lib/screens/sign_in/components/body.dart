@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 import 'dart:math';
 
@@ -220,17 +221,15 @@ class _SignFormState extends State<SignForm> {
         });
       },
       verificationFailed: (FirebaseAuthException e) {
-        /*if (e.code == 'invalid-phone-number') {
+        if (e.code == 'invalid-phone-number') {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: CustomSnackBarContent(
-                errorMessage:
-                    'You entered a invalid number, correct it immediately.'),
+            content: CustomSnackBarContent(errorMessage: 'Please try again.'),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.transparent,
             elevation: 0,
           ));
-        }*/
-        print(e.message);
+        }
+        //print(e.message);
       },
       codeSent: (String verificationId, int? resendToken) {
         otpVisibility = true;
@@ -262,7 +261,7 @@ class _SignFormState extends State<SignForm> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ));
-    } else if (credential.smsCode.toString() != otp.text) {
+    } else if (credential.token == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: CustomSnackBarContent(
             errorMessage: "OTP number doens't match, correct it immediately."),
@@ -285,6 +284,16 @@ class _SignFormState extends State<SignForm> {
           );
         },
       ).whenComplete(() {
+/*         if (credential.token == null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: CustomSnackBarContent(
+                errorMessage:
+                    "OTP number doens't match, correct it immediately."),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ));
+        } */
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
