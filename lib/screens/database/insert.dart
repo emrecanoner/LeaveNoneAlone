@@ -32,7 +32,7 @@ class _RegisterState extends State<Register> {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(horizontal: gWidth / 25),
           child: Column(
             children: [
               SizedBox(height: gHeight / 50),
