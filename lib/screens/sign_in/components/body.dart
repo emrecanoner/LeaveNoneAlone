@@ -282,14 +282,14 @@ class _SignFormState extends State<SignForm> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ));
-    } else if (credential.token == null) {
+    /* } else if (credential.token == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: CustomSnackBarContent(
             errorMessage: "OTP number doens't match, correct it immediately."),
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.transparent,
         elevation: 0,
-      ));
+      )); */
     } else {
       await auth.signInWithCredential(credential).then(
         (value) {
