@@ -74,7 +74,7 @@ class _SignFormState extends State<SignForm> {
   bool isHiddenPassword = true;
   bool otpVisibility = false;
   bool registerVisibility = true;
-
+  
   FirebaseAuth auth = FirebaseAuth.instance;
 
   String verificationID = "";
@@ -117,7 +117,7 @@ class _SignFormState extends State<SignForm> {
                       ),
                     );
                   } else {
-                    if (otpVisibility == true && registerVisibility == false) {
+                    if (otpVisibility==true&&registerVisibility==false) {
                       verifyOTP();
                     } else {
                       phoneNExists();
@@ -165,19 +165,19 @@ class _SignFormState extends State<SignForm> {
       ),
     );
   }
-
-  Visibility RegisterButton() {
+  Visibility RegisterButton(){
     return Visibility(
       child: DefaultButton(
-          text: 'Register',
-          press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Register(),
-              ),
-            ).then((value) => phoneN.clear());
-          }),
+        text: 'Register',
+        press: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Register(),
+            ),
+          ).then((value) => phoneN.clear());
+        }
+      ),
       visible: registerVisibility,
     );
   }
@@ -282,14 +282,14 @@ class _SignFormState extends State<SignForm> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ));
-      /* } else if (credential.token == null) {
+    } else if (credential.token == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: CustomSnackBarContent(
             errorMessage: "OTP number doens't match, correct it immediately."),
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.transparent,
         elevation: 0,
-      )); */
+      ));
     } else {
       await auth.signInWithCredential(credential).then(
         (value) {
@@ -325,35 +325,43 @@ class _SignFormState extends State<SignForm> {
     }
   }
 
-  void phoneNExists() async {
+  void phoneNExists() async{
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child('Users').get();
-
-    if (snapshot.exists) {
+    
+    if(snapshot.exists){
       List<User> items = [];
-      Map<dynamic, dynamic> data = snapshot.value as Map;
+      Map<dynamic,dynamic> data = snapshot.value as Map;
+      var i = 1;
 
       data.forEach((key, value) {
-        items.add(User(value['user_name'], value['phone_number']));
+        items.add(User(value['user_name'],value['phone_number']));
       });
 
       for (var element in items) {
-        if (element.phone == phoneN.text) {
+        if(element.phone==phoneN.text){
           loginWithPhone();
           break;
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: CustomSnackBarContent(
-                  errorMessage: "Number doesn't exist. Try to register"),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            ),
-          );
+        }else{
+          if(i==items.length){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: CustomSnackBarContent(
+                errorMessage:
+                  "Number doesn't exist. Try to register"),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              ),
+            );
+          }else{
+            i++;
+            continue;
+          }
+          
         }
       }
-    } else {
+    }else{
       print('no data');
     }
   }
