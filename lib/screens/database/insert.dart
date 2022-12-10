@@ -37,7 +37,7 @@ class _RegisterState extends State<Register> {
             children: [
               SizedBox(height: gHeight / 50),
               Text(
-                'Create Account',
+                'Register Account',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 24,
@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
               ),
               SizedBox(height: gHeight / 1500),
               Text(
-                "Fill in your name and number",
+                "Complete your details",
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: gHeight / 10),
@@ -69,9 +69,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+              SizedBox(height: gHeight / 40),
               TextField(
                 controller: phoneN,
                 maxLength: 10,

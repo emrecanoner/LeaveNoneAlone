@@ -127,8 +127,29 @@ class _SignFormState extends State<SignForm> {
                 },
                 text: otpVisibility ? 'Verify' : 'Login',
               ),
-              SizedBox(height: gHeight / 40),
-              RegisterButton(),
+              SizedBox(height: gHeight / 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't have an account? "),
+                  GestureDetector(
+                    onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Register(),
+                          ));
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(color: buttonColor),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: gHeight / 50),
+              //RegisterButton(),
             ],
           ),
         ),
@@ -167,21 +188,14 @@ class _SignFormState extends State<SignForm> {
     );
   }
 
-  Visibility RegisterButton() {
-    return Visibility(
-      child: DefaultButton(
-          text: 'Register',
-          press: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Register(),
-              ),
-            ).then((value) => phoneN.clear());
-          }),
-      visible: registerVisibility,
-    );
-  }
+/*   TextButton RegisterButton() {
+    return TextButton(
+      onPressed: Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreen(),
+                          ));
+              , child: Text('Register'));} */
 
   Visibility buildOTPFormField() {
     return Visibility(
