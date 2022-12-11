@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/screens/splash/components/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -258,45 +259,9 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-/*   TextFormField buildCityFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.multiline,
-/*       validator: (value) {
-        if (value!.isEmpty) {
-          setState(() {
-            errors.add("Please enter your phone number");
-          });
-        }
-        return null;
-      }, */
-      controller: city,
-      showCursor: true,
-      decoration: InputDecoration(
-        suffixIcon: PopupMenuButton<String>(
-          icon: const Icon(Icons.arrow_drop_down),
-          color: buttonColor,
-          onSelected: (String value) {
-            city.text = value;
-          },
-          itemBuilder: (BuildContext context) {
-            return cities.map<PopupMenuItem<String>>((String value) {
-              return PopupMenuItem(child: Text(value), value: value);
-            }).toList();
-          },
-        ),
-        prefix: Padding(
-          padding: EdgeInsets.all(4),
-        ),
-        labelText: "City",
-        labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your city",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-      ),
-    );
-  } */
   DropDownTextField buildCityDropdown() {
     return DropDownTextField(
-      controller: city!,
+      controller: city,
       clearOption: true,
       enableSearch: true,
       dropDownIconProperty: IconProperty(color: buttonColor),
@@ -418,25 +383,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  /*  DropDownField buildCityFormField() {
-    return DropDownField(
-      controller: city,
-      enabled: true,
-      items: cities,
-      required: false,
-      itemsVisibleInDropdown: 5,
-      onValueChanged: (value) {
-        setState(() {
-          city.text = value;
-          selectedCity = value;
-        });
-      },
-      labelText: "City",
-      labelStyle: TextStyle(color: iconColor),
-      hintText: "Enter your city",
-    );
-  } */
-
   TextFormField buildAgeFormField() {
     return TextFormField(
       keyboardType: TextInputType.number,
@@ -448,6 +394,7 @@ class _SignUpState extends State<SignUp> {
         }
         return null;
       }, */
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       maxLength: 2,
       controller: age,
       showCursor: true,
@@ -478,6 +425,7 @@ class _SignUpState extends State<SignUp> {
         }
         return null;
       }, */
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       maxLength: 10,
       controller: phoneN,
       showCursor: false,
