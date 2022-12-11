@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
-import 'package:lna/screens/splash/components/default_button.dart';
+import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/components/custom_snackbar.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
