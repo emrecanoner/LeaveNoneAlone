@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:lna/screens/otp_verify_screen.dart';
-import 'package:lna/screens/register.dart';
 import 'package:lna/screens/sign_in/sign_in_screen.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:page_transition/page_transition.dart';

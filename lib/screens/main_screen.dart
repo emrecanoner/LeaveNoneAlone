@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lna/screens/register.dart';
+import 'package:lna/screens/homepage/homepage.dart';
 import 'package:lna/screens/splash/splash_screen.dart';
 
 class MainPage extends StatelessWidget {
@@ -13,7 +13,7 @@ class MainPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
-            return RegisterPage();
+            return HomePage();
           } else {
             return SplashScreen();
           }

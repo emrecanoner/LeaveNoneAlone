@@ -2,18 +2,16 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lna/screens/login.dart';
 //import 'package:flutter_oauth2/screens/signup.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:grock/grock.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:lna/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lna/screens/main_screen.dart';
 import 'package:lna/screens/splash/animated_splash_screen.dart';
 import 'package:lna/screens/splash/splash_screen.dart';
-import 'package:lna/screens/theme.dart';
+import 'package:lna/utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:lna/screens/otp_verify_screen.dart';
-import 'package:lna/screens/register.dart';
+import 'package:lna/screens/homepage/homepage.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:lottie/lottie.dart';
@@ -17,7 +16,7 @@ class SplashScreenWAnimated extends StatelessWidget {
       splash: Lottie.asset("assets/jsonFiles/happyman.json"),
       splashIconSize: gHeight / 4,
       backgroundColor: Colors.white,
-      nextScreen: RegisterPage(),
+      nextScreen: HomePage(),
       pageTransitionType: PageTransitionType.bottomToTop,
     );
   }
