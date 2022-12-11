@@ -8,8 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:lna/components/custom_snackbar.dart';
-import 'package:lna/components/form_error.dart';
+import 'package:lna/utils/custom_snackbar.dart';
 import 'package:lna/screens/splash/animated_splash_screen.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -69,8 +68,7 @@ class SignForm extends StatefulWidget {
 class _SignFormState extends State<SignForm> {
   TextEditingController phoneN = TextEditingController();
   TextEditingController otp = TextEditingController();
-  //final formKey = GlobalKey<FormState>();
-  final List<String> errors = ["Demo Error"];
+
   bool isHiddenPassword = true;
   bool otpVisibility = false;
   bool registerVisibility = true;
@@ -78,7 +76,6 @@ class _SignFormState extends State<SignForm> {
   FirebaseAuth auth = FirebaseAuth.instance;
 
   String verificationID = "";
-  String error = "";
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -91,7 +88,6 @@ class _SignFormState extends State<SignForm> {
               buildPhoneNumberFormField(),
               SizedBox(height: gHeight / 40),
               buildOTPFormField(),
-              // FormErrors(errors: errors),
               SizedBox(height: gHeight / 20),
               DefaultButton(
                 press: () {
@@ -149,7 +145,6 @@ class _SignFormState extends State<SignForm> {
                 ],
               ),
               SizedBox(height: gHeight / 50),
-              //RegisterButton(),
             ],
           ),
         ),
@@ -188,15 +183,6 @@ class _SignFormState extends State<SignForm> {
       ),
     );
   }
-
-/*   TextButton RegisterButton() {
-    return TextButton(
-      onPressed: Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SplashScreen(),
-                          ));
-              , child: Text('Register'));} */
 
   Visibility buildOTPFormField() {
     return Visibility(
