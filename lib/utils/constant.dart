@@ -18,8 +18,3 @@ const kPrimaryGradiantColor = LinearGradient(
 //
 
 const kAnimationDuration = Duration(milliseconds: 200);
-
-var maskFormatter = MaskTextInputFormatter(
-    mask: '(###) ### ## ##',
-    filter: {"#": RegExp(r'[0-9]')},
-    type: MaskAutoCompletionType.eager);
