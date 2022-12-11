@@ -111,7 +111,7 @@ class _SignUpState extends State<SignUp> {
               buildPhoneNumberFormField(),
               SizedBox(height: gHeight / 20),
               DefaultButton(
-                press: () {
+                press: () async {
                   if (name.text.length == 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -180,32 +180,65 @@ class _SignUpState extends State<SignUp> {
                       ),
                     );
                   } else {
-                    Map<String, String> users = {
-                      'name': name.text,
-                      'phone_number': phoneN.text,
-                      'surname': surname.text,
-                      'city': selectedCity,
-                      'age': age.text,
-                    };
+                    final ref = FirebaseDatabase.instance.ref();
+                    final snapshot = await ref.child('Users').get();
 
-                    dbRef.push().set(users);
+                    if (snapshot.exists) {
+                      List<Customer> items = [];
+                      Map<dynamic, dynamic> data = snapshot.value as Map;
+                      List<String> phones = [];
+                      var i = 1;
 
-                    Fluttertoast.showToast(
-                      msg: "You are registered successfully",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: buttonColor,
-                      textColor: Colors.white,
-                      fontSize: 16,
-                    );
+                      data.forEach((key, value) {
+                        items.add(Customer(value['name'], value['phone_number'], value['surname'],
+                            value['age'], value['city']));
+                      });
 
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SplashScreenWAnimated(),
-                      ),
-                    );
+                      for (var element in items) {
+                        phones.add(element.phone);
+                      }
+
+                      if(phones.contains(phoneN.text)){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: CustomSnackBarContent(
+                                errorMessage: "The number entered exists. Try another number"),
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                          ),
+                        );
+                      }else{
+                        Map<String, String> users = {
+                          'name': name.text,
+                          'phone_number': phoneN.text,
+                          'surname': surname.text,
+                          'city': selectedCity,
+                          'age': age.text,
+                        };
+
+                        dbRef.push().set(users);
+
+                        Fluttertoast.showToast(
+                          msg: "You are registered successfully",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: buttonColor,
+                          textColor: Colors.white,
+                          fontSize: 16,
+                        );
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreenWAnimated(),
+                          ),
+                        );
+                      }    
+                    } else {
+                      print('No database here');
+                    }
                   }
                 },
                 text: 'Register',
@@ -463,3 +496,13 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
+class Customer {
+  final String name;
+  final String phone;
+  final String city;
+  final String age;
+  final String surname;
+
+  Customer(this.name, this.phone, this.age, this.city, this.surname);
+}
+
