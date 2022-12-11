@@ -264,7 +264,6 @@ class _SignFormState extends State<SignForm> {
             elevation: 0,
           ));
         }
-        //print(e.message);
       },
       codeSent: (String verificationId, int? resendToken) {
         registerVisibility = false;
@@ -315,27 +314,6 @@ class _SignFormState extends State<SignForm> {
             builder: (context) => SplashScreenWAnimated(),
           ),
         );
-        /* then(
-          (value) {
-            print("You are logged in successfully");
-            Fluttertoast.showToast(
-              msg: "You are logged in successfully",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: buttonColor,
-              textColor: Colors.white,
-              fontSize: 16,
-            );
-          },
-        ).whenComplete(() {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SplashScreenWAnimated(),
-            ),
-          );
-        }); */
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-verification-code') {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -359,8 +337,6 @@ class _SignFormState extends State<SignForm> {
       }
     }
   }
-
-  //"OTP number doens't match, correct it immediately."
 
   void phoneNExists() async {
     final ref = FirebaseDatabase.instance.ref();
@@ -397,7 +373,15 @@ class _SignFormState extends State<SignForm> {
         }
       }
     } else {
-      print('no data');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: CustomSnackBarContent(
+              errorMessage: "There is no data, try again"),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      );
     }
   }
 }
