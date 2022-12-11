@@ -350,7 +350,8 @@ class _SignFormState extends State<SignForm> {
       var i = 1;
 
       data.forEach((key, value) {
-        items.add(User(value['user_name'], value['phone_number']));
+        items.add(User(value['name'], value['phone_number'], value['surname'],
+            value['age'], value['city']));
       });
 
       for (var element in items) {
@@ -391,6 +392,9 @@ class _SignFormState extends State<SignForm> {
 class User {
   final String name;
   final String phone;
+  final String city;
+  final String age;
+  final String surname;
 
-  User(this.name, this.phone);
+  User(this.name, this.phone, this.age, this.city, this.surname);
 }
