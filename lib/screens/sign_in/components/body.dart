@@ -379,7 +379,7 @@ class _SignFormState extends State<SignForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: CustomSnackBarContent(
-              errorMessage: "There is no data, try again"),
+              errorMessage: "Number doesn't exist. Try to register"),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.transparent,
           elevation: 0,
