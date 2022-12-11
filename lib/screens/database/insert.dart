@@ -184,31 +184,32 @@ class _SignUpState extends State<SignUp> {
                     final snapshot = await ref.child('Users').get();
 
                     if (snapshot.exists) {
-                      List<Customer> items = [];
+                      List<User> items = [];
                       Map<dynamic, dynamic> data = snapshot.value as Map;
                       List<String> phones = [];
                       var i = 1;
 
                       data.forEach((key, value) {
-                        items.add(Customer(value['name'], value['phone_number'], value['surname'],
-                            value['age'], value['city']));
+                        items.add(User(value['name'], value['phone_number'],
+                            value['surname'], value['age'], value['city']));
                       });
 
                       for (var element in items) {
                         phones.add(element.phone);
                       }
 
-                      if(phones.contains(phoneN.text)){
+                      if (phones.contains(phoneN.text)) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: CustomSnackBarContent(
-                                errorMessage: "The number entered exists. Try another number"),
+                                errorMessage:
+                                    "The number entered exists. Try another number"),
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: Colors.transparent,
                             elevation: 0,
                           ),
                         );
-                      }else{
+                      } else {
                         Map<String, String> users = {
                           'name': name.text,
                           'phone_number': phoneN.text,
@@ -235,7 +236,7 @@ class _SignUpState extends State<SignUp> {
                             builder: (context) => SplashScreenWAnimated(),
                           ),
                         );
-                      }    
+                      }
                     } else {
                       print('No database here');
                     }
@@ -496,13 +497,13 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-class Customer {
+
+class User {
   final String name;
   final String phone;
   final String city;
   final String age;
   final String surname;
 
-  Customer(this.name, this.phone, this.age, this.city, this.surname);
+  User(this.name, this.phone, this.age, this.city, this.surname);
 }
-
