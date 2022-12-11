@@ -60,6 +60,8 @@ dependencies:
   page_transition: "^2.0.9"
   awesome_snackbar_content: ^0.1.0
   dropdown_textfield: ^1.0.7
+  curved_navigation_bar: ^1.0.3
+  flutter_zoom_drawer: ^3.0.3
 
 
 dev_dependencies:

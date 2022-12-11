@@ -71,6 +71,7 @@ class _SignFormState extends State<SignForm> {
 
   bool isHiddenPassword = true;
   bool otpVisibility = false;
+  bool phoneVisibility = true;
   bool registerVisibility = true;
 
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -86,7 +87,6 @@ class _SignFormState extends State<SignForm> {
             children: [
               SizedBox(height: gHeight / 40),
               buildPhoneNumberFormField(),
-              SizedBox(height: gHeight / 40),
               buildOTPFormField(),
               SizedBox(height: gHeight / 20),
               DefaultButton(
@@ -114,7 +114,9 @@ class _SignFormState extends State<SignForm> {
                       ),
                     );
                   } else {
-                    if (otpVisibility == true && registerVisibility == false) {
+                    if (otpVisibility == true &&
+                        registerVisibility == false &&
+                        phoneVisibility == false) {
                       verifyOTP();
                     } else {
                       phoneNExists();
@@ -152,35 +154,40 @@ class _SignFormState extends State<SignForm> {
     );
   }
 
-  TextFormField buildPhoneNumberFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.phone,
-/*       validator: (value) {
-        if (value!.isEmpty) {
-          setState(() {
-            errors.add("Please enter your phone number");
-          });
-        }
-        return null;
-      }, */
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      maxLength: 10,
-      controller: phoneN,
-      showCursor: false,
-      decoration: InputDecoration(
-        prefix: Padding(
-          padding: EdgeInsets.all(4),
-          child: Text('+90'),
-        ),
-        labelText: "phone Number",
-        labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your phone",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(
-          Icons.phone_android,
-          color: buttonColor,
+  Visibility buildPhoneNumberFormField() {
+    return Visibility(
+      child: Container(
+        child: TextFormField(
+          keyboardType: TextInputType.phone,
+          /*       validator: (value) {
+            if (value!.isEmpty) {
+              setState(() {
+                errors.add("Please enter your phone number");
+              });
+            }
+            return null;
+          }, */
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          maxLength: 10,
+          controller: phoneN,
+          showCursor: false,
+          decoration: InputDecoration(
+            prefix: Padding(
+              padding: EdgeInsets.all(4),
+              child: Text('+90'),
+            ),
+            labelText: "phone Number",
+            labelStyle: TextStyle(color: iconColor),
+            hintText: "Enter your phone",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: Icon(
+              Icons.phone_android,
+              color: buttonColor,
+            ),
+          ),
         ),
       ),
+      visible: phoneVisibility,
     );
   }
 
@@ -255,6 +262,7 @@ class _SignFormState extends State<SignForm> {
       codeSent: (String verificationId, int? resendToken) {
         registerVisibility = false;
         otpVisibility = true;
+        phoneVisibility = false;
         verificationID = verificationId;
         setState(() {});
       },
