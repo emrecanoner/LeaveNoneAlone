@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:lna/screens/homepage/homepage.dart';
+import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:lottie/lottie.dart';

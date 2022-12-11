@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lna/screens/homepage/homepage.dart';
+import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/screens/splash/splash_screen.dart';
 
 class MainPage extends StatelessWidget {
