@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lna/screens/database/splash/animated_splash_screen.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/screens/splash/components/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -188,7 +190,22 @@ class _SignUpState extends State<SignUp> {
 
                     dbRef.push().set(users);
 
-                    Navigator.pop(context);
+                    Fluttertoast.showToast(
+                      msg: "You are registered successfully",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: buttonColor,
+                      textColor: Colors.white,
+                      fontSize: 16,
+                    );
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SplashScreenWAnimated(),
+                      ),
+                    );
                   }
                 },
                 text: 'Register',
