@@ -2,19 +2,19 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:lna/screens/database/update.dart';
- 
+import 'package:lna/utils/constant.dart';
+
 class FetchData extends StatefulWidget {
   const FetchData({Key? key}) : super(key: key);
- 
+
   @override
   State<FetchData> createState() => _FetchDataState();
 }
- 
+
 class _FetchDataState extends State<FetchData> {
-  
   Query dbRef = FirebaseDatabase.instance.ref().child('Users');
   DatabaseReference reference = FirebaseDatabase.instance.ref().child('Users');
-  
+
   Widget listItem({required Map user}) {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -45,7 +45,10 @@ class _FetchDataState extends State<FetchData> {
             children: [
               GestureDetector(
                 onTap: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (_) => UpdateRecord(userKey: user['key'])));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => UpdateRecord(userKey: user['key'])));
                 },
                 child: Row(
                   children: [
@@ -78,27 +81,25 @@ class _FetchDataState extends State<FetchData> {
       ),
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fetching data'),
-      ),
-      body: Container(
-        height: double.infinity,
-        child: FirebaseAnimatedList(
-          query: dbRef,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
- 
-            Map user = snapshot.value as Map;
-            user['key'] = snapshot.key;
- 
-            return listItem(user: user);
- 
-          },
+        appBar: AppBar(
+          title: const Text('Fetching data'),
         ),
-      )
-    );
+        body: Container(
+          height: double.infinity,
+          child: FirebaseAnimatedList(
+            query: dbRef,
+            itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                Animation<double> animation, int index) {
+              Map user = snapshot.value as Map;
+              user['key'] = snapshot.key;
+
+              return listItem(user: user);
+            },
+          ),
+        ));
   }
 }

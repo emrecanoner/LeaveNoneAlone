@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
+import 'package:lna/screens/database/utils/constant.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -74,8 +75,6 @@ class _SignUpState extends State<SignUp> {
   final age = TextEditingController();
   late SingleValueDropDownController city;
   final phoneN = TextEditingController();
-
-  String selectedCity = "";
 
   late DatabaseReference dbRef;
 
