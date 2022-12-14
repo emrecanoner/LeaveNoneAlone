@@ -179,6 +179,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     );
                   } else {
+                    userName = name.text;
                     final ref = FirebaseDatabase.instance.ref();
                     final snapshot = await ref.child('Users').get();
 
