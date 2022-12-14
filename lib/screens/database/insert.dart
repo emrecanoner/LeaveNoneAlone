@@ -203,7 +203,7 @@ class _SignUpState extends State<SignUp> {
                           SnackBar(
                             content: CustomSnackBarContent(
                                 errorMessage:
-                                    "The number entered exists. Try another number"),
+                                    "The number already exists, try another number"),
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: Colors.transparent,
                             elevation: 0,
