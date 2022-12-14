@@ -17,7 +17,7 @@ class SplashScreenWAnimated extends StatelessWidget {
       splash: Lottie.asset("assets/jsonFiles/happyman.json"),
       splashIconSize: gHeight / 4,
       backgroundColor: Colors.white,
-      nextScreen: MyApp(),
+      nextScreen: SignInScreen(),
       pageTransitionType: PageTransitionType.bottomToTop,
     );
   }

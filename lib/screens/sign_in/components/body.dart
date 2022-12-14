@@ -295,6 +295,12 @@ class _SignFormState extends State<SignForm> {
     } else {
       try {
         await auth.signInWithCredential(credential);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SplashScreenWAnimated(),
+          ),
+        );
         Fluttertoast.showToast(
           msg: "You are logged in successfully",
           toastLength: Toast.LENGTH_SHORT,
@@ -303,12 +309,6 @@ class _SignFormState extends State<SignForm> {
           backgroundColor: buttonColor,
           textColor: Colors.white,
           fontSize: 16,
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SplashScreenWAnimated(),
-          ),
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-verification-code') {

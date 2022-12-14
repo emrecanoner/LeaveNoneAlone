@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,6 +76,8 @@ class _SignUpState extends State<SignUp> {
   final age = TextEditingController();
   late SingleValueDropDownController city;
   final phoneN = TextEditingController();
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   late DatabaseReference dbRef;
 
@@ -220,6 +223,13 @@ class _SignUpState extends State<SignUp> {
 
                         dbRef.push().set(users);
 
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreenWAnimated(),
+                          ),
+                        );
+
                         Fluttertoast.showToast(
                           msg: "You are registered successfully",
                           toastLength: Toast.LENGTH_SHORT,
@@ -228,13 +238,6 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor: buttonColor,
                           textColor: Colors.white,
                           fontSize: 16,
-                        );
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SplashScreenWAnimated(),
-                          ),
                         );
                       }
                     } else {

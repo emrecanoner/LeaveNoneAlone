@@ -3,11 +3,13 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:lna/screens/database/insert.dart';
 import 'package:lna/screens/database/utils/constant.dart';
 import 'package:lna/screens/home/components/body.dart';
 import 'package:lna/screens/home/utils/constant.dart';
 import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/screens/sign_out/sign_out_page.dart';
+import 'package:lna/screens/sign_out/splash/animated_splash_screen.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
@@ -66,6 +68,7 @@ class MenuPage extends StatelessWidget {
             .map((e) => ListTile(
                   onTap: () {
                     if (e.page == null) {
+                      AnimatedSignOut(context);
                       AuthService().signOut();
                     } else {
                       onPageChanged(e.page!);

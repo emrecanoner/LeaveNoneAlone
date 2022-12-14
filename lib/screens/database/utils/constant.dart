@@ -9,12 +9,3 @@ import 'package:lna/utils/constant.dart';
 
 String selectedCity = "";
 String userName = "";
-
-class AuthService {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  signOut() async {
-    SplashScreenWAnimated();
-    return await auth.signOut();
-  }
-}
