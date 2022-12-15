@@ -5,6 +5,8 @@ import 'package:lna/screens/database/utils/constant.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/utils/constant.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 List<Widget> pageList = [
   HomePageEventIcon(),
@@ -59,11 +61,91 @@ class HomePageHomeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(20),
+    return Padding(
+      padding: EdgeInsets.only(
+          top: gHeight / 8, right: gWidth / 80, left: gWidth / 80),
       child: Column(
         children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hello, $userName",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 21,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "Let's explore what's happening nearby",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                      ),
+                    )
+                  ],
+                ),
+                Spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 3, color: buttonColor),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      "assets/images/emre.jpeg",
+                      height: 50,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           SizedBox(
+            height: gHeight / 50,
+          ),
+          Container(
+            child: DatePicker(
+              DateTime.now(),
+              height: gHeight / 9,
+              width: gWidth / 8,
+              initialSelectedDate: DateTime.now(),
+              selectionColor: buttonColor,
+              selectedTextColor: Colors.white,
+              dateTextStyle: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              dayTextStyle: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              monthTextStyle: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  /* SizedBox(
             height: 40,
           ),
           Row(
@@ -139,11 +221,7 @@ class HomePageHomeIcon extends StatelessWidget {
               textAlign: TextAlign.justify,
               style: TextStyle(fontSize: 30),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ), */
 }
 
 class HomePageEventIcon extends StatelessWidget {
@@ -239,3 +317,32 @@ class HomePageEventIcon extends StatelessWidget {
     );
   }
 }
+
+/* class DateTile extends StatelessWidget {
+  String? weekDay;
+  String? date;
+  bool? isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: isSelected ? buttonColor : Colors.transparent,
+      child: Column(
+        children: [Text(data)],
+      ),
+    );
+  }
+}
+
+class DateModel {
+  String? weekDay;
+  String? date;
+  bool? isSelected;
+}
+
+List<DateModel> getDates() {
+  List<DateModel> dates;
+  DateModel dateModel = new DateModel();
+
+
+} */

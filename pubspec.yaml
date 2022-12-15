@@ -65,6 +65,8 @@ dependencies:
   firebase_storage: ^11.0.7
   image_picker: ^0.8.6
   line_awesome_flutter: ^2.0.0
+  date_picker_timeline: ^1.2.3
+  google_fonts: ^3.0.1
 
 
 dev_dependencies:

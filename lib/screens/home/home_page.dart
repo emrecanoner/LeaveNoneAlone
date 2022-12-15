@@ -91,60 +91,6 @@ class ListItems {
   ListItems(this.icon, this.text, [this.page]);
 }
 
-/*class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: pageIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: (value) {
-          setstate
-        },
-        items: BottomNavigationBarItem(
-            icon: Icon(
-          Icons.favorite,semanticLabel: ,
-        )),
-        BottomNavigationBarItem(Icon(
-          Icons.favorite,
-        )),
-        BottomNavigationBarItem(Icon(
-          Icons.favorite,
-        )),
-      ),
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(selectedCity)));
-            },
-            icon: Row(
-              children: [
-                Text(selectedCity),
-                Icon(Icons.location_on_outlined),
-              ],
-            ),
-          ),
-        ],
-        leading: IconButton(
-            onPressed: () => ZoomDrawer.of(context)!.toggle(),
-            icon: Icon(Icons.menu_open_rounded)),
-        automaticallyImplyLeading: false,
-        title: Text(
-          "Leave None Alone",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: pageList[pageIndex],
-    );
-  }
-}*/
-
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -157,42 +103,30 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: buildMyNavBar(context)
-      /*backgroundColor: Colors.white,
-        currentIndex: pageIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: (value) {
-          setState(() {
-            pageIndex = value;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.event,
-              color: buttonColor,
-            ),
-            label: "Event",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
-        ],*/
-      ,
+      bottomNavigationBar: buildMyNavBar(context),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(selectedCity)));
-            },
-            icon: Row(
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(selectedCity),
-                Icon(Icons.location_on_outlined),
+                Row(
+                  children: [
+                    Padding(padding: EdgeInsets.only(right: 5)),
+                    Image.asset(
+                      "assets/images/lna.png",
+                      height: 35,
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                  ],
+                )
               ],
             ),
-          ),
+          )
         ],
         leading: IconButton(
             onPressed: () => ZoomDrawer.of(context)!.toggle(),
@@ -200,7 +134,7 @@ class _MainPageState extends State<MainPage> {
         automaticallyImplyLeading: false,
         title: Text(
           "Leave None Alone",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontFamily: 'Muli', color: buttonColor),
         ),
       ),
       body: pageList[pageIndex],
