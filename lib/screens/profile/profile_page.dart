@@ -11,13 +11,13 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   State<ProfilePage> createState() => _ProfilePageState();
 }
-class _ProfilePageState extends State<ProfilePage>{
+
+class _ProfilePageState extends State<ProfilePage> {
   late File _image;
   final picker = ImagePicker();
   @override
@@ -25,15 +25,14 @@ class _ProfilePageState extends State<ProfilePage>{
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ));
-          },
-          icon: Icon(LineAwesomeIcons.arrow_left)
-        ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ));
+            },
+            icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -44,7 +43,8 @@ class _ProfilePageState extends State<ProfilePage>{
                 height: 220.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(photo!),
+                    image: NetworkImage(
+                        "https://images.unsplash.com/photo-1547721064-da6cfb341d50"),
                   ),
                 ),
                 child: TextButton(
@@ -60,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage>{
             ),
             FutureBuilder(
               future: customerAccountDetails(num!),
-              builder: (context, snapshot){
+              builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return displayUserInformation(context, snapshot);
                 } else {
@@ -73,50 +73,49 @@ class _ProfilePageState extends State<ProfilePage>{
       ),
     );
   }
+
   Widget displayUserInformation(context, snapshot) {
     Map signedInCustomer = snapshot.data as Map;
 
-
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            " Name: ${signedInCustomer['name']}", 
-            style: TextStyle(fontSize: 20),
-          ),
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          " Name: ${signedInCustomer['name']}",
+          style: TextStyle(fontSize: 20),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            " Surname: ${signedInCustomer['surname']}", 
-            style: TextStyle(fontSize: 20),
-          ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          " Surname: ${signedInCustomer['surname']}",
+          style: TextStyle(fontSize: 20),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            " City: ${signedInCustomer['city']}", 
-            style: TextStyle(fontSize: 20),
-          ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          " City: ${signedInCustomer['city']}",
+          style: TextStyle(fontSize: 20),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            " Age: ${signedInCustomer['age']}", 
-            style: TextStyle(fontSize: 20),
-          ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          " Age: ${signedInCustomer['age']}",
+          style: TextStyle(fontSize: 20),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            " Phonenumber: ${'+90'+signedInCustomer['phone_number']}", 
-            style: TextStyle(fontSize: 20),
-          ),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          " Phonenumber: ${'+90' + signedInCustomer['phone_number']}",
+          style: TextStyle(fontSize: 20),
         ),
-      ]
-    );
+      ),
+    ]);
   }
+
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -124,5 +123,4 @@ class _ProfilePageState extends State<ProfilePage>{
       _image = File(pickedFile!.path);
     });
   }
-  
 }
