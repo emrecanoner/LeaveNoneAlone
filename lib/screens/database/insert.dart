@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
-import 'package:lna/screens/database/utils/constant.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -183,65 +182,50 @@ class _SignUpState extends State<SignUp> {
                     );
                   } else {
                     userName = name.text;
-                    final ref = FirebaseDatabase.instance.ref();
-                    final snapshot = await ref.child('Users').get();
-
-                    if (snapshot.exists) {
-                      List<User> items = [];
-                      Map<dynamic, dynamic> data = snapshot.value as Map;
-                      List<String> phones = [];
-                      var i = 1;
-
-                      data.forEach((key, value) {
-                        items.add(User(value['name'], value['phone_number'],
-                            value['surname'], value['age'], value['city']));
-                      });
-
-                      for (var element in items) {
-                        phones.add(element.phone);
-                      }
-
-                      if (phones.contains(phoneN.text)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: CustomSnackBarContent(
-                                errorMessage:
-                                    "The number already exists, try another number"),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                          ),
-                        );
-                      } else {
-                        Map<String, String> users = {
-                          'name': name.text,
-                          'phone_number': phoneN.text,
-                          'surname': surname.text,
-                          'city': selectedCity,
-                          'age': age.text,
-                        };
-
-                        dbRef.push().set(users);
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SplashScreenWAnimated(),
-                          ),
-                        );
-
-                        Fluttertoast.showToast(
-                          msg: "You are registered successfully",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: buttonColor,
-                          textColor: Colors.white,
-                          fontSize: 16,
-                        );
-                      }
+                    List<String> phones = [];
+                    List<Customer> items = await customerListMaker();
+                    
+                    for (var element in items) {
+                      phones.add(element.phone);
+                    }
+                    if (phones.contains(phoneN.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage:
+                                  "The number already exists, try another number"),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
                     } else {
-                      print('No database here');
+                      Map<String, String> users = {
+                        'name': name.text,
+                        'phone_number': phoneN.text,
+                        'surname': surname.text,
+                        'city': selectedCity,
+                        'age': age.text,
+                      };
+
+                      dbRef.push().set(users);
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SplashScreenWAnimated(),
+                        ),
+                      );
+
+                      Fluttertoast.showToast(
+                        msg: "You are registered successfully",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: buttonColor,
+                        textColor: Colors.white,
+                        fontSize: 16,
+                      );
                     }
                   }
                 },
@@ -501,12 +485,3 @@ class _SignUpState extends State<SignUp> {
   }
 }
 
-class User {
-  final String name;
-  final String phone;
-  final String city;
-  final String age;
-  final String surname;
-
-  User(this.name, this.phone, this.age, this.city, this.surname);
-}

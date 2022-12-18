@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:lna/screens/database/insert.dart';
-import 'package:lna/screens/database/utils/constant.dart';
 import 'package:lna/screens/home/components/body.dart';
 import 'package:lna/screens/home/utils/constant.dart';
 import 'package:lna/screens/profile/profile_page.dart';

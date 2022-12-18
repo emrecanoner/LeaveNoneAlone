@@ -335,60 +335,31 @@ class _SignFormState extends State<SignForm> {
   }
 
   void phoneNExists() async {
-    final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('Users').get();
+    List<Customer> items = await customerListMaker();
+    var i = 1;
 
-    if (snapshot.exists) {
-      List<User> items = [];
-      Map<dynamic, dynamic> data = snapshot.value as Map;
-      var i = 1;
-
-      data.forEach((key, value) {
-        items.add(User(value['name'], value['phone_number'], value['surname'],
-            value['age'], value['city']));
-      });
-
-      for (var element in items) {
-        if (element.phone == phoneN.text) {
-          loginWithPhone();
-          break;
+    for (var element in items) {
+      if (element.phone == phoneN.text) {
+        loginWithPhone();
+        break;
+      } else {
+        if (i == items.length) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: CustomSnackBarContent(
+              errorMessage: "Number doesn't exist. Try to register"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+          );
         } else {
-          if (i == items.length) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: CustomSnackBarContent(
-                    errorMessage: "Number doesn't exist. Try to register"),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-              ),
-            );
-          } else {
-            i++;
-            continue;
-          }
+          i++;
+          continue;
         }
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: CustomSnackBarContent(
-              errorMessage: "Number doesn't exist. Try to register"),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-      );
     }
   }
 }
 
-class User {
-  final String name;
-  final String phone;
-  final String city;
-  final String age;
-  final String surname;
 
-  User(this.name, this.phone, this.age, this.city, this.surname);
-}
