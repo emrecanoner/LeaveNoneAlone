@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -20,6 +21,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>{
   late File _image;
   final picker = ImagePicker();
+  bool photoExists = true;
+  String photo1= CurrentCustomerPhoto.toString();
+  String photo2 = 'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage>{
                 height: 220.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(photo!),
+                    image: NetworkImage(photoExists?photo1:photo2),
                   ),
                 ),
                 child: TextButton(
@@ -52,14 +57,16 @@ class _ProfilePageState extends State<ProfilePage>{
                     padding: EdgeInsets.all(0.0),
                     child: null,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     getImage();
+                    String url = await uploadImage(_image);
+                    CurrentCustomerPhoto=url;
                   },
                 ),
               ),
             ),
             FutureBuilder(
-              future: customerAccountDetails(num!),
+              future: customerAccountDetails(CurrentCustomerPhone!),
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.done) {
                   return displayUserInformation(context, snapshot);
@@ -75,7 +82,6 @@ class _ProfilePageState extends State<ProfilePage>{
   }
   Widget displayUserInformation(context, snapshot) {
     Map signedInCustomer = snapshot.data as Map;
-
 
     return Column(
       children: <Widget>[
@@ -124,5 +130,15 @@ class _ProfilePageState extends State<ProfilePage>{
       _image = File(pickedFile!.path);
     });
   }
+  Future<String> uploadImage(File file) async{
+    UploadTask? uploadTask;
+    const path = 'files/';
+    final profileref = await storageref.child(path);
+    uploadTask = profileref.putFile(file);
+    final snapshot = await uploadTask.whenComplete(() {});
+    final urlDownload = await snapshot.ref.getDownloadURL();
+    return urlDownload;
+  }
+
   
 }

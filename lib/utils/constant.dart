@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 final gWidth = Get.width;
 final gHeight = Get.height;
@@ -26,8 +28,12 @@ const kPrimaryGradiantColor = LinearGradient(
 const kAnimationDuration = Duration(milliseconds: 200);
 
 final CurrentCustomer = FirebaseAuth.instance.currentUser;
-String? num = CurrentCustomer?.phoneNumber?.substring(3);
-String? photo = CurrentCustomer?.photoURL;
+String? CurrentCustomerPhone = CurrentCustomer?.phoneNumber?.substring(3);
+String? CurrentCustomerName = CurrentCustomer?.displayName;
+String? CurrentCustomerPhoto = CurrentCustomer?.photoURL;
+final ref = FirebaseDatabase.instance.ref();
+final storageref = FirebaseStorage.instance.ref();
+
 
 class Customer {
   final String name;
@@ -40,7 +46,6 @@ class Customer {
 }
 
 Future<List<Customer>> customerListMaker () async {
-  final ref = FirebaseDatabase.instance.ref();
   List<Customer> customerList = [];
   final snapshot = await ref.child('Users').get();
 
