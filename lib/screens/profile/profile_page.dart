@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -47,8 +48,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 220.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    // image: NetworkImage(photoExists?photo1:photo2),
-                    image: NetworkImage("https://images.unsplash.com/photo-1547721064-da6cfb341d50"),
+                    image: NetworkImage(photoExists?photo1:photo2),
+                    // image: NetworkImage("https://images.unsplash.com/photo-1547721064-da6cfb341d50"),
                   ),
                 ),
                 child: TextButton(
@@ -138,6 +139,4 @@ class _ProfilePageState extends State<ProfilePage> {
     final urlDownload = await snapshot.ref.getDownloadURL();
     return urlDownload;
   }
-
-  
 }
