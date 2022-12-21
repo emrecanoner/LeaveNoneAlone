@@ -114,15 +114,15 @@ class _EditPictureState extends State<EditPicture> {
                         builder: (context) => SplashScreenPAnimated(),
                       ),
                     );
-                    // Fluttertoast.showToast(
-                    //   msg: "Photo Uploaded",
-                    //   toastLength: Toast.LENGTH_SHORT,
-                    //   gravity: ToastGravity.CENTER,
-                    //   timeInSecForIosWeb: 1,
-                    //   backgroundColor: buttonColor,
-                    //   textColor: Colors.white,
-                    //   fontSize: 16,
-                    // );
+                    Fluttertoast.showToast(
+                      msg: "Photo Uploaded",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: buttonColor,
+                      textColor: Colors.white,
+                      fontSize: 16,
+                    );
                   }
                 }
               )
@@ -210,8 +210,19 @@ class _EditPictureState extends State<EditPicture> {
     XFile? _file = await _imagepicker.pickImage(source: source);
     if(_file != null){
       return await _file.readAsBytes();
-    }
-    print('No image Selected');
-  }
+    }else{
+      print('No image Selected');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: CustomSnackBarContent(
+            errorMessage:"You didn't pick an image"
+          ),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      );
 
+    } 
+  }
 }

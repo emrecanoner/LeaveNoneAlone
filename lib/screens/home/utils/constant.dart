@@ -17,7 +17,6 @@ List<Widget> pageList = [
 int pageIndex = 1;
 
 String userName = FirebaseAuth.instance.currentUser!.displayName.toString();
-String photo = FirebaseAuth.instance.currentUser!.photoURL.toString();
 
 /* class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -78,7 +77,7 @@ class HomePageHomeIcon extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Hello, $userName",
+                      "Hello, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 21,
@@ -103,7 +102,7 @@ class HomePageHomeIcon extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
                     child: Image.network(
-                      photo,
+                      FirebaseAuth.instance.currentUser!.photoURL.toString(),
                       height: 50,
                     ),
                   ),
@@ -263,7 +262,7 @@ class HomePageEventIcon extends StatelessWidget {
                   height: gHeight / 4,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(photo),
+                      image: NetworkImage(FirebaseAuth.instance.currentUser!.photoURL.toString()),
                     ),
                   ),
                   child: TextButton(
@@ -311,7 +310,7 @@ class HomePageEventIcon extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    "Welcome, $userName",
+                    "Welcome, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
                     style: TextStyle(fontSize: 30),
                   ),
                   // Text(
