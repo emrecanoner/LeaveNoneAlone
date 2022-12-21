@@ -9,15 +9,22 @@ import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:lna/screens/profile/splash/animated_splash_screen.dart';
+import 'package:lna/screens/profile/edit_picture.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class Update extends StatefulWidget {
+  const Update({Key? key, required this.userK}) : super(key: key);
+
+  final String userK;
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<Update> createState() => _UpdateState();
 }
 
-class _RegisterState extends State<Register> {
+class _UpdateState extends State<Update> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +42,7 @@ class _RegisterState extends State<Register> {
                   height: gHeight / 50,
                 ),
                 Text(
-                  'Register Account',
+                  'Edit Profile',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 24,
@@ -52,7 +59,7 @@ class _RegisterState extends State<Register> {
                 SizedBox(
                   height: gHeight / 10,
                 ),
-                SignUp(),
+                EditProfile(userKey: widget.userK),
               ],
             ),
           ),
@@ -62,14 +69,16 @@ class _RegisterState extends State<Register> {
   }
 }
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class EditProfile extends StatefulWidget {
+  const EditProfile({Key? key, required this.userKey}) : super(key: key);
+
+  final String userKey;
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _EditProfileState extends State<EditProfile> {
   final name = TextEditingController();
   final surname = TextEditingController();
   final age = TextEditingController();
@@ -80,11 +89,27 @@ class _SignUpState extends State<SignUp> {
 
   late DatabaseReference dbRef;
 
-  @override
+  String photo1 = FirebaseAuth.instance.currentUser!.photoURL.toString();
+  String photo2 = 'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+
   void initState() {
-    city = SingleValueDropDownController();
+    setState(() {});
     super.initState();
+    city = SingleValueDropDownController();
     dbRef = FirebaseDatabase.instance.ref().child('Users');
+    getUserData();
+  }
+
+  void getUserData() async {
+    DataSnapshot snapshot = await dbRef.child(widget.userKey).get();
+ 
+    Map user = snapshot.value as Map;
+ 
+    name.text = user['name'];
+    phoneN.text = user['phone_number'];
+    surname.text = user['surname'];
+    age.text = user['age'];
+ 
   }
 
   void dispose() {
@@ -100,6 +125,8 @@ class _SignUpState extends State<SignUp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              SizedBox(height: gHeight / 40),
+              buildProfilePicField(),
               SizedBox(height: gHeight / 40),
               buildNameFormField(),
               SizedBox(height: gHeight / 40),
@@ -186,7 +213,11 @@ class _SignUpState extends State<SignUp> {
                     List<Customer> items = await customerListMaker();
                     
                     for (var element in items) {
-                      phones.add(element.phone);
+                      if(element.phone==phoneN.text){
+                        continue;
+                      }else{
+                        phones.add(element.phone);
+                      }
                     }
                     if (phones.contains(phoneN.text)) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -208,17 +239,18 @@ class _SignUpState extends State<SignUp> {
                         'age': age.text,
                       };
 
-                      dbRef.push().set(users);
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SplashScreenWAnimated(),
-                        ),
-                      );
+                      dbRef.child(widget.userKey).update(users)
+                      .then((value) => {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreenPAnimated(),
+                            ),
+                        )
+                      });
 
                       Fluttertoast.showToast(
-                        msg: "You are registered successfully",
+                        msg: "Your profile has been edited successfully",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.CENTER,
                         timeInSecForIosWeb: 1,
@@ -229,11 +261,39 @@ class _SignUpState extends State<SignUp> {
                     }
                   }
                 },
-                text: 'Register',
+                text: 'Save Changes',
               ),
               SizedBox(height: gHeight / 50),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  ClipOval buildProfilePicField(){
+    return ClipOval(
+      child: Container(
+        width: 220.0,
+        height: 220.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage((FirebaseAuth.instance.currentUser?.photoURL!=null)?photo1:photo2),
+          ),
+        ),
+        child: TextButton(
+          child: Padding(
+            padding: EdgeInsets.all(0.0),
+            child: null,
+          ),
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfilePicture(),
+                ),
+              );
+          }
         ),
       ),
     );
@@ -483,5 +543,5 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
+  
 }
-

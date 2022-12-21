@@ -1,16 +1,13 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
+import 'package:lna/utils/default_button.dart';
+import 'package:lna/screens/profile/profile_edit.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -19,12 +16,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late File _image;
-  final picker = ImagePicker();
-  bool photoExists = true;
-  String photo1= CurrentCustomerPhoto.toString();
+  String? authcurrent = FirebaseAuth.instance.currentUser?.phoneNumber?.substring(3);
+  String photo1 = FirebaseAuth.instance.currentUser!.photoURL.toString();
   String photo2 = 'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
-
+  
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,25 +48,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 220.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(photoExists?photo1:photo2),
-                    // image: NetworkImage("https://images.unsplash.com/photo-1547721064-da6cfb341d50"),
+                    image: NetworkImage((FirebaseAuth.instance.currentUser?.photoURL!=null)?photo1:photo2),
                   ),
-                ),
-                child: TextButton(
-                  child: Padding(
-                    padding: EdgeInsets.all(0.0),
-                    child: null,
-                  ),
-                  onPressed: () async {
-                    getImage();
-                    String url = await uploadImage(_image);
-                    CurrentCustomerPhoto=url;
-                  },
                 ),
               ),
             ),
             FutureBuilder(
-              future: customerAccountDetails(CurrentCustomerPhone!),
+              future: customerAccountDetails(authcurrent!),
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.done) {
                   return displayUserInformation(context, snapshot);
@@ -120,23 +108,22 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontSize: 20),
         ),
       ),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DefaultButton(
+          press: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+              builder: (_) => Update(userK: signedInCustomer['uid'])
+              )
+            );
+          },
+          text: 'Edit Profile',
+        ),
+      ),
     ]);
   }
 
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      _image = File(pickedFile!.path);
-    });
-  }
-  Future<String> uploadImage(File file) async{
-    UploadTask? uploadTask;
-    const path = 'files/';
-    final profileref = await storageref.child(path);
-    uploadTask = profileref.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() {});
-    final urlDownload = await snapshot.ref.getDownloadURL();
-    return urlDownload;
-  }
+  
 }

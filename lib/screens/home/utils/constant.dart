@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/home/home_page.dart';
@@ -7,12 +8,16 @@ import 'package:lna/utils/constant.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+
 List<Widget> pageList = [
   HomePageEventIcon(),
   HomePageHomeIcon(),
 ];
 
 int pageIndex = 1;
+
+String userName = FirebaseAuth.instance.currentUser!.displayName.toString();
+String photo = FirebaseAuth.instance.currentUser!.photoURL.toString();
 
 /* class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -97,8 +102,8 @@ class HomePageHomeIcon extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child: Image.asset(
-                      "assets/images/emre.jpeg",
+                    child: Image.network(
+                      photo,
                       height: 50,
                     ),
                   ),
@@ -239,55 +244,80 @@ class HomePageEventIcon extends StatelessWidget {
           ),
           Row(
             children: [
-              Container(
-                width: gWidth / 4,
-                height: gHeight / 4,
-                child: CircleAvatar(
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/emre.jpeg",
+              // Container(
+              //   width: gWidth / 4,
+              //   height: gHeight / 4,
+              //   child: CircleAvatar(
+              //     child: ClipOval(
+              //       child: Image.network(
+              //         photo,
+              //       ),
+              //     ),
+              //     maxRadius: 15,
+              //     minRadius: 15,
+              //   ),
+              // ),
+              ClipOval(
+                child: Container(
+                  width: gWidth / 4,
+                  height: gHeight / 4,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(photo),
                     ),
                   ),
-                  maxRadius: 15,
-                  minRadius: 15,
-                ),
-              ),
-              Container(
-                height: gHeight / 25,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(buttonColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    side: BorderSide(color: buttonColor)))),
+                  child: TextButton(
+                    child: Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: null,
+                    ),
                     onPressed: () {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProfilePage(),
-                          ));
-                    },
-                    child: Icon(
-                      LineAwesomeIcons.plus,
-                      size: 20,
-                    )),
+                          ),
+                        );
+                    }
+                  ),
+                ),
               ),
+              // Container(
+              //   height: gHeight / 25,
+              //   child: ElevatedButton(
+              //       style: ButtonStyle(
+              //           backgroundColor:
+              //               MaterialStateProperty.all<Color>(buttonColor),
+              //           shape:
+              //               MaterialStateProperty.all<RoundedRectangleBorder>(
+              //                   RoundedRectangleBorder(
+              //                       borderRadius: BorderRadius.circular(12.0),
+              //                       side: BorderSide(color: buttonColor)))),
+              //       onPressed: () {
+              //         Navigator.pushReplacement(
+              //             context,
+              //             MaterialPageRoute(
+              //               builder: (context) => ProfilePage(),
+              //             ));
+              //       },
+              //       child: Icon(
+              //         LineAwesomeIcons.plus,
+              //         size: 20,
+              //       )),
+              // ),
               SizedBox(
                 width: gWidth / 30,
               ),
               Column(
                 children: [
                   Text(
-                    "Welcome,",
+                    "Welcome, $userName",
                     style: TextStyle(fontSize: 30),
                   ),
-                  Text(
-                    userName,
-                    style: TextStyle(fontSize: 30),
-                  )
+                  // Text(
+                  //   userName,
+                  //   style: TextStyle(fontSize: 30),
+                  // )
                 ],
               )
             ],

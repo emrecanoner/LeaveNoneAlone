@@ -26,33 +26,49 @@ const kPrimaryGradiantColor = LinearGradient(
 //
 
 const kAnimationDuration = Duration(milliseconds: 200);
-
-final CurrentCustomer = FirebaseAuth.instance.currentUser;
-String? CurrentCustomerPhone = CurrentCustomer?.phoneNumber?.substring(3);
-String? CurrentCustomerName = CurrentCustomer?.displayName;
-String? CurrentCustomerPhoto = CurrentCustomer?.photoURL;
-final ref = FirebaseDatabase.instance.ref();
+final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
+
+Future<String> get_Curname(String? phN) async{
+  List<Customer> it = await customerListMaker();
+  String cur="";
+
+  for (var p in it) {
+    if(p.phone==phN){
+      cur=p.name;
+      break;
+    }else{
+      continue;
+    }
+  }
+  return cur;
+}
+
+void updater() async{
+  String curname = await get_Curname(FirebaseAuth.instance.currentUser?.phoneNumber);
+  FirebaseAuth.instance.currentUser?.updateDisplayName(curname);
+}
 
 
 class Customer {
+  final String uid;
   final String name;
   final String phone;
   final String city;
   final String age;
   final String surname;
 
-  Customer(this.name, this.phone, this.city, this.age, this.surname);
+  Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname);
 }
 
 Future<List<Customer>> customerListMaker () async {
   List<Customer> customerList = [];
-  final snapshot = await ref.child('Users').get();
+  final snapshot = await DBref.child('Users').get();
 
   if (snapshot.exists) {
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
-        customerList.add(Customer(value['name'], value['phone_number'], value['city'],
+        customerList.add(Customer(key,value['name'], value['phone_number'], value['city'],
             value['age'], value['surname']));
       });
       return customerList;
@@ -63,7 +79,7 @@ Future<List<Customer>> customerListMaker () async {
 }
 
 
-Future<Map<dynamic, dynamic>> customerAccountDetails(String phoneNum) async{
+Future<Map<dynamic, dynamic>> customerAccountDetails(String? phoneNum) async{
   List<Customer> customers = await customerListMaker();
   Map<dynamic, dynamic> signedCustomer = new HashMap();
 
@@ -75,6 +91,7 @@ Future<Map<dynamic, dynamic>> customerAccountDetails(String phoneNum) async{
         'city': element.city,
         'age': element.age,
         'surname': element.surname,
+        'uid': element.uid,
       };
       break;
     }else{

@@ -265,6 +265,7 @@ class _SignFormState extends State<SignForm> {
         otpVisibility = true;
         phoneVisibility = false;
         verificationID = verificationId;
+        // CurrentCustomerName=curname;
         setState(() {});
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
