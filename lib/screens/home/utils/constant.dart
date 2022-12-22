@@ -8,7 +8,6 @@ import 'package:lna/utils/constant.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 List<Widget> pageList = [
   HomePageEventIcon(),
   HomePageHomeIcon(),
@@ -66,7 +65,7 @@ class HomePageHomeIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-          top: gHeight / 8, right: gWidth / 80, left: gWidth / 80),
+          top: gHeight / 6.5, right: gWidth / 80, left: gWidth / 80),
       child: Column(
         children: [
           Padding(
@@ -83,7 +82,7 @@ class HomePageHomeIcon extends StatelessWidget {
                           fontSize: 21,
                           fontWeight: FontWeight.w700),
                     ),
-                    SizedBox(height: 6),
+                    SizedBox(height: gHeight / 250),
                     Text(
                       "Let's explore what's happening nearby",
                       style: TextStyle(
@@ -99,11 +98,21 @@ class HomePageHomeIcon extends StatelessWidget {
                     border: Border.all(width: 3, color: buttonColor),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                      height: 50,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(),
+                        ),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        FirebaseAuth.instance.currentUser!.photoURL.toString(),
+                        height: gHeight / 18,
+                      ),
                     ),
                   ),
                 ),
@@ -148,83 +157,6 @@ class HomePageHomeIcon extends StatelessWidget {
       ),
     );
   }
-  /* SizedBox(
-            height: 40,
-          ),
-          Row(
-            children: [
-              Container(
-                width: gWidth / 4,
-                height: gHeight / 4,
-                child: CircleAvatar(
-                  child: ClipOval(
-                    child: Image.asset(
-                      "assets/images/emre.jpeg",
-                    ),
-                  ),
-                  maxRadius: 15,
-                  minRadius: 15,
-                ),
-              ),
-              Container(
-                height: gHeight / 25,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(buttonColor),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    side: BorderSide(color: buttonColor)))),
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
-                          ));
-                    },
-                    child: Icon(
-                      LineAwesomeIcons.plus,
-                      size: 20,
-                    )),
-              ),
-              SizedBox(
-                width: gWidth / 30,
-              ),
-              Column(
-                children: [
-                  Text(
-                    "Welcome,",
-                    style: TextStyle(fontSize: 30),
-                  ),
-                  Text(
-                    userName,
-                    style: TextStyle(fontSize: 30),
-                  )
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: gHeight / 30,
-          ),
-          Container(
-            width: gWidth,
-            height: gHeight / 500,
-            color: buttonColor,
-          ),
-          SizedBox(
-            height: gHeight / 50,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Past Events",
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 30),
-            ),
-          ), */
 }
 
 class HomePageEventIcon extends StatelessWidget {
@@ -235,112 +167,125 @@ class HomePageEventIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 40,
-          ),
-          Row(
-            children: [
-              // Container(
-              //   width: gWidth / 4,
-              //   height: gHeight / 4,
-              //   child: CircleAvatar(
-              //     child: ClipOval(
-              //       child: Image.network(
-              //         photo,
-              //       ),
-              //     ),
-              //     maxRadius: 15,
-              //     minRadius: 15,
-              //   ),
-              // ),
-              ClipOval(
-                child: Container(
-                  width: gWidth / 4,
-                  height: gHeight / 4,
+      child: Padding(
+        padding: EdgeInsets.only(
+            top: gHeight / 6.5, right: gWidth / 80, left: gWidth / 80),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
                   decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(FirebaseAuth.instance.currentUser!.photoURL.toString()),
-                    ),
+                    border: Border.all(width: 3, color: buttonColor),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  child: TextButton(
-                    child: Padding(
-                      padding: EdgeInsets.all(0.0),
-                      child: null,
-                    ),
-                    onPressed: () {
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
-                          ),
-                        );
-                    }
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(),
+                        ),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        FirebaseAuth.instance.currentUser!.photoURL.toString(),
+                        height: gHeight / 18,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              // Container(
-              //   height: gHeight / 25,
-              //   child: ElevatedButton(
-              //       style: ButtonStyle(
-              //           backgroundColor:
-              //               MaterialStateProperty.all<Color>(buttonColor),
-              //           shape:
-              //               MaterialStateProperty.all<RoundedRectangleBorder>(
-              //                   RoundedRectangleBorder(
-              //                       borderRadius: BorderRadius.circular(12.0),
-              //                       side: BorderSide(color: buttonColor)))),
-              //       onPressed: () {
-              //         Navigator.pushReplacement(
-              //             context,
-              //             MaterialPageRoute(
-              //               builder: (context) => ProfilePage(),
-              //             ));
-              //       },
-              //       child: Icon(
-              //         LineAwesomeIcons.plus,
-              //         size: 20,
-              //       )),
-              // ),
-              SizedBox(
-                width: gWidth / 30,
-              ),
-              Column(
-                children: [
-                  Text(
-                    "Welcome, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
-                    style: TextStyle(fontSize: 30),
+/*                 ClipOval(
+                  child: Container(
+                    width: gWidth / 4,
+                    height: gHeight / 4,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      image: DecorationImage(
+                        image: NetworkImage(FirebaseAuth
+                            .instance.currentUser!.photoURL
+                            .toString()),
+                      ),
+                    ),
+                    child: TextButton(
+                        child: Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: null,
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(),
+                            ),
+                          );
+                        }),
                   ),
-                  // Text(
-                  //   userName,
-                  //   style: TextStyle(fontSize: 30),
-                  // )
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: gHeight / 30,
-          ),
-          Container(
-            width: gWidth,
-            height: gHeight / 500,
-            color: buttonColor,
-          ),
-          SizedBox(
-            height: gHeight / 50,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Create Event",
-              textAlign: TextAlign.justify,
-              style: TextStyle(fontSize: 30),
+                ), */
+                // Container(
+                //   height: gHeight / 25,
+                //   child: ElevatedButton(
+                //       style: ButtonStyle(
+                //           backgroundColor:
+                //               MaterialStateProperty.all<Color>(buttonColor),
+                //           shape:
+                //               MaterialStateProperty.all<RoundedRectangleBorder>(
+                //                   RoundedRectangleBorder(
+                //                       borderRadius: BorderRadius.circular(12.0),
+                //                       side: BorderSide(color: buttonColor)))),
+                //       onPressed: () {
+                //         Navigator.pushReplacement(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ProfilePage(),
+                //             ));
+                //       },
+                //       child: Icon(
+                //         LineAwesomeIcons.plus,
+                //         size: 20,
+                //       )),
+                // ),
+                SizedBox(
+                  width: gWidth / 30,
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "Welcome, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    // Text(
+                    //   userName,
+                    //   style: TextStyle(fontSize: 30),
+                    // )
+                  ],
+                )
+              ],
             ),
-          ),
-        ],
+            SizedBox(
+              height: gHeight / 30,
+            ),
+            Container(
+              width: gWidth,
+              height: gHeight / 500,
+              color: buttonColor,
+            ),
+            SizedBox(
+              height: gHeight / 50,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Create Event",
+                textAlign: TextAlign.justify,
+                style: TextStyle(fontSize: 30),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
