@@ -112,6 +112,7 @@ class HomePageHomeIcon extends StatelessWidget {
                       child: Image.network(
                         FirebaseAuth.instance.currentUser!.photoURL.toString(),
                         height: gHeight / 18,
+                        width: gWidth / 9,
                       ),
                     ),
                   ),
