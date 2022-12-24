@@ -294,7 +294,7 @@ class _EditProfileState extends State<EditProfile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditProfilePicture(),
+                      builder: (context) => EditProfilePicture(userKey: widget.userKey,),
                     ),
                   );
                 },
