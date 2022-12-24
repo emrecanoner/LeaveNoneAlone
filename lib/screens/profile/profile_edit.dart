@@ -29,7 +29,7 @@ class _UpdateState extends State<Update> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('Edit Profile'),
       ),
       body: SafeArea(
         child: SizedBox(
@@ -40,24 +40,6 @@ class _UpdateState extends State<Update> {
               children: [
                 SizedBox(
                   height: gHeight / 50,
-                ),
-                Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: gHeight / 1500,
-                ),
-                Text(
-                  "Complete your details",
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: gHeight / 10,
                 ),
                 EditProfile(userKey: widget.userK),
               ],
@@ -90,7 +72,8 @@ class _EditProfileState extends State<EditProfile> {
   late DatabaseReference dbRef;
 
   String photo1 = FirebaseAuth.instance.currentUser!.photoURL.toString();
-  String photo2 = 'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+  String photo2 =
+      'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
 
   void initState() {
     setState(() {});
@@ -102,18 +85,17 @@ class _EditProfileState extends State<EditProfile> {
 
   void getUserData() async {
     DataSnapshot snapshot = await dbRef.child(widget.userKey).get();
- 
+
     Map user = snapshot.value as Map;
- 
+
     name.text = user['name'];
     phoneN.text = user['phone_number'];
     surname.text = user['surname'];
     age.text = user['age'];
- 
+    selectedCity = user['city'];
   }
 
   void dispose() {
-    city.dispose();
     super.dispose();
   }
 
@@ -125,7 +107,6 @@ class _EditProfileState extends State<EditProfile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(height: gHeight / 40),
               buildProfilePicField(),
               SizedBox(height: gHeight / 40),
               buildNameFormField(),
@@ -211,11 +192,11 @@ class _EditProfileState extends State<EditProfile> {
                     userName = name.text;
                     List<String> phones = [];
                     List<Customer> items = await customerListMaker();
-                    
+
                     for (var element in items) {
-                      if(element.phone==phoneN.text){
+                      if (element.phone == phoneN.text) {
                         continue;
-                      }else{
+                      } else {
                         phones.add(element.phone);
                       }
                     }
@@ -239,15 +220,18 @@ class _EditProfileState extends State<EditProfile> {
                         'age': age.text,
                       };
 
-                      dbRef.child(widget.userKey).update(users)
-                      .then((value) => {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SplashScreenPAnimated(),
-                            ),
-                        )
-                      });
+                      dbRef
+                          .child(widget.userKey)
+                          .update(users)
+                          .then((value) => {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SplashScreenPAnimated(),
+                                  ),
+                                )
+                              });
 
                       Fluttertoast.showToast(
                         msg: "Your profile has been edited successfully",
@@ -271,32 +255,87 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  ClipOval buildProfilePicField(){
-    return ClipOval(
+  Center buildProfilePicField() {
+    return Center(
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 3, color: buttonColor),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                ((FirebaseAuth.instance.currentUser?.photoURL != null)
+                    ? photo1
+                    : photo2),
+                height: gHeight / 6,
+                width: gWidth / 3,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 4,
+                  color: Colors.white,
+                ),
+                color: buttonColor,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePicture(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    /*return ClipOval(
       child: Container(
         width: 220.0,
         height: 220.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage((FirebaseAuth.instance.currentUser?.photoURL!=null)?photo1:photo2),
+            image: NetworkImage(
+                (FirebaseAuth.instance.currentUser?.photoURL != null)
+                    ? photo1
+                    : photo2),
           ),
         ),
         child: TextButton(
-          child: Padding(
-            padding: EdgeInsets.all(0.0),
-            child: null,
-          ),
-          onPressed: () {
-            Navigator.pushReplacement(
+            child: Padding(
+              padding: EdgeInsets.all(0.0),
+              child: null,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditProfilePicture(userKey: widget.userKey),
                 ),
               );
-          }
-        ),
+            }),
       ),
-    );
+    );*/
   }
 
   TextFormField buildNameFormField() {
@@ -359,7 +398,8 @@ class _EditProfileState extends State<EditProfile> {
 
   DropDownTextField buildCityDropdown() {
     return DropDownTextField(
-      controller: city,
+      initialValue: selectedCity,
+      //controller: city,
       clearOption: true,
       enableSearch: true,
       dropDownIconProperty: IconProperty(color: buttonColor),
@@ -543,5 +583,4 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-  
 }

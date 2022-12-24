@@ -17,7 +17,7 @@ class CustomSnackBarContent extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.all(16),
-          height: gHeight / 8,
+          height: gHeight / 9,
           decoration: BoxDecoration(
             color: Color(0xffc72c45),
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -60,14 +60,14 @@ class CustomSnackBarContent extends StatelessWidget {
                 const BorderRadius.only(bottomLeft: Radius.circular(20)),
             child: SvgPicture.asset(
               "assets/icons/bubbles.svg",
-              height: gHeight / 15,
+              height: gHeight / 16,
               width: gWidth / 10,
               color: Color(0xff801336),
             ),
           ),
         ),
         Positioned(
-            top: -(gHeight / 30),
+            top: -(gHeight / 40),
             left: 0,
             child: Stack(
               alignment: Alignment.center,
@@ -76,13 +76,13 @@ class CustomSnackBarContent extends StatelessWidget {
                   "assets/icons/fail.svg",
                   height: gHeight / 20,
                 ),
-                Positioned(
+                /*Positioned(
                   top: gHeight / 20,
                   child: SvgPicture.asset(
                     "assets/icons/close.svg",
                     height: gHeight / 50,
                   ),
-                )
+                )*/
               ],
             )),
       ],

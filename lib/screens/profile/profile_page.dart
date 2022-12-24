@@ -111,28 +111,31 @@ class _ProfilePageState extends State<ProfilePage> {
     Map signedInCustomer = snapshot.data as Map;
 
     return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: ListView(
-        children: [
-          Center(
-            child: Stack(
-              children: [
-                Container(
-                  /*decoration: BoxDecoration(
+      padding: EdgeInsets.all(gHeight / 40),
+      child: Expanded(
+        child: SingleChildScrollView(
+            child: Column(
+          children: [
+            Center(
+              child: Stack(
+                children: [
+                  Container(
+                    /*decoration: BoxDecoration(
                     border: Border.all(width: 3, color: buttonColor),
                     borderRadius: BorderRadius.circular(100),
                   ),*/
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      ((FirebaseAuth.instance.currentUser?.photoURL != null)
-                          ? photo1
-                          : photo2),
-                      height: gHeight / 6,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        ((FirebaseAuth.instance.currentUser?.photoURL != null)
+                            ? photo1
+                            : photo2),
+                        height: gHeight / 6,
+                        width: gWidth / 3,
+                      ),
                     ),
                   ),
-                ),
-                /*Positioned(
+                  /*Positioned(
                     bottom: 0,
                     right: 0,
                     child: Container(
@@ -151,81 +154,95 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: Colors.white,
                       ),
                     )),*/
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 50),
-          TextField(
-            readOnly: true,
-            enabled: false,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(bottom: 3, left: 10),
-                labelText: "Name",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['name']}",
-                hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ),
-          SizedBox(height: 15),
-          TextField(
-            enabled: false,
-            readOnly: true,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(bottom: 3, left: 10),
-                labelText: "Surname",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['surname']}",
-                hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ),
-          SizedBox(height: 15),
-          TextField(
-            enabled: false,
-            readOnly: true,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(bottom: 3, left: 10),
-                labelText: "Age",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['age']}",
-                hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ),
-          SizedBox(height: 15),
-          TextField(
-            readOnly: true,
-            enabled: false,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(bottom: 3, left: 10),
-                labelText: "City",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['city']}",
-                hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ),
-          SizedBox(height: 15),
-          TextField(
-            enabled: false,
-            readOnly: true,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(bottom: 3, left: 10),
-                labelText: "Phone Number",
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "+90${signedInCustomer['phone_number']}",
-                hintStyle: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black)),
-          ),
-          SizedBox(height: 80),
-          ElevatedButton(
+            SizedBox(height: gHeight / 20),
+            TextField(
+              readOnly: true,
+              enabled: false,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                      bottom: gHeight / 100, left: gWidth / 100),
+                  labelText: "Name",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "${signedInCustomer['name']}",
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
+            SizedBox(height: gHeight / 40),
+            TextField(
+              enabled: false,
+              readOnly: true,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                      bottom: gHeight / 100, left: gWidth / 100),
+                  labelText: "Surname",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "${signedInCustomer['surname']}",
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
+            SizedBox(height: gHeight / 40),
+            TextField(
+              enabled: false,
+              readOnly: true,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                      bottom: gHeight / 100, left: gWidth / 100),
+                  labelText: "Age",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "${signedInCustomer['age']}",
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
+            SizedBox(height: gHeight / 40),
+            TextField(
+              readOnly: true,
+              enabled: false,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                      bottom: gHeight / 100, left: gWidth / 100),
+                  labelText: "City",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "${signedInCustomer['city']}",
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
+            SizedBox(height: gHeight / 40),
+            TextField(
+              enabled: false,
+              readOnly: true,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                      bottom: gHeight / 100, left: gWidth / 100),
+                  labelText: "Phone Number",
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  hintText: "+90${signedInCustomer['phone_number']}",
+                  hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+            ),
+            SizedBox(height: gHeight / 9),
+            DefaultButton(
+                text: "Edit Profile",
+                press: (() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              Update(userK: signedInCustomer['uid'])));
+                })),
+            /* ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(gHeight / 3, 35),
                 backgroundColor: buttonColor,
@@ -235,12 +252,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               onPressed: () {},
               child: Text(
-                "UPDATE",
+                "EDIT PROFILE",
                 style: TextStyle(
                     fontSize: 14, color: Colors.white, letterSpacing: 2.2),
-              )),
+              )), */
 
-          /* Row(
+            /* Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -282,7 +299,8 @@ class _ProfilePageState extends State<ProfilePage> {
               )
             ],
           ) */
-        ],
+          ],
+        )),
       ),
     );
   }
