@@ -290,7 +290,7 @@ class _EditProfileState extends State<EditProfile> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EditProfilePicture(),
+                  builder: (context) => EditProfilePicture(userKey: widget.userKey),
                 ),
               );
           }

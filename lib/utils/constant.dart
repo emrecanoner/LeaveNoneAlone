@@ -57,8 +57,42 @@ class Customer {
   final String city;
   final String age;
   final String surname;
+  final String photoURL;
 
-  Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname);
+  Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname,this.photoURL);
+}
+
+class Chat{
+  final String chat_uid;
+  final String user_id;
+  final String chat_name;
+  final List chat_people;
+
+  Chat(this.chat_uid,this.user_id,this.chat_name,this.chat_people);
+}
+
+Future<String> getChatUIDDetails(String userUID) async{
+  List<Chat> chatInfo = [];
+  String chatUID = '';
+  final snapshot = await DBref.child('Chats').child(FirebaseAuth.instance.currentUser!.uid).get();
+
+  if(snapshot.exists){
+    Map<dynamic, dynamic> data = snapshot.value as Map;
+    data.forEach((key, value) {
+      chatInfo.add(Chat(key,value['user_id'], value['chat_name'], value['chat_members']));
+    });
+    for(var element in chatInfo){
+      if(element.user_id==userUID){
+        chatUID=element.chat_uid;
+        break;
+      }else{
+        continue;
+      }
+    }
+    return chatUID;
+  }else{
+    return '';
+  }
 }
 
 Future<List<Customer>> customerListMaker () async {
@@ -69,7 +103,7 @@ Future<List<Customer>> customerListMaker () async {
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
         customerList.add(Customer(key,value['name'], value['phone_number'], value['city'],
-            value['age'], value['surname']));
+            value['age'], value['surname'],value['photoURL']));
       });
       return customerList;
       
@@ -91,6 +125,7 @@ Future<Map<dynamic, dynamic>> customerAccountDetails(String? phoneNum) async{
         'city': element.city,
         'age': element.age,
         'surname': element.surname,
+        'photoURL': element.photoURL,
         'uid': element.uid,
       };
       break;
@@ -100,6 +135,7 @@ Future<Map<dynamic, dynamic>> customerAccountDetails(String? phoneNum) async{
   }
   return signedCustomer;
 }
+
 
 
 
