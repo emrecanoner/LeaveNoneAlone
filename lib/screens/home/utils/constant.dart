@@ -2,63 +2,36 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/chats/create_chat.dart';
+import 'package:lna/screens/chats/members.dart';
+import 'package:lna/screens/home/create_event.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
+//<<<<<<< HEAD
+import 'package:lna/utils/custom_snackbar.dart';
+//=======
 import 'package:lna/utils/default_button.dart';
 
 import '../../chats/user_chatlist.dart';
 import '../../friends/search_Users_list.dart';
+//>>>>>>> b582d40db834b6623c8c8b9c678348847d8efa4a
 
 List<Widget> pageList = [
-  HomePageEventIcon(),
+  CreateEvent(),
   HomePageHomeIcon(),
+  //membersList(),
 ];
 
 int pageIndex = 1;
 
+DateTime selectedDateAtBar = DateTime.now();
+
+DatePickerController dateControl = DatePickerController();
+
 String userName = FirebaseAuth.instance.currentUser!.displayName.toString();
-
-/* class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
-
-  @override
-  State<BottomNavigation> createState() => _BottomNavigationState();
-} */
-
-/* class _BottomNavigationState extends State<BottomNavigation> {
-  int index = 1;
-  @override
-  Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      height: gHeight / 13,
-      backgroundColor: Colors.white,
-      color: buttonColor,
-      animationDuration: kAnimationDuration,
-      index: index,
-      onTap: (index) {
-        setState(() {
-          this.index = index;
-          pageIndex = index;
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ));
-        });
-      },
-      items: [
-        Icon(
-          Icons.favorite,
-        ),
-        Icon(Icons.home),
-        Icon(Icons.settings),
-      ],
-    );
-  }
-} */
 
 class HomePageHomeIcon extends StatelessWidget {
   const HomePageHomeIcon({
@@ -72,88 +45,98 @@ class HomePageHomeIcon extends StatelessWidget {
           top: gHeight / 6.5, right: gWidth / 80, left: gWidth / 80),
       child: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hello, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 21,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: gHeight / 250),
-                    Text(
-                      "Let's explore what's happening nearby",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                      ),
-                    )
-                  ],
-                ),
-                Spacer(),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 3, color: buttonColor),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfilePage(),
-                        ),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                        height: gHeight / 18,
-                        width: gWidth / 9,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          buildTaskBar(context),
+          SizedBox(height: gHeight / 50),
+          buildDateBar(),
+        ],
+      ),
+    );
+  }
+
+  Container buildDateBar() {
+    return Container(
+      child: DatePicker(
+        DateTime.now(),
+        onDateChange: (selectedDate) {
+          selectedDateAtBar = selectedDate;
+        },
+        controller: dateControl,
+        height: gHeight / 9,
+        width: gWidth / 8,
+        initialSelectedDate: DateTime.now(),
+        selectionColor: buttonColor,
+        selectedTextColor: Colors.white,
+        dateTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
-          SizedBox(
-            height: gHeight / 50,
+        ),
+        dayTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
+        ),
+        monthTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding buildTaskBar(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hello, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700),
+              ),
+              SizedBox(height: gHeight / 250),
+              Text(
+                "Let's explore what's happening nearby",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 15,
+                ),
+              )
+            ],
+          ),
+          Spacer(),
           Container(
-            child: DatePicker(
-              DateTime.now(),
-              height: gHeight / 9,
-              width: gWidth / 8,
-              initialSelectedDate: DateTime.now(),
-              selectionColor: buttonColor,
-              selectedTextColor: Colors.white,
-              dateTextStyle: GoogleFonts.lato(
-                textStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              dayTextStyle: GoogleFonts.lato(
-                textStyle: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-              ),
-              monthTextStyle: GoogleFonts.lato(
-                textStyle: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
+            decoration: BoxDecoration(
+              border: Border.all(width: 3, color: buttonColor),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(),
+                  ),
+                );
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.network(
+                  FirebaseAuth.instance.currentUser!.photoURL.toString(),
+                  height: gHeight / 18,
+                  width: gWidth / 9,
                 ),
               ),
             ),
@@ -292,27 +275,27 @@ class HomePageEventIcon extends StatelessWidget {
             SizedBox(
               height: gHeight / 50,
             ),
-            DefaultButton(text: 'Chatlist', 
-            press: (){
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => userChatList(),
-                )
-              );
-            }),
+            DefaultButton(
+                text: 'Chatlist',
+                press: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => userChatList(),
+                      ));
+                }),
             SizedBox(
               height: gHeight / 50,
             ),
-            DefaultButton(text: 'Add friend', 
-            press: (){
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => searchLNAUserBar(),
-                )
-              );
-            }),
+            DefaultButton(
+                text: 'Add friend',
+                press: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => searchLNAUserBar(),
+                      ));
+                }),
           ],
         ),
       ),

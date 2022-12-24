@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:lna/screens/database/insert.dart';
-import 'package:lna/screens/home/components/body.dart';
 import 'package:lna/screens/home/utils/constant.dart';
 import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/screens/sign_out/sign_out_page.dart';
@@ -23,7 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
-    if(FirebaseAuth.instance.currentUser?.displayName==null||FirebaseAuth.instance.currentUser?.displayName==""){
+    if (FirebaseAuth.instance.currentUser?.displayName == null ||
+        FirebaseAuth.instance.currentUser?.displayName == "") {
       WidgetsBinding.instance.addPostFrameCallback((_) => updater());
     }
   }
@@ -56,12 +56,7 @@ class MenuPage extends StatelessWidget {
   MenuPage({super.key, required this.onPageChanged});
   final Function(Widget) onPageChanged;
   List<ListItems> drawerItems = [
-    ListItems(
-        Icon(Icons.home),
-        Text(
-          "Home",
-        ),
-        HomePage()),
+    ListItems(Icon(Icons.home), Text("Home"), HomePage()),
     ListItems(Icon(Icons.person), Text("Profile"), ProfilePage()),
     ListItems(Icon(Icons.logout), Text("Logout"), null)
   ];
