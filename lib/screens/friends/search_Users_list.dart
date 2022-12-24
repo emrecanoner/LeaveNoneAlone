@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
 import 'package:lna/screens/friends/user_Account.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
@@ -10,51 +11,7 @@ import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
-
-class searchLNAUser extends StatefulWidget {
-  const searchLNAUser({Key? key}) : super(key: key);
-
-  @override
-  State<searchLNAUser> createState() => _searchLNAUserState();
-}
-
-class _searchLNAUserState extends State<searchLNAUser> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add friend'),
-      ),
-      body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: gWidth / 25),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: gHeight / 50,
-                ),
-                Text(
-                  'Search LNA User by Name',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: gHeight / 1500,
-                ),
-                searchLNAUserBar(),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+import 'package:lna/screens/home/home_page.dart';
 
 class searchLNAUserBar extends StatefulWidget {
   const searchLNAUserBar({super.key});
@@ -83,8 +40,20 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Expanded(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ));
+            },
+            icon: Icon(LineAwesomeIcons.arrow_left)),
+      ),
+      body: Container(
+        height: 500,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +86,7 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
             ]
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -161,6 +130,8 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
             text: key,
           );
         },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
       ),
       visible: searchlistExist,
     );

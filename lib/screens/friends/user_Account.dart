@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/friends/search_Users_list.dart';
+import 'package:lna/screens/friends/splash/animated_splash.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/utils/default_button.dart';
@@ -21,8 +24,13 @@ class userAccount extends StatefulWidget {
 class _userAccountState extends State<userAccount> {
   late String photo;
 
-  DatabaseReference dbref = FirebaseDatabase.instance.ref().child('Friends');
-  
+  late DatabaseReference FriendBbref;
+
+  @override
+  void initState() {
+    super.initState();
+    FriendBbref = FirebaseDatabase.instance.ref().child('Friends/${FirebaseAuth.instance.currentUser!.uid}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +42,7 @@ class _userAccountState extends State<userAccount> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (context) => searchLNAUserBar(),
                   ));
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),
@@ -95,7 +103,7 @@ class _userAccountState extends State<userAccount> {
         future: customerAccountDetails(widget.phoneKey),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return displayUserInformation(context, snapshot);
+            return displayFriendInformation(context, snapshot);
           } else {
             return Center(child: CircularProgressIndicator());
           }
@@ -104,8 +112,8 @@ class _userAccountState extends State<userAccount> {
     );
   }
 
-  Widget displayUserInformation(context, snapshot) {
-    Map signedInCustomer = snapshot.data as Map;
+  Widget displayFriendInformation(context, snapshot) {
+    Map FriendSearched = snapshot.data as Map;
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -122,7 +130,7 @@ class _userAccountState extends State<userAccount> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      (signedInCustomer['photoURL']),
+                      (FriendSearched['photoURL']),
                       height: gHeight / 6,
                     ),
                   ),
@@ -150,14 +158,7 @@ class _userAccountState extends State<userAccount> {
             ),
           ),
           SizedBox(height: 50),
-          DefaultButton(
-            text: 'Add friend', 
-            press: (){
-              dbref.child(FirebaseAuth.instance.currentUser!.uid).push().set({
-                signedInCustomer['name']: signedInCustomer['phone']
-              });
-            }
-          ),
+          
           SizedBox(height: 50),
           TextField(
             readOnly: true,
@@ -166,7 +167,7 @@ class _userAccountState extends State<userAccount> {
                 contentPadding: EdgeInsets.only(bottom: 3, left: 10),
                 labelText: "Name",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['name']}",
+                hintText: "${FriendSearched['name']}",
                 hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -180,7 +181,7 @@ class _userAccountState extends State<userAccount> {
                 contentPadding: EdgeInsets.only(bottom: 3, left: 10),
                 labelText: "Surname",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['surname']}",
+                hintText: "${FriendSearched['surname']}",
                 hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -194,7 +195,7 @@ class _userAccountState extends State<userAccount> {
                 contentPadding: EdgeInsets.only(bottom: 3, left: 10),
                 labelText: "Age",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['age']}",
+                hintText: "${FriendSearched['age']}",
                 hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -208,7 +209,7 @@ class _userAccountState extends State<userAccount> {
                 contentPadding: EdgeInsets.only(bottom: 3, left: 10),
                 labelText: "City",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "${signedInCustomer['city']}",
+                hintText: "${FriendSearched['city']}",
                 hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -222,27 +223,39 @@ class _userAccountState extends State<userAccount> {
                 contentPadding: EdgeInsets.only(bottom: 3, left: 10),
                 labelText: "Phone Number",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintText: "+90${signedInCustomer['phone_number']}",
+                hintText: "+90${FriendSearched['phone_number']}",
                 hintStyle: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black)),
           ),
           SizedBox(height: 80),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(gHeight / 3, 35),
+          DefaultButton(
+            text: 'Add friend', 
+            press: () async{
+              Map<String, String> friendg = {
+                'friend_name': FriendSearched['name'],
+                'friend_phone': FriendSearched['phone_number'],
+              };
+              await FriendBbref.push().set(friendg);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (_) =>SplashScreenFAnimated(),
+                )
+              );
+              Fluttertoast.showToast(
+                msg: "Friend Request sent",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
                 backgroundColor: buttonColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              onPressed: () {},
-              child: Text(
-                "UPDATE",
-                style: TextStyle(
-                    fontSize: 14, color: Colors.white, letterSpacing: 2.2),
-              )),
+                textColor: Colors.white,
+                fontSize: 16,
+              );
+            }
+          ),
 
           /* Row(
             mainAxisAlignment: MainAxisAlignment.center,

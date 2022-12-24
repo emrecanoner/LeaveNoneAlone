@@ -309,7 +309,7 @@ class HomePageEventIcon extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => searchLNAUser(),
+                  builder: (context) => searchLNAUserBar(),
                 )
               );
             }),

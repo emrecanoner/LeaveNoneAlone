@@ -29,25 +29,141 @@ const kAnimationDuration = Duration(milliseconds: 200);
 final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
 
-Future<String> get_Curname(String? phN) async{
-  List<Customer> it = await customerListMaker();
-  String cur="";
+class Friends{
+  final String friend_uid;
+  final String friend_name;
+  final String friend_phone;
 
-  for (var p in it) {
-    if(p.phone==phN){
-      cur=p.name;
-      break;
+  Friends(this.friend_uid,this.friend_name,this.friend_phone);
+}
+
+Future<List<Friends>> getUserFriends() async{
+  List<Friends> friendsInfo = [];
+  final snapshot = await DBref.child('Friends').child(FirebaseAuth.instance.currentUser!.uid).get();
+
+  try{
+    if(snapshot.exists){
+      Map data = snapshot.value as Map;
+      data.forEach((key, value) {
+        friendsInfo.add(Friends(key,value['friend_name'],value['friend_phone']));
+      });
+      return friendsInfo;
     }else{
-      continue;
+      return [];
     }
+  }on TypeError catch (e){
+    print('friends: ${e.toString()}');
+    return[];
+  }catch (e){
+    print('friends: ${e.toString()}');
+    return[];
   }
-  return cur;
+}
+class Chat{
+  final String chat_uid;
+  final String user_id;
+  final String chat_name;
+  final List chat_people;
+
+  Chat(this.chat_uid,this.user_id,this.chat_name,this.chat_people);
+}
+Future<String> getChatUID(String userUID) async{
+  List<Chat> chat = await getUserChats();
+  String chatUID = '';
+  try{
+    for(var element in chat){
+      if(element.user_id==userUID){
+        chatUID=element.chat_uid;
+        break;
+      }else{
+        continue;
+      }
+    }
+    return chatUID;
+  }on TypeError catch (e){
+    print('chatUID: ${e.toString()}');
+    return '';
+  }catch (e){
+    print('chatUID: ${e.toString()}');
+    return '';
+  }
 }
 
-void updater() async{
-  String curname = await get_Curname(FirebaseAuth.instance.currentUser?.phoneNumber);
-  FirebaseAuth.instance.currentUser?.updateDisplayName(curname);
+Future<List<Chat>> getUserChats() async{
+  List<Chat> chatInfo = [];
+  final snapshot = await DBref.child('Chats').child(FirebaseAuth.instance.currentUser!.uid).get();
+
+  try{
+    if(snapshot.exists){
+      Map<dynamic, dynamic> data = snapshot.value as Map;
+      data.forEach((key, value) {
+        chatInfo.add(Chat(key,value['user_id'], value['chat_name'], value['chat_members']));
+      });
+      return chatInfo;
+    }else{
+      return [];
+    }
+  }on TypeError catch (e){
+    if(e.toString() == "type 'Null' is not a subtype of type 'Uint8list'"){
+      print('chats: ${e.toString()}');
+      return [];
+    }
+    return [];
+  } catch (e){
+    print('chats: ${e.toString()}');
+    return [];
+  }
 }
+
+
+class Message{
+  final String message_sender;
+  final String message_text;
+  final String message_timestamp;
+
+  Message(this.message_sender,this.message_text,this.message_timestamp);
+}
+
+Future<List<Message>> getUserMessages(String chatKey) async {
+  List<Message> messageInfo = [];
+  final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser == null) {
+    return [];
+  }
+  final chatRef = FirebaseDatabase.instance.ref().child('Chats').child(currentUser.uid).child(chatKey);
+  final snapshot = await chatRef.get();
+
+  try{
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> chatData = snapshot.value as Map;
+
+      // Iterate through the chat data
+      for (var entry in chatData.entries) {
+        var chatKeys = entry.key;
+        // Get the message data
+        if(chatKeys!='user_id'||chatKeys!='chat_name'||chatKeys!='chat_members'){
+          Map<dynamic, dynamic> messageData = entry.value;
+          messageData.forEach((key, value) {
+            messageInfo.add(Message(messageData['sender'], messageData['text'], messageData['timestamp']));
+          });
+          // Do something with the message data
+        }else{
+          continue;
+        }
+      }
+      return messageInfo;
+    } else {
+      return [];
+    }
+  }on TypeError catch (e){
+    print('message: ${e.toString()}');
+    return [];
+  }catch (e){
+    print('message: ${e.toString()}');
+    return [];
+  }
+}
+
 
 
 class Customer {
@@ -62,53 +178,28 @@ class Customer {
   Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname,this.photoURL);
 }
 
-class Chat{
-  final String chat_uid;
-  final String user_id;
-  final String chat_name;
-  final List chat_people;
-
-  Chat(this.chat_uid,this.user_id,this.chat_name,this.chat_people);
-}
-
-Future<String> getChatUIDDetails(String userUID) async{
-  List<Chat> chatInfo = [];
-  String chatUID = '';
-  final snapshot = await DBref.child('Chats').child(FirebaseAuth.instance.currentUser!.uid).get();
-
-  if(snapshot.exists){
-    Map<dynamic, dynamic> data = snapshot.value as Map;
-    data.forEach((key, value) {
-      chatInfo.add(Chat(key,value['user_id'], value['chat_name'], value['chat_members']));
-    });
-    for(var element in chatInfo){
-      if(element.user_id==userUID){
-        chatUID=element.chat_uid;
-        break;
-      }else{
-        continue;
-      }
-    }
-    return chatUID;
-  }else{
-    return '';
-  }
-}
 
 Future<List<Customer>> customerListMaker () async {
   List<Customer> customerList = [];
   final snapshot = await DBref.child('Users').get();
 
-  if (snapshot.exists) {
+  try{
+    if (snapshot.exists) {
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
         customerList.add(Customer(key,value['name'], value['phone_number'], value['city'],
             value['age'], value['surname'],value['photoURL']));
-      });
-      return customerList;
-      
-  }else{
+       });
+      return customerList;  
+    }else{
+      return [];
+    }
+  }on TypeError catch (e){
+    print('customerlist: ${e.toString()}');
     return [];
+  }catch (e){
+    print('customerlist: ${e.toString()}');
+    return[];
   }
 }
 
@@ -117,25 +208,65 @@ Future<Map<dynamic, dynamic>> customerAccountDetails(String? phoneNum) async{
   List<Customer> customers = await customerListMaker();
   Map<dynamic, dynamic> signedCustomer = new HashMap();
 
-  for(var element in customers){
-    if(element.phone==phoneNum){
-       signedCustomer = {
-        'name': element.name,
-        'phone_number': element.phone,
-        'city': element.city,
-        'age': element.age,
-        'surname': element.surname,
-        'photoURL': element.photoURL,
-        'uid': element.uid,
-      };
-      break;
-    }else{
-      continue;
+  try{
+    for(var element in customers){
+      if(element.phone==phoneNum){
+        signedCustomer = {
+          'name': element.name,
+          'phone_number': element.phone,
+          'city': element.city,
+          'age': element.age,
+          'surname': element.surname,
+          'photoURL': element.photoURL,
+          'uid': element.uid,
+        };
+        break;
+      }else{
+        continue;
+      }
     }
+    return signedCustomer;
+  }on TypeError catch (e){
+    print('customerlist: ${e.toString()}');
+    return {};
+  }catch (e){
+    print('customerlist: ${e.toString()}');
+    return{};
   }
-  return signedCustomer;
+}
+Future<String> get_Curname(String? phN) async{
+  List<Customer> it = await customerListMaker();
+  String cur="";
+
+  try{
+    for (var p in it) {
+      if(p.phone==phN.toString()){
+        cur=p.name;
+        break;
+      }else{
+        continue;
+      }
+    }
+    return cur;
+  }on TypeError catch(e){
+    print('getcurname: ${e.toString()}');
+    return '';
+  }catch (e){
+    print('getcurname: ${e.toString()}');
+    return '';
+  }
 }
 
+void updater() async{
+  try{
+    String curname = await get_Curname(FirebaseAuth.instance.currentUser?.phoneNumber);
+    FirebaseAuth.instance.currentUser?.updateDisplayName(curname);
+  }on TypeError catch (e){
+    print('updater: ${e.toString()}');
+  }catch (e){
+    print('updater: ${e.toString()}');
+  }
+}
 
 
 

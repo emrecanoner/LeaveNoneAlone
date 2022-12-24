@@ -60,79 +60,84 @@ class _userChatState extends State<userChat> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userChatList(),
+                  builder: (context) => HomePage(),
                 )
               );
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            FirebaseAnimatedList(
-              query: messageQueryRef,
-              itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                Animation<double> animation, int index) {
-                  Map message = snapshot.value as Map;
-                  message['key'] = snapshot.key;
-                  return chatListItem(message: message);
-              },
-            ),
-            buildChatFormField(),
-            DefaultButton(
-              text: 'Send', 
-              press: (){
-                Map Text_Chat = {
-                  'sender': FirebaseAuth.instance.currentUser?.displayName,
-                  'text': ChatTextController,
-                  'timestamp': DateTime.now()
-                };
-                messagedbRef.push().set(Text_Chat).then((value) => 
-                  setState(() {})
-                );
-              }
-            ),
-          ],
+      body: Container(
+        height: 500,
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              FutureBuilder(
+                future: getUserMessages(widget.messageKey),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return chatListItem(context, snapshot);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }
+              ),
+              buildChatFormField(),
+              DefaultButton(
+                text: 'Send', 
+                press: (){
+                  Map Text_Chat = {
+                    'sender': FirebaseAuth.instance.currentUser?.displayName,
+                    'text': ChatTextController,
+                    'timestamp': DateTime.now()
+                  };
+                  messagedbRef.push().set(Text_Chat).then((value) => 
+                    setState(() {})
+                  );
+                }
+              ),
+            ],
+          ), 
         ),
       ),
     );
   }
 
-  Widget chatListItem({required Map message}) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(10),
-      height: 110,
-      color: Colors.amberAccent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            message['sender'],
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            message['text'],
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            message['timestamp'],
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
-          ),
-        ],
-      ),
+  Widget chatListItem(context, snapshot) {
+    List<Message> messages = snapshot.data as List<Message>;
+    return ListView.builder(
+        itemCount: messages.length,
+        itemBuilder: (BuildContext context, int index){
+          Message message = messages[index];
+          return Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
+            height: 110,
+            color: Colors.amberAccent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message.message_sender,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  message.message_text,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                ),
+                Text(
+                  message.message_timestamp,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                ),
+              ],
+            ),
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
     );
   }
+  
   TextFormField buildChatFormField(){
     return TextFormField(
       keyboardType: TextInputType.text,

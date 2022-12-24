@@ -22,31 +22,48 @@ class membersList extends StatefulWidget {
 }
 
 class _membersListState extends State<membersList> {
-  Query friendQueryRef = FirebaseDatabase.instance.ref().child('Friends').child(FirebaseAuth.instance.currentUser!.uid);
   DatabaseReference frienddbRef = FirebaseDatabase.instance.ref().child('Friends').child(FirebaseAuth.instance.currentUser!.uid);
   DatabaseReference chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);  
-  String? friend_uid;
   String? friendname;
   List<String> group_members_selected = [];
   final GroupNameController = TextEditingController();
+
+  void initState(){
+    super.initState();
+    getChat();
+  }
+
+  void getChat() async{
+    DataSnapshot snapshot = await frienddbRef.get();
+    if(snapshot.exists){
+      print('Friends exists');
+    }else{
+      print('No chats');
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          buildGroupNameFormField(),
-          FirebaseAnimatedList(
-            query: friendQueryRef,
-            itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              Animation<double> animation, int index) {
-                Map friend = snapshot.value as Map;
-                friend['key'] = snapshot.key;
-                return friendsListItem(friend: friend);
-            },
-          ),
-          buildContinueButton(),
-        ]
+    return Container(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            buildGroupNameFormField(),
+            FutureBuilder(
+              future: getUserFriends(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return friendsListItem(context, snapshot);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }
+            ),
+            buildContinueButton(),
+          ]
+        ),
       ),
     );
   }
@@ -98,8 +115,8 @@ class _membersListState extends State<membersList> {
               'chat_members': group_members_selected
             };
             chatdbRef.push().set(group_chat);
-            String group_chat_uid = await getChatUIDDetails(FirebaseAuth.instance.currentUser!.uid);
-            Navigator.pushReplacement(
+            String group_chat_uid = await getChatUID(FirebaseAuth.instance.currentUser!.uid);
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => userChat(messageKey: group_chat_uid),
@@ -112,60 +129,70 @@ class _membersListState extends State<membersList> {
     );
   }
 
-  Widget friendsListItem({required Map friend}) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(10),
-      height: 110,
-      color: Colors.amberAccent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            friend['friend_name'],
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () async{
-                  if(widget.boolKey){
-                    friendname = friend['friend_name'];
-                    addMembersForChat();
-                  }else{
-                    Map<dynamic,dynamic> single_chat = {
-                      'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
-                      'chat_name': friend['friend_name'],
-                      'chat_members': friend['friend_name']
-                    };
-                    chatdbRef.push().set(single_chat);
-                    String single_chat_uid = await getChatUIDDetails(FirebaseAuth.instance.currentUser!.uid);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => userChat(messageKey: single_chat_uid),
-                      )
-                    );
-                  }
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit,
-                      color: Theme.of(context).primaryColor,
+  Widget friendsListItem(context, snapshot) {
+    List<Friends> friends = snapshot.data as List<Friends>;
+    return ListView.builder(
+        itemCount: friends.length,
+        itemBuilder: (BuildContext context, int index){
+          Friends friend = friends[index];
+          return Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
+            height: 110,
+            color: Colors.amberAccent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                friend.friend_name,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    GestureDetector(
+                       onTap: () async{
+                        if(widget.boolKey){
+                          friendname = friend.friend_name;
+                          addMembersForChat();
+                        }else{
+                          Map<dynamic,dynamic> single_chat = {
+                            'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
+                            'chat_name': friend.friend_name,
+                            'chat_members': friend.friend_name,
+                          };
+                          chatdbRef.push().set(single_chat);
+                          String single_chat_uid = await getChatUID(FirebaseAuth.instance.currentUser!.uid);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => userChat(messageKey: single_chat_uid),
+                            )
+                          );
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.edit,
+                            color: Theme.of(context).primaryColor,
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              )
-            ],
-          )
-        ],
-      ),
+              ],
+            ),
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
     );
   }
+ 
 
   void addMembersForChat(){
     setState(() {
