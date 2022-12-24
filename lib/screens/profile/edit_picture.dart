@@ -18,7 +18,9 @@ import 'dart:typed_data';
 import 'package:base_x/base_x.dart';
 
 class EditProfilePicture extends StatefulWidget {
-  const EditProfilePicture({Key? key}) : super(key: key);
+  const EditProfilePicture({Key? key, required this.userKey}) : super(key: key);
+
+  final String userKey;
 
   @override
   State<EditProfilePicture> createState() => _EditProfilePictureState();
@@ -59,7 +61,7 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
                 SizedBox(
                   height: gHeight / 10,
                 ),
-                EditPicture(),
+                EditPicture(userKey: widget.userKey),
               ],
             ),
           ),
@@ -70,7 +72,9 @@ class _EditProfilePictureState extends State<EditProfilePicture> {
 }
 
 class EditPicture extends StatefulWidget {
-  const EditPicture({super.key});
+  const EditPicture({Key? key, required this.userKey}) : super(key: key);
+
+  final String userKey;
 
   @override
   State<EditPicture> createState() => _EditPictureState();

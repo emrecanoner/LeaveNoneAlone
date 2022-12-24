@@ -206,6 +206,7 @@ class _SignUpState extends State<SignUp> {
                         'surname': surname.text,
                         'city': selectedCity,
                         'age': age.text,
+                        'photoURL':'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c'
                       };
 
                       dbRef.push().set(users);

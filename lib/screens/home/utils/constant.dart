@@ -8,7 +8,14 @@ import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
+//<<<<<<< HEAD
 import 'package:lna/utils/custom_snackbar.dart';
+//=======
+import 'package:lna/utils/default_button.dart';
+
+import '../../chats/user_chatlist.dart';
+import '../../friends/search_Users_list.dart';
+//>>>>>>> b582d40db834b6623c8c8b9c678348847d8efa4a
 
 List<Widget> pageList = [
   CreateEvent(),
@@ -262,6 +269,30 @@ class HomePageEventIcon extends StatelessWidget {
                 style: TextStyle(fontSize: 30),
               ),
             ),
+            SizedBox(
+              height: gHeight / 50,
+            ),
+            DefaultButton(
+                text: 'Chatlist',
+                press: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => userChatList(),
+                      ));
+                }),
+            SizedBox(
+              height: gHeight / 50,
+            ),
+            DefaultButton(
+                text: 'Add friend',
+                press: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => searchLNAUser(),
+                      ));
+                }),
           ],
         ),
       ),
