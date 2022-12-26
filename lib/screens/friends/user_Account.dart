@@ -23,6 +23,7 @@ class userAccount extends StatefulWidget {
 
 class _userAccountState extends State<userAccount> {
   late String photo;
+  bool FriendsAlready = true;
 
   late DatabaseReference FriendBbref;
 
@@ -30,6 +31,16 @@ class _userAccountState extends State<userAccount> {
   void initState() {
     super.initState();
     FriendBbref = FirebaseDatabase.instance.ref().child('Friends/${FirebaseAuth.instance.currentUser!.uid}');
+    getFriends();
+  }
+
+  void getFriends()async{
+    List<Friends> CurrFriends = await getUserFriends();
+    for (var element in CurrFriends){
+      if(element.friend_phone== widget.phoneKey){
+        FriendsAlready = false;
+      }
+    }
   }
 
   @override
@@ -230,33 +241,44 @@ class _userAccountState extends State<userAccount> {
                     color: Colors.black)),
           ),
           SizedBox(height: 80),
-          DefaultButton(
-            text: 'Add friend', 
-            press: () async{
-              Map<String, String> friendg = {
-                'friend_auth_uid': FriendSearched['auth_uid'],
-                'friend_name': FriendSearched['name'],
-                'friend_phone': FriendSearched['phone_number'],
-                'friend_photo': FriendSearched['photoURL']
-              };
-              await FriendBbref.push().set(friendg);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                builder: (_) =>SplashScreenFAnimated(),
-                )
-              );
-              Fluttertoast.showToast(
-                msg: "Friend Request sent",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIosWeb: 1,
-                backgroundColor: buttonColor,
-                textColor: Colors.white,
-                fontSize: 16,
-              );
-            }
+          Visibility(
+            child: DefaultButton(
+              text: 'Add friend', 
+              press: () async{
+                Map<String, String> friendg = {
+                  'friend_auth_uid': FriendSearched['auth_uid'],
+                  'friend_name': FriendSearched['name'],
+                  'friend_phone': FriendSearched['phone_number'],
+                  'friend_photo': FriendSearched['photoURL']
+                };
+                FriendBbref.push().set(friendg);
+                var Frdb = FirebaseDatabase.instance.ref().child('Friends').child(FriendSearched['auth_uid']);
+                Map CurruserFriend = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
+                Map<String, String> friendh = {
+                  'friend_auth_uid': CurruserFriend['auth_uid'],
+                  'friend_name': CurruserFriend['name'],
+                  'friend_phone': CurruserFriend['phone_number'],
+                  'friend_photo': CurruserFriend['photoURL']
+                };
+                await Frdb.push().set(friendh);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (_) =>SplashScreenFAnimated(),
+                  )
+                );
+                Fluttertoast.showToast(
+                  msg: "Friend Request sent",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: buttonColor,
+                  textColor: Colors.white,
+                  fontSize: 16,
+                );
+              }
+            ),
+            visible: FriendsAlready,
           ),
 
           /* Row(
