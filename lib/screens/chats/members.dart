@@ -25,8 +25,15 @@ class _membersListState extends State<membersList> {
   DatabaseReference frienddbRef = FirebaseDatabase.instance.ref().child('Friends').child(FirebaseAuth.instance.currentUser!.uid);
   DatabaseReference chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);  
   String? friendname;
+  String? friendphone;
+  String? friendphoto;
+  String? friendauth_id;
   List<String> group_members_selected = [];
   final GroupNameController = TextEditingController();
+  List<Map> chat_MEM= [];
+  String photo =
+    'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+
 
   void initState(){
     super.initState();
@@ -122,9 +129,10 @@ class _membersListState extends State<membersList> {
             );
           }else{
             Map<dynamic,dynamic> group_chat = {
-              'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
               'chat_name': GroupNameController.text,
-              'chat_members': group_members_selected
+              'chat_members': chat_MEM,
+              'chat_photo': photo,
+              'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
             };
             chatdbRef.push().set(group_chat);
             String group_chat_uid = await getChatUID(FirebaseAuth.instance.currentUser!.uid);
@@ -153,19 +161,28 @@ class _membersListState extends State<membersList> {
               backgroundColor: Colors.yellow,
             ),
             title: Text(friend.friend_name),
-            subtitle: Text(friend.friend_phone),
+            subtitle: Text('+90${friend.friend_phone}'),
             onTap: () async{
               if(widget.boolKey){
                 friendname = friend.friend_name;
+                friendphoto = friend.friend_photo;
+                friendauth_id = friend.friend_auth_uid;
                 addMembersForChat();
               }else{
                 String userid = FirebaseAuth.instance.currentUser!.uid;
                 String single_chat_uid = await getChatUID(userid);
                 if(single_chat_uid==''){
-                  group_members_selected.add(friend.friend_name);
+                  Map GroupUserDetail ={
+                    'member_name': friend.friend_name,
+                    'member_phone': friend.friend_phone,
+                    'member_photo': friend.friend_photo,
+                    'member_authid': friend.friend_auth_uid,
+                  };
+                  chat_MEM.add(GroupUserDetail);
                   Map<dynamic,dynamic> single_chat = {
-                    'chat_members': group_members_selected,
+                    'chat_members': chat_MEM,
                     'chat_name': friend.friend_name,
+                    'chat_photo': friend.friend_photo,
                     'user_uid': userid,
                   };
                   chatdbRef.push().set(single_chat);
@@ -186,19 +203,19 @@ class _membersListState extends State<membersList> {
                 }
               }
             },
-            trailing: Checkbox(
-              value: snapshot.data[index].selected,
-              onChanged: (bool? value) {
-                setState(() {
-                  snapshot.data[index].selected = value;
-                  if (value!) {
-                    group_members_selected.add(friend.friend_name);
-                  } else {
-                    group_members_selected.remove(friend.friend_name);
-                  }
-                });
-              },
-            ),
+            // trailing: Checkbox(
+            //   value: snapshot.data[index].selected,
+            //   onChanged: (bool? value) {
+            //     setState(() {
+            //       snapshot.data[index].selected = value;
+            //       if (value!) {
+            //         group_members_selected.add(friend.friend_name);
+            //       } else {
+            //         group_members_selected.remove(friend.friend_name);
+            //       }
+            //     });
+            //   },
+            // ),
           );
         },
         shrinkWrap: true,
@@ -210,10 +227,18 @@ class _membersListState extends State<membersList> {
 
   void addMembersForChat(){
     setState(() {
+      Map GroupUserDetail ={
+        'member_name': friendname,
+        'member_phone': friendphone,
+        'member_photo': friendphoto,
+        'member_authid': friendauth_id
+      };
       if (group_members_selected.contains(friendname.toString())) {
         group_members_selected.remove(friendname.toString());
+        chat_MEM.remove(GroupUserDetail);
       } else {
         group_members_selected.add(friendname.toString());
+        chat_MEM.add(GroupUserDetail);
       }
     });
   }

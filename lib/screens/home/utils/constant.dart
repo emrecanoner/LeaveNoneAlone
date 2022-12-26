@@ -22,7 +22,8 @@ import '../../friends/search_Users_list.dart';
 List<Widget> pageList = [
   CreateEvent(),
   HomePageHomeIcon(),
-  userChatList(),
+  searchLNAUserBar(),
+  // userChatList(),
   //membersList(),
 ];
 

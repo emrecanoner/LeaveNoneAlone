@@ -234,8 +234,10 @@ class _userAccountState extends State<userAccount> {
             text: 'Add friend', 
             press: () async{
               Map<String, String> friendg = {
+                'friend_auth_uid': FriendSearched['auth_uid'],
                 'friend_name': FriendSearched['name'],
                 'friend_phone': FriendSearched['phone_number'],
+                'friend_photo': FriendSearched['photoURL']
               };
               await FriendBbref.push().set(friendg);
 

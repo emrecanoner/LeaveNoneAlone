@@ -30,11 +30,12 @@ final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
 
 class Friends{
-  final String friend_uid;
+  final String friend_auth_uid;
   final String friend_name;
   final String friend_phone;
+  final String friend_photo;
 
-  Friends(this.friend_uid,this.friend_name,this.friend_phone);
+  Friends(this.friend_auth_uid,this.friend_name,this.friend_phone,this.friend_photo);
 }
 
 Future<List<Friends>> getUserFriends() async{
@@ -45,7 +46,7 @@ Future<List<Friends>> getUserFriends() async{
     if(snapshot.exists){
       Map data = snapshot.value as Map;
       data.forEach((key, value) {
-        friendsInfo.add(Friends(key,value['friend_name'],value['friend_phone']));
+        friendsInfo.add(Friends(value['friend_auth_uid'],value['friend_name'],value['friend_phone'],value['friend_photo']));
       });
       return friendsInfo;
     }else{
@@ -62,9 +63,10 @@ Future<List<Friends>> getUserFriends() async{
 class Chat{
   final String chat_uid;
   final String chat_name;
+  final String chat_photo;
   final String user_id;
   
-  Chat(this.chat_uid,this.chat_name,this.user_id);
+  Chat(this.chat_uid,this.chat_name,this.chat_photo,this.user_id);
 }
 Future<String> getChatUID(String userUID) async{
   List<Chat> chat = await getUserChats();
@@ -96,7 +98,7 @@ Future<List<Chat>> getUserChats() async{
     if(snapshot.exists){
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
-        chatInfo.add(Chat(key, value['chat_name'], value['user_uid']));
+        chatInfo.add(Chat(key, value['chat_name'], value['chat_photo'],value['user_uid']));
       });
       return chatInfo;
     }else{
@@ -140,12 +142,12 @@ Future<List<Message>> getUserMessages(String chatKey) async {
       for (var entry in chatData.entries) {
         var chatKeys = entry.key;
         // Get the message data
-        if(chatKeys=='user_uid'||chatKeys=='chat_name'||chatKeys=='chat_members'){
+        if(chatKeys=='user_uid'||chatKeys=='chat_name'||chatKeys=='chat_members'||chatKeys=='chat_photo'){
           continue;
           // Do something with the message data
         }else{
           Map<dynamic, dynamic> messageData = entry.value;
-          messageInfo.add(Message(messageData['sender'], messageData['text'], messageData['timestamp']));
+          messageInfo.add(Message(messageData['sender'],messageData['text'], messageData['timestamp']));
         }
       }
       messageInfo.sort((a, b) => a.message_timestamp.compareTo(b.message_timestamp));
@@ -172,8 +174,9 @@ class Customer {
   final String age;
   final String surname;
   final String photoURL;
+  final String auth_uid;
 
-  Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname,this.photoURL);
+  Customer(this.uid,this.name, this.phone, this.city, this.age, this.surname,this.photoURL, this.auth_uid);
 }
 
 
@@ -186,7 +189,7 @@ Future<List<Customer>> customerListMaker () async {
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
         customerList.add(Customer(key,value['name'], value['phone_number'], value['city'],
-            value['age'], value['surname'],value['photoURL']));
+            value['age'], value['surname'],value['photoURL'],value['auth_uid']));
        });
       return customerList;  
     }else{
@@ -217,6 +220,7 @@ Future<Map<dynamic, dynamic>> customerAccountDetails(String? phoneNum) async{
           'surname': element.surname,
           'photoURL': element.photoURL,
           'uid': element.uid,
+          'auth_uid':element.auth_uid,
         };
         break;
       }else{
@@ -262,6 +266,10 @@ void updater() async{
     String curphoto = CurrUser['photoURL'];
     FirebaseAuth.instance.currentUser?.updateDisplayName(curname);
     FirebaseAuth.instance.currentUser?.updatePhotoURL(curphoto);
+    DatabaseReference AuthRef = FirebaseDatabase.instance.ref().child('Users').child('${CurrUser['uid']}');
+    AuthRef.update({
+      'auth_uid': FirebaseAuth.instance.currentUser!.uid
+    });
   }on TypeError catch (e){
     print('updater: ${e.toString()}');
   }catch (e){

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/chats/user_chatlist.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
 import 'package:lna/screens/friends/user_Account.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
@@ -83,6 +84,18 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
               ),
               buildUSERSLNAList(),
               SizedBox(height: gHeight / 40),
+              FloatingActionButton(
+                child: Icon(Icons.message_sharp),
+                backgroundColor: Color(0xffffaa17),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (_) => userChatList(),
+                    )
+                  );
+                },
+              )
             ]
           ),
         ),

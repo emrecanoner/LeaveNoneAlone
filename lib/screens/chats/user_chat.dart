@@ -25,6 +25,7 @@ class _userChatState extends State<userChat> {
   late String chat_NAME;
 
   late DatabaseReference chatdbRef;
+  DatabaseReference ChtdbRef = FirebaseDatabase.instance.ref().child('Chats');
 
   final ChatTextController = TextEditingController();
 
@@ -103,7 +104,7 @@ class _userChatState extends State<userChat> {
               buildChatFormField(),
               DefaultButton(
                 text: 'Send', 
-                press: (){
+                press: () async{
                   String formattedTime = "${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}";
                   String formattedDateTime = "${DateTime.now().day}/${DateTime.now().month} ${formattedTime}";
                   Map Text_Chat = {
@@ -112,6 +113,36 @@ class _userChatState extends State<userChat> {
                     'timestamp': formattedDateTime,
                   };
                   chatdbRef.push().set(Text_Chat);
+                  final snap = await chatdbRef.get();
+                  if(snap.exists){
+                    Map<Object?, Object?> data = snap.value as Map<Object?, Object?>;
+                    data.forEach((key, value) {
+                      if(key=='chat_members'){
+                        if (value is List) {
+                          List<Object?> objList = value as List<Object?>;
+                          objList.forEach((obj) {
+                            if(obj is Map){
+                              Map map = obj as Map;
+                              map.forEach((key,value) async {
+                                if(key=='member_authid'){
+                                  String valueKey = value;
+                                  var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
+                                  DataSnapshot sappy = await chatdbRef.get();
+                                  await DestRef.set(data);
+                                }
+                              });
+                            }
+                          });
+                          
+                        } else {
+                          // value is not a Map, so do something else
+                          // ...
+                        }
+                      }
+                    });
+                    }else{
+                    print('no data');
+                  }
                   setState(() {
                     ChatTextController.clear();
                   });
@@ -191,10 +222,6 @@ class _userChatState extends State<userChat> {
         labelStyle: TextStyle(color: iconColor),
         hintText: "Enter your message",
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(
-          Icons.account_circle,
-          color: buttonColor,
-        ),
       ),
     );
   }
