@@ -107,11 +107,13 @@ class _EditPictureState extends State<EditPicture> {
                 DefaultButton(
                     text: 'Upload',
                     press: () async {
-                      var i;
                       Uint8List? s = _image;
                       if (s != null) {
                         String url = await uploadImage(s);
                         FirebaseAuth.instance.currentUser?.updatePhotoURL(url);
+                        FirebaseDatabase.instance.ref().child('Users/${widget.userKey}').update({
+                          'photoURL': url
+                        });
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -193,12 +195,34 @@ class _EditPictureState extends State<EditPicture> {
   }
 
   void getImage() async {
-    Uint8List pickedFile = await pickImage(ImageSource.gallery);
+    try{
+        Uint8List pickedFile = await pickImage(ImageSource.gallery);
 
-    setState(() {
-      _image = pickedFile;
-      _img = pickedFile;
-    });
+        setState(() {
+          _image = pickedFile;
+          _img = pickedFile;
+        });
+      }on TypeError catch (e){
+        if(e.toString() == "type 'Null' is not a subtype of type 'Uint8list'"){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: CustomSnackBarContent(
+                errorMessage:
+                    "No image was selected"),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ));
+        }
+      } catch (e){
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: CustomSnackBarContent(
+              errorMessage:
+                  "Invalid Image.Select again please"),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ));
+      }
   }
 
   Future<String> uploadImage(Uint8List file) async {

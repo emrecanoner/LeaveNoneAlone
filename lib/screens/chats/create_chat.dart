@@ -29,7 +29,7 @@ class _createChatState extends State<createChat> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacement(
+              Navigator.pop(
                 context,
                 MaterialPageRoute(
                   builder: (context) => userChatList(),
@@ -45,7 +45,7 @@ class _createChatState extends State<createChat> {
               text: 'Create Group', 
               press: (){
                 boolGroupKey = true;
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                   builder: (_) => createGroupChat(boolKey: boolGroupKey),
