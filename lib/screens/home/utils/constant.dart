@@ -23,10 +23,9 @@ List<Widget> pageList = [
   CreateEvent(),
   HomePageHomeIcon(),
   userChatList(),
-  //membersList(),
 ];
 
-int pageIndex = 2;
+int pageIndex = 1;
 
 DateTime selectedDateAtBar = DateTime.now();
 
