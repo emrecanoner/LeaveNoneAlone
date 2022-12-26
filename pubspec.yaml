@@ -69,6 +69,9 @@ dependencies:
   date_picker_timeline: ^1.2.3
   google_fonts: ^3.0.1
   base_x: ^2.0.0
+  open_street_map_search_and_pick: ^0.0.15
+  geolocator: ^8.2.0
+  geocoding: ^2.0.4
 
 
 dev_dependencies:

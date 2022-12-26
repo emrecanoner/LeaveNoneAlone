@@ -45,6 +45,9 @@ class InputField extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    minLines: 1,
+                    maxLines: 20,
                     readOnly: widget == null ? false : true,
                     cursorColor: buttonColor,
                     autofocus: false,
