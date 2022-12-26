@@ -22,81 +22,102 @@ class userChat extends StatefulWidget {
 }
 
 class _userChatState extends State<userChat> {
-  String? chat_NAME;
+  late String chat_NAME;
 
   late DatabaseReference chatdbRef;
-  late Query messageQueryRef;
-  late DatabaseReference messagedbRef;
 
   final ChatTextController = TextEditingController();
 
+  String photo =
+      'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+
+
   void initState() {
     super.initState();
-    chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);
-    messageQueryRef = FirebaseDatabase.instance.ref().child('Chats').child('${FirebaseAuth.instance.currentUser!.uid}/${widget.messageKey}');
-    getUserData();
+    chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid).child(widget.messageKey);
   }
 
-  void getUserData() async {
-    messagedbRef = await chatdbRef.child(widget.messageKey);
-    DataSnapshot chatsnapshot = await messagedbRef.get();
+  Future<String> getUserData() async {
+    final chatsnapshot = await chatdbRef.get();
 
-    Map chat_MAP = chatsnapshot.value as Map;
+    if(chatsnapshot.exists){
+      Map chat_MAP = chatsnapshot.value as Map;
  
-    chat_NAME = chat_MAP['chat_name'];
+      chat_NAME = chat_MAP['chat_name'];
+
+      return chat_NAME;
+    }else{
+      print('no chat_name');
+      return '';
+    }
   }
 
-  void dispose() {
-    super.dispose();
+
+  Widget ChatTitle(context,snapshot){
+    String chTitle = snapshot.data;
+    return Text(
+      chTitle
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${chat_NAME.toString()}'),
+          title: FutureBuilder(
+            future: getUserData(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return ChatTitle(context, snapshot);
+              } else {
+                return Text('Loading...');
+              }
+            },
+          ),
         leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => userChatList(),
                 )
               );
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
       body: Container(
-        height: 500,
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              FutureBuilder(
-                future: getUserMessages(widget.messageKey),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return chatListItem(context, snapshot);
-                  } else {
-                    return Center(child: CircularProgressIndicator());
+        child: Column(
+          children: <Widget>[
+              Expanded(
+                child: FutureBuilder(
+                  future: getUserMessages(widget.messageKey),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return chatListItem(context, snapshot);
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
                   }
-                }
+                ), 
               ),
               buildChatFormField(),
               DefaultButton(
                 text: 'Send', 
                 press: (){
+                  String formattedTime = "${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}";
+                  String formattedDateTime = "${DateTime.now().day}/${DateTime.now().month} ${formattedTime}";
                   Map Text_Chat = {
                     'sender': FirebaseAuth.instance.currentUser?.displayName,
-                    'text': ChatTextController,
-                    'timestamp': DateTime.now()
+                    'text': ChatTextController.text,
+                    'timestamp': formattedDateTime,
                   };
-                  messagedbRef.push().set(Text_Chat).then((value) => 
-                    setState(() {})
-                  );
+                  chatdbRef.push().set(Text_Chat);
+                  setState(() {
+                    ChatTextController.clear();
+                  });
                 }
               ),
             ],
-          ), 
         ),
       ),
     );
@@ -109,34 +130,53 @@ class _userChatState extends State<userChat> {
         itemBuilder: (BuildContext context, int index){
           Message message = messages[index];
           return Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(10),
-            height: 110,
-            color: Colors.amberAccent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  message.message_sender,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.yellow,
+                  ),
                 ),
-                Text(
-                  message.message_text,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        message.message_sender,
+                        style:(
+                          (FirebaseAuth.instance.currentUser!.displayName==message.message_sender)
+                            ?TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.deepOrange)
+                            :TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: Text(
+                          message.message_text,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  message.message_timestamp,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    message.message_timestamp,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
                 ),
               ],
             ),
           );
         },
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
     );
   }
+
   
   TextFormField buildChatFormField(){
     return TextFormField(

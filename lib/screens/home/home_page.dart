@@ -22,10 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
-    if (FirebaseAuth.instance.currentUser?.displayName == null ||
-        FirebaseAuth.instance.currentUser?.displayName == "") {
-      WidgetsBinding.instance.addPostFrameCallback((_) => updater());
-    }
+    updater();
   }
 
   Widget page = MainPage();

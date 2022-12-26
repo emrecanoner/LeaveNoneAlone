@@ -44,45 +44,36 @@ class _userChatListState extends State<userChatList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ));
-            },
-            icon: Icon(LineAwesomeIcons.arrow_left)),
+        title: Text('Chats'),
       ),
-      body: Container(
-        height: 500,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              DefaultButton(
-                text: 'Create new chat', 
-                press: (){
+            body: Container(
+        child: Column(
+          children: <Widget>[
+              Expanded(
+                child: FutureBuilder(
+                  future: getUserChats(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return chatsListItem(context, snapshot);
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }
+                ),
+              ),
+              FloatingActionButton(
+                child: Icon(Icons.message_sharp),
+                backgroundColor: Color(0xffffaa17),
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                     builder: (_) => createChat(),
                     )
                   );
-                }
-              ),
-              FutureBuilder(
-                future: getUserChats(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return chatsListItem(context, snapshot);
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }
-              ),
+                },
+              )
             ]
-          ),
         ),
       ),
     );
@@ -93,50 +84,23 @@ class _userChatListState extends State<userChatList> {
       return ListView.builder(
           itemCount: chats.length,
           itemBuilder: (BuildContext context, int index){
-            Chat chat = chats[index];
-            return Container(
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(10),
-              height: 110,
-              color: Colors.amberAccent,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                  chat.chat_name,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => userChat(messageKey: chat.chat_uid)
-                            ),        
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.edit,
-                              color: Theme.of(context).primaryColor,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          Chat chat = chats[index];
+          return ListTile(
+            leading: CircleAvatar(
+              radius: 25.0,
+              backgroundColor: Colors.yellow,
+            ),
+            title: Text(chat.chat_name),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => userChat(messageKey: chat.chat_uid)
+                ),        
+              );
+            },
+          );
+        }
       );
     }on NullThrownError catch (e){
       print(e.toString());

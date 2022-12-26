@@ -62,6 +62,7 @@ class _membersListState extends State<membersList> {
               }
             ),
             buildContinueButton(),
+            Text('${group_members_selected.length}'),
           ]
         ),
       ),
@@ -108,6 +109,17 @@ class _membersListState extends State<membersList> {
                 elevation: 0,
               ),
             );
+          }if(group_members_selected.length<=1){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: CustomSnackBarContent(
+                  errorMessage:
+                    'The group should be more than one person'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+              ),
+            );
           }else{
             Map<dynamic,dynamic> group_chat = {
               'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
@@ -135,56 +147,57 @@ class _membersListState extends State<membersList> {
         itemCount: friends.length,
         itemBuilder: (BuildContext context, int index){
           Friends friend = friends[index];
-          return Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(10),
-            height: 110,
-            color: Colors.amberAccent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                friend.friend_name,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    GestureDetector(
-                       onTap: () async{
-                        if(widget.boolKey){
-                          friendname = friend.friend_name;
-                          addMembersForChat();
-                        }else{
-                          Map<dynamic,dynamic> single_chat = {
-                            'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
-                            'chat_name': friend.friend_name,
-                            'chat_members': friend.friend_name,
-                          };
-                          chatdbRef.push().set(single_chat);
-                          String single_chat_uid = await getChatUID(FirebaseAuth.instance.currentUser!.uid);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => userChat(messageKey: single_chat_uid),
-                            )
-                          );
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.edit,
-                            color: Theme.of(context).primaryColor,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          return ListTile(
+            leading: CircleAvatar(
+              radius: 25.0,
+              backgroundColor: Colors.yellow,
+            ),
+            title: Text(friend.friend_name),
+            subtitle: Text(friend.friend_phone),
+            onTap: () async{
+              if(widget.boolKey){
+                friendname = friend.friend_name;
+                addMembersForChat();
+              }else{
+                String userid = FirebaseAuth.instance.currentUser!.uid;
+                String single_chat_uid = await getChatUID(userid);
+                if(single_chat_uid==''){
+                  group_members_selected.add(friend.friend_name);
+                  Map<dynamic,dynamic> single_chat = {
+                    'chat_members': group_members_selected,
+                    'chat_name': friend.friend_name,
+                    'user_uid': userid,
+                  };
+                  chatdbRef.push().set(single_chat);
+                  String new_single_chat_uid = await getChatUID(userid);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => userChat(messageKey: new_single_chat_uid),
+                    )
+                  );
+                }else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => userChat(messageKey: single_chat_uid),
+                    )
+                  );
+                }
+              }
+            },
+            trailing: Checkbox(
+              value: snapshot.data[index].selected,
+              onChanged: (bool? value) {
+                setState(() {
+                  snapshot.data[index].selected = value;
+                  if (value!) {
+                    group_members_selected.add(friend.friend_name);
+                  } else {
+                    group_members_selected.remove(friend.friend_name);
+                  }
+                });
+              },
             ),
           );
         },
@@ -192,6 +205,7 @@ class _membersListState extends State<membersList> {
         physics: NeverScrollableScrollPhysics(),
     );
   }
+  
  
 
   void addMembersForChat(){

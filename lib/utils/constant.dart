@@ -61,11 +61,10 @@ Future<List<Friends>> getUserFriends() async{
 }
 class Chat{
   final String chat_uid;
-  final String user_id;
   final String chat_name;
-  final List chat_people;
-
-  Chat(this.chat_uid,this.user_id,this.chat_name,this.chat_people);
+  final String user_id;
+  
+  Chat(this.chat_uid,this.chat_name,this.user_id);
 }
 Future<String> getChatUID(String userUID) async{
   List<Chat> chat = await getUserChats();
@@ -97,7 +96,7 @@ Future<List<Chat>> getUserChats() async{
     if(snapshot.exists){
       Map<dynamic, dynamic> data = snapshot.value as Map;
       data.forEach((key, value) {
-        chatInfo.add(Chat(key,value['user_id'], value['chat_name'], value['chat_members']));
+        chatInfo.add(Chat(key, value['chat_name'], value['user_uid']));
       });
       return chatInfo;
     }else{
@@ -141,16 +140,15 @@ Future<List<Message>> getUserMessages(String chatKey) async {
       for (var entry in chatData.entries) {
         var chatKeys = entry.key;
         // Get the message data
-        if(chatKeys!='user_id'||chatKeys!='chat_name'||chatKeys!='chat_members'){
-          Map<dynamic, dynamic> messageData = entry.value;
-          messageData.forEach((key, value) {
-            messageInfo.add(Message(messageData['sender'], messageData['text'], messageData['timestamp']));
-          });
+        if(chatKeys=='user_uid'||chatKeys=='chat_name'||chatKeys=='chat_members'){
+          continue;
           // Do something with the message data
         }else{
-          continue;
+          Map<dynamic, dynamic> messageData = entry.value;
+          messageInfo.add(Message(messageData['sender'], messageData['text'], messageData['timestamp']));
         }
       }
+      messageInfo.sort((a, b) => a.message_timestamp.compareTo(b.message_timestamp));
       return messageInfo;
     } else {
       return [];
@@ -259,8 +257,11 @@ Future<String> get_Curname(String? phN) async{
 
 void updater() async{
   try{
-    String curname = await get_Curname(FirebaseAuth.instance.currentUser?.phoneNumber);
+    Map CurrUser = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber!.substring(3));
+    String curname = CurrUser['name'];
+    String curphoto = CurrUser['photoURL'];
     FirebaseAuth.instance.currentUser?.updateDisplayName(curname);
+    FirebaseAuth.instance.currentUser?.updatePhotoURL(curphoto);
   }on TypeError catch (e){
     print('updater: ${e.toString()}');
   }catch (e){

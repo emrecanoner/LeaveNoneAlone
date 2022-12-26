@@ -22,10 +22,11 @@ import '../../friends/search_Users_list.dart';
 List<Widget> pageList = [
   CreateEvent(),
   HomePageHomeIcon(),
+  userChatList(),
   //membersList(),
 ];
 
-int pageIndex = 1;
+int pageIndex = 2;
 
 DateTime selectedDateAtBar = DateTime.now();
 
@@ -275,27 +276,27 @@ class HomePageEventIcon extends StatelessWidget {
             SizedBox(
               height: gHeight / 50,
             ),
-            DefaultButton(
-                text: 'Chatlist',
-                press: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => userChatList(),
-                      ));
-                }),
-            SizedBox(
-              height: gHeight / 50,
-            ),
-            DefaultButton(
-                text: 'Add friend',
-                press: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => searchLNAUserBar(),
-                      ));
-                }),
+            // DefaultButton(
+            //     text: 'Chatlist',
+            //     press: () {
+            //       Navigator.pushReplacement(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => userChatList(),
+            //           ));
+            //     }),
+            // SizedBox(
+            //   height: gHeight / 50,
+            // ),
+            // DefaultButton(
+            //     text: 'Add friend',
+            //     press: () {
+            //       Navigator.pushReplacement(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => searchLNAUserBar(),
+            //           ));
+            //     }),
           ],
         ),
       ),

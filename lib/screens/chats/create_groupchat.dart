@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/chats/create_chat.dart';
 import 'package:lna/screens/chats/members.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
@@ -27,10 +28,10 @@ class _createGroupChatState extends State<createGroupChat> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pushReplacement(
+              Navigator.pop(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => userChatList(),
+                    builder: (context) => createChat(),
                   ));
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),
