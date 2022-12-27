@@ -38,26 +38,39 @@ class _userChatState extends State<userChat> {
     chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid).child(widget.messageKey);
   }
 
-  Future<String> getUserData() async {
+  Future<Map> getUserData() async {
     final chatsnapshot = await chatdbRef.get();
 
     if(chatsnapshot.exists){
       Map chat_MAP = chatsnapshot.value as Map;
+      Map chat_details = {
+        'chat_NAME': chat_MAP['chat_name'],
+        'chat_PHOTO': chat_MAP['chat_photo']
+      };
  
-      chat_NAME = chat_MAP['chat_name'];
 
-      return chat_NAME;
+      return chat_details;
     }else{
       print('no chat_name');
-      return '';
+      return {};
     }
   }
 
 
   Widget ChatTitle(context,snapshot){
-    String chTitle = snapshot.data;
-    return Text(
-      chTitle
+    Map chTitle = snapshot.data as Map;
+    return Column(
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: Image.network(
+            chTitle['chat_PHOTO'],
+            height: gHeight / 18,
+            width: gWidth / 9,
+          ),
+        ),
+        Text('${chTitle['chat_NAME']}'),
+      ],
     );
   }
 
@@ -80,7 +93,7 @@ class _userChatState extends State<userChat> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userChatList(),
+                  builder: (context) => HomePage(),
                 )
               );
             },
@@ -111,6 +124,7 @@ class _userChatState extends State<userChat> {
                     'sender': FirebaseAuth.instance.currentUser?.displayName,
                     'text': ChatTextController.text,
                     'timestamp': formattedDateTime,
+                    'sender_image': FirebaseAuth.instance.currentUser?.photoURL,
                   };
                   chatdbRef.push().set(Text_Chat);
                   final snap = await chatdbRef.get();
@@ -167,9 +181,13 @@ class _userChatState extends State<userChat> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(right: 10),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundColor: Colors.yellow,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      message.message_sender_image,
+                      height: gHeight / 18,
+                      width: gWidth / 9,
+                    ),
                   ),
                 ),
                 Expanded(

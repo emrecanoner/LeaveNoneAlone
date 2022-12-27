@@ -121,8 +121,9 @@ class Message{
   final String message_sender;
   final String message_text;
   final String message_timestamp;
+  final String message_sender_image;
 
-  Message(this.message_sender,this.message_text,this.message_timestamp);
+  Message(this.message_sender,this.message_text,this.message_timestamp, this.message_sender_image);
 }
 
 Future<List<Message>> getUserMessages(String chatKey) async {
@@ -147,7 +148,7 @@ Future<List<Message>> getUserMessages(String chatKey) async {
           // Do something with the message data
         }else{
           Map<dynamic, dynamic> messageData = entry.value;
-          messageInfo.add(Message(messageData['sender'],messageData['text'], messageData['timestamp']));
+          messageInfo.add(Message(messageData['sender'],messageData['text'], messageData['timestamp'],messageData['sender_image']));
         }
       }
       messageInfo.sort((a, b) => a.message_timestamp.compareTo(b.message_timestamp));

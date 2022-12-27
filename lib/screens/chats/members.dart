@@ -156,9 +156,13 @@ class _membersListState extends State<membersList> {
         itemBuilder: (BuildContext context, int index){
           Friends friend = friends[index];
           return ListTile(
-            leading: CircleAvatar(
-              radius: 25.0,
-              backgroundColor: Colors.yellow,
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.network(
+                friend.friend_photo,
+                height: gHeight / 18,
+                width: gWidth / 9,
+              ),
             ),
             title: Text(friend.friend_name),
             subtitle: Text('+90${friend.friend_phone}'),
@@ -183,7 +187,7 @@ class _membersListState extends State<membersList> {
                     'chat_members': chat_MEM,
                     'chat_name': friend.friend_name,
                     'chat_photo': friend.friend_photo,
-                    'user_uid': userid,
+                    'user_uid': friend.friend_auth_uid,
                   };
                   chatdbRef.push().set(single_chat);
                   String new_single_chat_uid = await getChatUID(userid);

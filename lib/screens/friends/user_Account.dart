@@ -53,7 +53,7 @@ class _userAccountState extends State<userAccount> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => searchLNAUserBar(),
+                    builder: (context) => HomePage(),
                   ));
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),

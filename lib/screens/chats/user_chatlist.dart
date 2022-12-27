@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/src/widgets/container.dart';
@@ -11,6 +12,8 @@ import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/screens/chats/create_chat.dart';
+import 'package:image/image.dart' as img;
+
 
 class userChatList extends StatefulWidget {
   const userChatList({
@@ -80,15 +83,21 @@ class _userChatListState extends State<userChatList> {
   }
   Widget chatsListItem(context, snapshot) {
     List<Chat> chats = snapshot.data as List<Chat>;
+
     try{
       return ListView.builder(
           itemCount: chats.length,
           itemBuilder: (BuildContext context, int index){
           Chat chat = chats[index];
+          
           return ListTile(
-            leading: CircleAvatar(
-              radius: 25.0,
-              backgroundColor: Colors.yellow,
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.network(
+                chat.chat_photo,
+                height: gHeight / 18,
+                width: gWidth / 9,
+              ),
             ),
             title: Text(chat.chat_name),
             onTap: () {
