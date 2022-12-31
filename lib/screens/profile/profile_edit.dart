@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lna/screens/profile/splash/animated_splash_screen.dart';
 import 'package:lna/screens/profile/edit_picture.dart';
+import 'package:lna/screens/profile/phone_numberchange.dart';
 
 class Update extends StatefulWidget {
   const Update({Key? key, required this.userK}) : super(key: key);
@@ -224,24 +225,36 @@ class _EditProfileState extends State<EditProfile> {
                           .child(widget.userKey)
                           .update(users)
                           .then((value) => {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SplashScreenPAnimated(),
-                                  ),
-                                )
+                                
                               });
-
-                      Fluttertoast.showToast(
-                        msg: "Your profile has been edited successfully",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: buttonColor,
-                        textColor: Colors.white,
-                        fontSize: 16,
-                      );
+                      FirebaseAuth.instance.currentUser!.updateDisplayName(name.text);
+                      String? authcurrent = FirebaseAuth.instance.currentUser?.phoneNumber?.substring(3);
+                      if(authcurrent.toString()!=phoneN.text){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                              phoneNumberChange(newPhone: phoneN.text, userK: widget.userKey,),
+                          ),
+                        );
+                      }else{
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                              SplashScreenPAnimated(),
+                          ),
+                        );
+                        Fluttertoast.showToast(
+                          msg: "Your profile has been edited successfully",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: buttonColor,
+                          textColor: Colors.white,
+                          fontSize: 16,
+                        );
+                      }
                     }
                   }
                 },

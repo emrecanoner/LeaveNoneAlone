@@ -68,12 +68,12 @@ class Chat{
   
   Chat(this.chat_uid,this.chat_name,this.chat_photo,this.user_id);
 }
-Future<String> getChatUID(String userUID) async{
+Future<String> getChatUID(String chatName) async{
   List<Chat> chat = await getUserChats();
   String chatUID = '';
   try{
     for(var element in chat){
-      if(element.user_id==userUID){
+      if(element.chat_name==chatName){
         chatUID=element.chat_uid;
         break;
       }else{
@@ -149,9 +149,10 @@ Future<List<Message>> getUserMessages(String chatKey) async {
         }else{
           Map<dynamic, dynamic> messageData = entry.value;
           messageInfo.add(Message(messageData['sender'],messageData['text'], messageData['timestamp'],messageData['sender_image']));
+          messageInfo.sort((a, b) => a.message_timestamp.compareTo(b.message_timestamp));
         }
       }
-      messageInfo.sort((a, b) => a.message_timestamp.compareTo(b.message_timestamp));
+      
       return messageInfo;
     } else {
       return [];

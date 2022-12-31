@@ -7,6 +7,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/chats/user_chatlist.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
 import 'package:lna/screens/friends/user_Account.dart';
+import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -131,16 +132,25 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
         itemBuilder: (context,index){
           String key = searchedNames[index];
           String value = searchedusersLNA[key].toString();
-          return DefaultButton(
-            press: (){
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => userAccount(phoneKey: value),
-                )
-              );
+          return ListTile(
+            onTap: (){
+              if(value==FirebaseAuth.instance.currentUser!.phoneNumber.toString().substring(3)){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfilePage(),
+                  )
+                );
+              }else{
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => userAccount(phoneKey: value),
+                  )
+                );
+              }
             },
-            text: key,
+            title: Text(key),
           );
         },
         shrinkWrap: true,

@@ -135,7 +135,7 @@ class _membersListState extends State<membersList> {
               'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
             };
             chatdbRef.push().set(group_chat);
-            String group_chat_uid = await getChatUID(FirebaseAuth.instance.currentUser!.uid);
+            String group_chat_uid = await getChatUID(GroupNameController.text);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -174,7 +174,7 @@ class _membersListState extends State<membersList> {
                 addMembersForChat();
               }else{
                 String userid = FirebaseAuth.instance.currentUser!.uid;
-                String single_chat_uid = await getChatUID(userid);
+                String single_chat_uid = await getChatUID(friend.friend_name);
                 if(single_chat_uid==''){
                   Map GroupUserDetail ={
                     'member_name': friend.friend_name,
@@ -190,7 +190,7 @@ class _membersListState extends State<membersList> {
                     'user_uid': friend.friend_auth_uid,
                   };
                   chatdbRef.push().set(single_chat);
-                  String new_single_chat_uid = await getChatUID(userid);
+                  String new_single_chat_uid = await getChatUID(friend.friend_name);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

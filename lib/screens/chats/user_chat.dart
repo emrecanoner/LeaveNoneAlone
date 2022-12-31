@@ -133,20 +133,42 @@ class _userChatState extends State<userChat> {
                     data.forEach((key, value) {
                       if(key=='chat_members'){
                         if (value is List) {
-                          List<Object?> objList = value as List<Object?>;
-                          objList.forEach((obj) {
-                            if(obj is Map){
-                              Map map = obj as Map;
-                              map.forEach((key,value) async {
-                                if(key=='member_authid'){
-                                  String valueKey = value;
-                                  var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
-                                  DataSnapshot sappy = await chatdbRef.get();
-                                  await DestRef.set(data);
-                                }
-                              });
-                            }
-                          });
+                          if(value.length>1){
+                            List<Object?> objList = value as List<Object?>;
+                            objList.forEach((obj) {
+                              if(obj is Map){
+                                Map map = obj as Map;
+                                map.forEach((key,value) async {
+                                  if(key=='member_authid'){
+                                    String valueKey = value;
+                                    var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
+                                    DataSnapshot sappy = await chatdbRef.get();
+                                    await DestRef.set(data);
+                                  }
+                                });
+                              }
+                            });
+                          }else{
+                            List<Object?> objList = value as List<Object?>;
+                            objList.forEach((obj) {
+                              if(obj is Map){
+                                Map map = obj as Map;
+                                map.forEach((key,value) async {
+                                  if(key=='member_authid'){
+                                    String valueKey = value;
+                                    var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
+                                    DataSnapshot sappy = await chatdbRef.get();
+                                    DestRef.set(data);
+                                    DestRef.update({
+                                      'chat_name': FirebaseAuth.instance.currentUser!.displayName,
+                                      'chat_photo': FirebaseAuth.instance.currentUser!.photoURL,
+                                      'user_uid': FirebaseAuth.instance.currentUser!.uid
+                                    });
+                                  }
+                                });
+                              }
+                            });
+                          }
                           
                         } else {
                           // value is not a Map, so do something else
