@@ -104,48 +104,57 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
     );
   }
 
-  TextFormField buildNewPhoneFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.phone,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      maxLength: 10,
-      controller: newPhoneController,
-      showCursor: false,
-      decoration: InputDecoration(
-        prefix: Padding(
-          padding: EdgeInsets.all(4),
-          child: Text('+90'),
-        ),
-        labelText: "New phone number",
-        labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your new number",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(
-          Icons.phone_android,
-          color: buttonColor,
+   Visibility buildNewPhoneFormField() {
+    return Visibility(
+      child: Container(
+        child: TextFormField(
+          keyboardType: TextInputType.phone,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          maxLength: 10,
+          controller: newPhoneController,
+          showCursor: false,
+          decoration: InputDecoration(
+            prefix: Padding(
+              padding: EdgeInsets.all(4),
+              child: Text('+90'),
+            ),
+            labelText: "New phone number",
+            labelStyle: TextStyle(color: iconColor),
+            hintText: "Enter your phone",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            suffixIcon: Icon(
+              Icons.phone_android,
+              color: buttonColor,
+            ),
+          ),
         ),
       ),
+      visible: phoneVisibility,
     );
   }
 
-  TextFormField buildSMSCodeFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.number,
-      controller: smsCodeController,
-      showCursor: true,
-      decoration: InputDecoration(
-        prefix: Padding(
-          padding: EdgeInsets.all(4),
-        ),
-        labelText: "SMS Code",
-        labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your previous sms code",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: Icon(
-          Icons.message,
-          color: buttonColor,
+  Visibility buildSMSCodeFormField() {
+    return Visibility(
+      child: Container(
+        child: TextFormField(
+          keyboardType: TextInputType.number,
+          maxLength: 6,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          controller: smsCodeController,
+          showCursor: false,
+          decoration: InputDecoration(
+            suffixIcon: Icon(
+              Icons.code,
+              color: buttonColor,
+            ),
+            labelText: "OTP",
+            labelStyle: TextStyle(color: iconColor),
+            hintText: "Enter your OTP",
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+          ),
         ),
       ),
+      visible: otpVisibility,
     );
   }
 
