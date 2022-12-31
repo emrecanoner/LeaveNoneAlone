@@ -14,9 +14,10 @@ import 'package:lna/screens/chats/user_chat.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 
 class membersList extends StatefulWidget {
-  const membersList({Key? key, required this.boolKey}) : super(key: key);
+  const membersList({Key? key, required this.boolKey, required this.chatN}) : super(key: key);
 
   final bool boolKey;
+  final String chatN;
 
   State<membersList> createState() => _membersListState();
 }
@@ -57,7 +58,7 @@ class _membersListState extends State<membersList> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            buildGroupNameFormField(),
+            SizedBox(height: gHeight / 40),
             FutureBuilder(
               future: getUserFriends(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -68,6 +69,7 @@ class _membersListState extends State<membersList> {
                 }
               }
             ),
+            SizedBox(height: gHeight / 40),
             buildContinueButton(),
             Text('${group_members_selected.length}'),
           ]
@@ -76,47 +78,12 @@ class _membersListState extends State<membersList> {
     );
   }
 
-  Visibility buildGroupNameFormField(){
-    return Visibility(
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        controller: GroupNameController,
-        showCursor: true,
-        decoration: InputDecoration(
-          prefix: Padding(
-            padding: EdgeInsets.all(4),
-          ),
-          labelText: "Group Name",
-          labelStyle: TextStyle(color: iconColor),
-          hintText: "Enter your group name",
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          suffixIcon: Icon(
-            Icons.account_circle,
-            color: buttonColor,
-          ),
-        ),
-      ),
-      visible: widget.boolKey,
-    );
-  }
-
   Visibility buildContinueButton(){
     return Visibility(
       child: DefaultButton(
         text: 'Continue', 
         press: () async{
-          if(GroupNameController.text.length==0){
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: CustomSnackBarContent(
-                  errorMessage:
-                    "You didn't enter your group name, write it immediately."),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-              ),
-            );
-          }if(group_members_selected.length<=1){
+          if(group_members_selected.length<=1){
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: CustomSnackBarContent(
@@ -129,13 +96,13 @@ class _membersListState extends State<membersList> {
             );
           }else{
             Map<dynamic,dynamic> group_chat = {
-              'chat_name': GroupNameController.text,
+              'chat_name': widget.chatN,
               'chat_members': chat_MEM,
               'chat_photo': photo,
               'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
             };
             chatdbRef.push().set(group_chat);
-            String group_chat_uid = await getChatUID(GroupNameController.text);
+            String group_chat_uid = await getChatUID(widget.chatN);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -185,12 +152,12 @@ class _membersListState extends State<membersList> {
                   chat_MEM.add(GroupUserDetail);
                   Map<dynamic,dynamic> single_chat = {
                     'chat_members': chat_MEM,
-                    'chat_name': friend.friend_name,
+                    'chat_name': widget.chatN,
                     'chat_photo': friend.friend_photo,
                     'user_uid': friend.friend_auth_uid,
                   };
                   chatdbRef.push().set(single_chat);
-                  String new_single_chat_uid = await getChatUID(friend.friend_name);
+                  String new_single_chat_uid = await getChatUID(widget.chatN);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

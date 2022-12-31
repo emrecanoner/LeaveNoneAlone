@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -8,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/chats/create_chat.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/screens/home/utils/constant.dart';
 import 'package:lna/screens/home/utils/input_field.dart';
@@ -35,7 +38,16 @@ class _CreateEventState extends State<CreateEvent> {
   String? _currentAddress;
   Position? _currentPosition;
 
+  final titleController = TextEditingController();
+  final dateController = TextEditingController();
+  final startTimeController = TextEditingController();
+  final endTimeController = TextEditingController();
+  final locationController = TextEditingController();
+
+  late DatabaseReference dref;
+
   void initState() {
+    dref = FirebaseDatabase.instance.ref().child('Events');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCurrentPosition();
     });
@@ -207,10 +219,15 @@ class _CreateEventState extends State<CreateEvent> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              InputField(title: "Title", hint: "Enter your title"),
+              InputField(
+                title: "Title", 
+                hint: "Enter your title",
+                Controller: titleController,
+              ),
               InputField(
                 title: "Date",
                 hint: DateFormat.yMd().format(selectedDateAtBar),
+                Controller: dateController,
                 widget: IconButton(
                   onPressed: () {
                     getDateFromUser(context);
@@ -225,6 +242,8 @@ class _CreateEventState extends State<CreateEvent> {
                     child: InputField(
                       title: "Start Time",
                       hint: startTime,
+                      Controller: startTimeController,
+
                       widget: IconButton(
                         onPressed: () {
                           getTimeFromUser(isStarted: true);
@@ -237,6 +256,7 @@ class _CreateEventState extends State<CreateEvent> {
                   Expanded(
                     child: InputField(
                       title: "End Time",
+                      Controller: endTimeController,
                       hint: endTime,
                       widget: IconButton(
                         onPressed: () {
@@ -252,6 +272,7 @@ class _CreateEventState extends State<CreateEvent> {
               InputField(
                 title: "Location",
                 hint: location ?? "Enter your location",
+                Controller: locationController,
                 widget: IconButton(
                   onPressed: () {
                     _getCurrentPosition().then((value) => showModel(context));
@@ -265,10 +286,20 @@ class _CreateEventState extends State<CreateEvent> {
                 child: DefaultButton(
                     text: "Create",
                     press: (() {
+                      Map event = {
+                        'event_title': titleController.text,
+                        'date': dateController.text,
+                        'start_time': startTimeController.text,
+                        'end_time': endTimeController.text,
+                        'location': locationController.text
+                      };
+
+                      dref.push().set(event);
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
+                            builder: (context) => createChat(chatN: titleController.text),
                           ));
                     })),
               ),

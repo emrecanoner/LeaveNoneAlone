@@ -48,6 +48,15 @@ class _userChatListState extends State<userChatList> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chats'),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ));
+            },
+            icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
             body: Container(
         child: Column(
@@ -64,18 +73,18 @@ class _userChatListState extends State<userChatList> {
                   }
                 ),
               ),
-              FloatingActionButton(
-                child: Icon(Icons.message_sharp),
-                backgroundColor: Color(0xffffaa17),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (_) => createChat(),
-                    )
-                  );
-                },
-              )
+              // FloatingActionButton(
+              //   child: Icon(Icons.message_sharp),
+              //   backgroundColor: Color(0xffffaa17),
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //       builder: (_) => createChat(),
+              //       )
+              //     );
+              //   },
+              // )
             ]
         ),
       ),
