@@ -259,7 +259,7 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
       });
       ch();
     }else{
-      ch();
+      loginWithPhone();
     }
   }
   void ch () async{

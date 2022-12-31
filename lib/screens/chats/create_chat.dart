@@ -31,7 +31,7 @@ class _createChatState extends State<createChat> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomePage(),

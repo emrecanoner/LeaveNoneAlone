@@ -30,19 +30,17 @@ class CreateEvent extends StatefulWidget {
 }
 
 class _CreateEventState extends State<CreateEvent> {
-  String endTime = "9:30 PM";
-  String startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+  String endTime = "21:30";
+  String startTime = DateFormat("HH:mm").format(DateTime.now()).toString();
   String? location;
   int lan = 10;
   int long = 10;
   String? _currentAddress;
   Position? _currentPosition;
 
+  DateTime? pickerDate;
+
   final titleController = TextEditingController();
-  final dateController = TextEditingController();
-  final startTimeController = TextEditingController();
-  final endTimeController = TextEditingController();
-  final locationController = TextEditingController();
 
   late DatabaseReference dref;
 
@@ -55,16 +53,16 @@ class _CreateEventState extends State<CreateEvent> {
   }
 
   getDateFromUser(BuildContext context) async {
-    DateTime? pickerDate = await showDatePicker(
+    pickerDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2022),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2030),
     );
 
     if (pickerDate != null) {
       setState(() {
-        selectedDateAtBar = pickerDate;
+        selectedDateAtBar = pickerDate!;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,26 +78,57 @@ class _CreateEventState extends State<CreateEvent> {
   }
 
   getTimeFromUser({required bool isStarted}) async {
-    var pickedTime = await buildShowTimePicker();
-    String formattedTime = pickedTime?.format(context);
-    if (pickedTime == null) {
+    if(pickerDate!=null){
+      var pickedTime = await buildShowTimePicker();
+      String formattedTime = pickedTime?.format(context);
+      DateTime selectedTime = DateTime(
+        pickerDate!.year,
+        pickerDate!.month,
+        pickerDate!.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+      if (pickedTime == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: CustomSnackBarContent(
+                errorMessage: "You didn't select time, select it immediately"),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        );
+      }else if(selectedTime.isBefore(DateTime.now())){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: CustomSnackBarContent(
+                errorMessage: "You can't select a time before now"),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        );
+      }else{
+        if (isStarted == true) {
+          setState(() {
+            startTime = formattedTime;
+          });
+        } else if (isStarted == false) {
+          setState(() {
+            endTime = formattedTime;
+          });
+        }
+      }
+    }else{
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: CustomSnackBarContent(
-              errorMessage: "You didn't select time, select it immediately"),
+              errorMessage: "You have to pick date first"),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
       );
-    } else if (isStarted == true) {
-      setState(() {
-        startTime = formattedTime;
-      });
-    } else if (isStarted == false) {
-      setState(() {
-        endTime = formattedTime;
-      });
     }
   }
 
@@ -149,7 +178,10 @@ class _CreateEventState extends State<CreateEvent> {
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
-      setState(() => _currentPosition = position);
+      setState(() {
+        _currentPosition = position;
+      });
+
       //_getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
       debugPrint(e);
@@ -227,7 +259,6 @@ class _CreateEventState extends State<CreateEvent> {
               InputField(
                 title: "Date",
                 hint: DateFormat.yMd().format(selectedDateAtBar),
-                Controller: dateController,
                 widget: IconButton(
                   onPressed: () {
                     getDateFromUser(context);
@@ -242,7 +273,6 @@ class _CreateEventState extends State<CreateEvent> {
                     child: InputField(
                       title: "Start Time",
                       hint: startTime,
-                      Controller: startTimeController,
 
                       widget: IconButton(
                         onPressed: () {
@@ -256,7 +286,6 @@ class _CreateEventState extends State<CreateEvent> {
                   Expanded(
                     child: InputField(
                       title: "End Time",
-                      Controller: endTimeController,
                       hint: endTime,
                       widget: IconButton(
                         onPressed: () {
@@ -272,7 +301,6 @@ class _CreateEventState extends State<CreateEvent> {
               InputField(
                 title: "Location",
                 hint: location ?? "Enter your location",
-                Controller: locationController,
                 widget: IconButton(
                   onPressed: () {
                     _getCurrentPosition().then((value) => showModel(context));
@@ -286,12 +314,13 @@ class _CreateEventState extends State<CreateEvent> {
                 child: DefaultButton(
                     text: "Create",
                     press: (() {
+                      String date = DateFormat('yyyy-MM-dd').format(selectedDateAtBar);
                       Map event = {
                         'event_title': titleController.text,
-                        'date': dateController.text,
-                        'start_time': startTimeController.text,
-                        'end_time': endTimeController.text,
-                        'location': locationController.text
+                        'date': date,
+                        'start_time': startTime,
+                        'end_time': endTime,
+                        'location': location
                       };
 
                       dref.push().set(event);
