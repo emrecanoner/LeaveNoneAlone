@@ -14,9 +14,10 @@ import 'package:lna/screens/profile/profile_edit.dart';
 
 
 class createChat extends StatefulWidget {
-  const createChat({Key? key, required this.chatN}) : super(key: key);
+  const createChat({Key? key, required this.chatN,required this.chatMap}) : super(key: key);
 
   final String chatN;
+  final Map chatMap;
 
   State<createChat> createState() => _createChatState();
 }
@@ -50,7 +51,7 @@ class _createChatState extends State<createChat> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                  builder: (_) => createGroupChat(boolKey: boolGroupKey, chatN: widget.chatN),
+                  builder: (_) => createGroupChat(boolKey: boolGroupKey, chatN: widget.chatN, chatMap: widget.chatMap),
                   )
                 );
               }
@@ -58,7 +59,7 @@ class _createChatState extends State<createChat> {
             const SizedBox(
               height: 5,
             ),
-            membersList(boolKey: boolGroupKey, chatN: widget.chatN,),
+            membersList(boolKey: boolGroupKey, chatN: widget.chatN, chatMap: widget.chatMap),
           ],
         ),
       ),

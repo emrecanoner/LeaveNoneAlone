@@ -14,10 +14,11 @@ import 'package:lna/screens/chats/user_chat.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 
 class membersList extends StatefulWidget {
-  const membersList({Key? key, required this.boolKey, required this.chatN}) : super(key: key);
+  const membersList({Key? key, required this.boolKey, required this.chatN, required this.chatMap}) : super(key: key);
 
   final bool boolKey;
   final String chatN;
+  final Map chatMap;
 
   State<membersList> createState() => _membersListState();
 }
@@ -25,6 +26,7 @@ class membersList extends StatefulWidget {
 class _membersListState extends State<membersList> {
   DatabaseReference frienddbRef = FirebaseDatabase.instance.ref().child('Friends').child(FirebaseAuth.instance.currentUser!.uid);
   DatabaseReference chatdbRef = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);  
+  late DatabaseReference eventdref;
   String? friendname;
   String? friendphone;
   String? friendphoto;
@@ -38,6 +40,7 @@ class _membersListState extends State<membersList> {
 
   void initState(){
     super.initState();
+    eventdref = FirebaseDatabase.instance.ref().child('Events');
     getChat();
   }
 
@@ -102,6 +105,7 @@ class _membersListState extends State<membersList> {
               'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
             };
             chatdbRef.push().set(group_chat);
+            eventdref.push().set(widget.chatMap);
             String group_chat_uid = await getChatUID(widget.chatN);
             Navigator.push(
               context,
@@ -141,9 +145,7 @@ class _membersListState extends State<membersList> {
                 addMembersForChat();
               }else{
                 String userid = FirebaseAuth.instance.currentUser!.uid;
-                String single_chat_uid = await getChatUID(friend.friend_name);
-                if(single_chat_uid==''){
-                  Map GroupUserDetail ={
+                Map GroupUserDetail ={
                     'member_name': friend.friend_name,
                     'member_phone': friend.friend_phone,
                     'member_photo': friend.friend_photo,
@@ -157,6 +159,7 @@ class _membersListState extends State<membersList> {
                     'user_uid': friend.friend_auth_uid,
                   };
                   chatdbRef.push().set(single_chat);
+                  eventdref.push().set(widget.chatMap);
                   String new_single_chat_uid = await getChatUID(widget.chatN);
                   Navigator.push(
                     context,
@@ -164,14 +167,6 @@ class _membersListState extends State<membersList> {
                       builder: (_) => userChat(messageKey: new_single_chat_uid),
                     )
                   );
-                }else{
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => userChat(messageKey: single_chat_uid),
-                    )
-                  );
-                }
               }
             },
             // trailing: Checkbox(

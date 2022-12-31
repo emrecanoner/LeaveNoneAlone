@@ -42,10 +42,10 @@ class _CreateEventState extends State<CreateEvent> {
 
   final titleController = TextEditingController();
 
-  late DatabaseReference dref;
+  late DatabaseReference eventdref;
 
   void initState() {
-    dref = FirebaseDatabase.instance.ref().child('Events');
+    eventdref = FirebaseDatabase.instance.ref().child('Events');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCurrentPosition();
     });
@@ -314,21 +314,21 @@ class _CreateEventState extends State<CreateEvent> {
                 child: DefaultButton(
                     text: "Create",
                     press: (() {
-                      String date = DateFormat('yyyy-MM-dd').format(selectedDateAtBar);
+                      String date = DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
                       Map event = {
                         'event_title': titleController.text,
-                        'date': date,
+                        'event_photo': '',
+                        'event_date': date,
                         'start_time': startTime,
                         'end_time': endTime,
-                        'location': location
+                        'event_location': location
                       };
 
-                      dref.push().set(event);
 
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => createChat(chatN: titleController.text),
+                            builder: (context) => createChat(chatN: titleController.text, chatMap: event),
                           ));
                     })),
               ),

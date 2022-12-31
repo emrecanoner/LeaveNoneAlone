@@ -29,6 +29,56 @@ const kAnimationDuration = Duration(milliseconds: 200);
 final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
 
+class LNAevent {
+  final String event_title;
+  final String event_photo;
+  final String event_date;
+  final String event_starttime;
+  final String event_endtime;
+  final String event_location;
+
+  LNAevent(this.event_title,this.event_photo,this.event_date,this.event_starttime,this.event_endtime,this.event_location);
+}
+
+Future<Map> getEventDetails(String Ename) async{
+  List<LNAevent> eventsInfo = [];
+  Map specificEvent = {};
+  final snapshot = await DBref.child('Events').get();
+
+  try{
+    if(snapshot.exists){
+      Map data = snapshot.value as Map;
+      data.forEach((key, value) {
+        eventsInfo.add(LNAevent(value['event_title'],value['event_photo'],value['event_date'],value['start_time'],value['end_time'],value['event_location']));
+      });
+      for(var element in eventsInfo){
+        if(element.event_title==Ename){
+          specificEvent = {
+            'event_title': element.event_title,
+            'event_photo': element.event_photo,
+            'event_date': element.event_date,
+            'event_starttime': element.event_starttime,
+            'event_endtime': element.event_endtime,
+            'event_location': element.event_location
+          };
+          break;
+        }else{
+          continue;
+        }
+      }
+      return specificEvent;
+    }else{
+      return {};
+    }
+  }on TypeError catch (e){
+    print('Events: ${e.toString()}');
+    return{};
+  }catch (e){
+    print('Events: ${e.toString()}');
+    return{};
+  }
+}
+
 class Friends{
   final String friend_auth_uid;
   final String friend_name;
