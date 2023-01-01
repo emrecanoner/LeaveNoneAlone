@@ -153,7 +153,9 @@ class _membersListState extends State<membersList> {
                 addMembersForChat();
               }else{
                 String userid = FirebaseAuth.instance.currentUser!.uid;
-                Map GroupUserDetail ={
+                String single_chat_id = await getChatUID(widget.chatN);
+                if(single_chat_id==''){
+                  Map GroupUserDetail ={
                   'member_name': friend.friend_name,
                   'member_phone': friend.friend_phone,
                   'member_photo': friend.friend_photo,
@@ -184,6 +186,14 @@ class _membersListState extends State<membersList> {
                       builder: (_) => userChat(messageKey: new_single_chat_uid),
                     )
                   );
+                }else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => userChat(messageKey: single_chat_id),
+                    )
+                  );
+                }
               }
             },
             // trailing: Checkbox(

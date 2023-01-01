@@ -162,6 +162,36 @@ Future<Map> getEventDetails(String Ename) async {
     return {};
   }
 }
+Future<List<LNAevent>> getallEvents() async{
+  List<LNAevent> ev = [];
+  final snapshot = await DBref.child('Events').get();
+
+  try {
+    if (snapshot.exists) {
+      Map data = snapshot.value as Map;
+      data.forEach((key, value) {
+        ev.add(LNAevent(
+            value['event_title'],
+            value['event_photo'],
+            value['event_city'],
+            value['event_type'],
+            value['event_date'],
+            value['start_time'],
+            value['end_time'],
+            value['event_location']));
+      });
+      return ev;
+    } else {
+      return [];
+    }
+  } on TypeError catch (e) {
+    print('Events: ${e.toString()}');
+    return [];
+  } catch (e) {
+    print('Events: ${e.toString()}');
+    return [];
+  }
+}
 
 class Friends {
   final String friend_auth_uid;
