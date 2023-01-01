@@ -44,17 +44,7 @@ class HomePageHomeIcon extends StatefulWidget {
 }
 
 class _HomePageHomeIconState extends State<HomePageHomeIcon> {
-  Map Curr = {};
 
-  void initState(){
-    super.initState();
-    getCurrdetails();
-  }
-
-  void getCurrdetails() async{
-    Curr = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
-    var i;
-  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -62,15 +52,13 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
           top: gHeight / 6.5, right: gWidth / 80, left: gWidth / 80),
       child: Column(
         children: [
-          buildTaskBar(context),
-          SizedBox(height: gHeight / 50),
-          buildDateBar(),
+          // SizedBox(height: gHeight / 50),
           
           FutureBuilder(
-            future: getEventsbyCity(Curr['city']),
+            future: customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return buildEventList(context, snapshot);
+                return buildTaskBar(context, snapshot);
               } else {
                 return Center(child: CircularProgressIndicator());
               }
@@ -151,57 +139,73 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
     );
   }
 
-  Padding buildTaskBar(BuildContext context) {
+  Widget buildTaskBar(context, snapshot) {
+    Map CurrUser = snapshot.data as Map;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        children: <Widget>[
+          Row(
             children: [
-              Text(
-                "Hello, ${FirebaseAuth.instance.currentUser!.displayName.toString()}",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 21,
-                    fontWeight: FontWeight.w700),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hello, ${CurrUser['name']}",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: gHeight / 250),
+                  Text(
+                    "Let's explore what's happening nearby",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                    ),
+                  )
+                ],
               ),
-              SizedBox(height: gHeight / 250),
-              Text(
-                "Let's explore what's happening nearby",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
+              Spacer(),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 3, color: buttonColor),
+                  borderRadius: BorderRadius.circular(50),
                 ),
-              )
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(),
+                      ),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.network(
+                      CurrUser['photoURL'],
+                      height: gHeight / 18,
+                      width: gWidth / 9,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          Spacer(),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(width: 3, color: buttonColor),
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
-                  ),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.network(
-                  FirebaseAuth.instance.currentUser!.photoURL.toString(),
-                  height: gHeight / 18,
-                  width: gWidth / 9,
-                ),
-              ),
-            ),
+          buildDateBar(),
+          FutureBuilder(
+            future: getEventsbyCity(CurrUser['city']),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return buildEventList(context, snapshot);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }
           ),
-        ],
+        ]
       ),
     );
   }
