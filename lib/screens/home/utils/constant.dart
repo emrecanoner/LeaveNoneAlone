@@ -27,8 +27,6 @@ List<Widget> pageList = [
   //membersList(),
 ];
 
-int pageIndex = 1;
-
 DateTime selectedDateAtBar = DateTime.now();
 
 DatePickerController dateControl = DatePickerController();
