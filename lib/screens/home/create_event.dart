@@ -23,6 +23,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 
+enum SampleItem { Coffee, Basketball, itemThree }
+
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
 
@@ -40,11 +42,14 @@ class _CreateEventState extends State<CreateEvent> {
   Position? _currentPosition;
   String selectedevent = '';
 
+  SampleItem? selectedMenu;
+
+  String selectEventType = "";
+
   DateTime? pickerDate;
 
   final titleController = TextEditingController();
   late SingleValueDropDownController eventTypeController;
-
 
   late DatabaseReference eventdref;
 
@@ -88,7 +93,7 @@ class _CreateEventState extends State<CreateEvent> {
   }
 
   getTimeFromUser({required bool isStarted}) async {
-    if(pickerDate!=null){
+    if (pickerDate != null) {
       var pickedTime = await buildShowTimePicker();
       String formattedTime = pickedTime?.format(context);
       DateTime selectedTime = DateTime(
@@ -108,7 +113,7 @@ class _CreateEventState extends State<CreateEvent> {
             elevation: 0,
           ),
         );
-      }else if(selectedTime.isBefore(DateTime.now())){
+      } else if (selectedTime.isBefore(DateTime.now())) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: CustomSnackBarContent(
@@ -118,7 +123,7 @@ class _CreateEventState extends State<CreateEvent> {
             elevation: 0,
           ),
         );
-      }else{
+      } else {
         if (isStarted == true) {
           setState(() {
             startTime = formattedTime;
@@ -129,7 +134,7 @@ class _CreateEventState extends State<CreateEvent> {
           });
         }
       }
-    }else{
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: CustomSnackBarContent(
@@ -262,7 +267,7 @@ class _CreateEventState extends State<CreateEvent> {
                 ),
               ),
               InputField(
-                title: "Title", 
+                title: "Title",
                 hint: "Enter your title",
                 Controller: titleController,
               ),
@@ -283,7 +288,6 @@ class _CreateEventState extends State<CreateEvent> {
                     child: InputField(
                       title: "Start Time",
                       hint: startTime,
-
                       widget: IconButton(
                         onPressed: () {
                           getTimeFromUser(isStarted: true);
@@ -308,6 +312,11 @@ class _CreateEventState extends State<CreateEvent> {
                   ),
                 ],
               ),
+              InputField(
+                title: "Event Type",
+                hint: selectEventType.split('.').last,
+                widget: popUp(),
+              ),
               SizedBox(height: 30),
               buildEventTypeDropdown(),
               SizedBox(height: 30),
@@ -326,43 +335,46 @@ class _CreateEventState extends State<CreateEvent> {
               Center(
                 child: DefaultButton(
                     text: "Create",
-                    press: (() async{
-                      String date = DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
-                      Map Curruser = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
+                    press: (() async {
+                      String date =
+                          DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
+                      Map Curruser = await customerAccountDetails(FirebaseAuth
+                          .instance.currentUser!.phoneNumber
+                          ?.substring(3));
                       String event_photo = '';
-                      if(selectedevent=='Basketball'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fbasketball.png?alt=media&token=13852706-3211-41fd-8744-3dc3bc3479e2';
-                      }else if(selectedevent=='Coffee'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
-                      }else if(selectedevent=='Dance party'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
-                      }else if(selectedevent=='Football'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
-                      }else if(selectedevent=='Ice Skate'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
-                      }else if(selectedevent=='Normal party'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
-                      }else if(selectedevent=='Surfing'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fsurfing.png?alt=media&token=f751c534-671b-42a0-893c-480255668a84';
-                      }else if(selectedevent=='Swimming'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fswimming.png?alt=media&token=dfa1aa98-557f-4990-aa68-778ccb083eb4';
-                      }else if(selectedevent=='Tennis'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftennis.png?alt=media&token=b62bbecf-919c-402d-aad2-e52ee490488d';
-                      }else if(selectedevent=='Touring'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftouring.png?alt=media&token=f740a298-178c-4ec5-9496-a6dd9613a018';
-                      }else if(selectedevent=='Other'){
-                        event_photo = 
-                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fevent.png?alt=media&token=27dc400e-158c-4973-acf5-06b5956f7779';
+                      if (selectedevent == 'Basketball') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fbasketball.png?alt=media&token=13852706-3211-41fd-8744-3dc3bc3479e2';
+                      } else if (selectedevent == 'Coffee') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
+                      } else if (selectedevent == 'Dance party') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
+                      } else if (selectedevent == 'Football') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
+                      } else if (selectedevent == 'Ice Skate') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
+                      } else if (selectedevent == 'Normal party') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
+                      } else if (selectedevent == 'Surfing') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fsurfing.png?alt=media&token=f751c534-671b-42a0-893c-480255668a84';
+                      } else if (selectedevent == 'Swimming') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fswimming.png?alt=media&token=dfa1aa98-557f-4990-aa68-778ccb083eb4';
+                      } else if (selectedevent == 'Tennis') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftennis.png?alt=media&token=b62bbecf-919c-402d-aad2-e52ee490488d';
+                      } else if (selectedevent == 'Touring') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftouring.png?alt=media&token=f740a298-178c-4ec5-9496-a6dd9613a018';
+                      } else if (selectedevent == 'Other') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fevent.png?alt=media&token=27dc400e-158c-4973-acf5-06b5956f7779';
                       }
                       Map event = {
                         'event_title': titleController.text,
@@ -377,7 +389,8 @@ class _CreateEventState extends State<CreateEvent> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => createChat(chatN: titleController.text, chatMap: event),
+                            builder: (context) => createChat(
+                                chatN: titleController.text, chatMap: event),
                           ));
                     })),
               ),
@@ -385,6 +398,33 @@ class _CreateEventState extends State<CreateEvent> {
           ),
         ),
       ),
+    );
+  }
+
+  PopupMenuButton<SampleItem> popUp() {
+    return PopupMenuButton(
+      initialValue: selectedMenu,
+      position: PopupMenuPosition.under,
+      // Callback that sets the selected popup menu item.
+      onSelected: (SampleItem item) {
+        setState(() {
+          selectEventType = item.toString();
+        });
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Coffee,
+          child: Text('Item 1'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Basketball,
+          child: Text('Item 2'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.itemThree,
+          child: Text('Item 3'),
+        ),
+      ],
     );
   }
 
@@ -431,7 +471,6 @@ class _CreateEventState extends State<CreateEvent> {
         DropDownValueModel(name: 'Tennis', value: "Tennis"),
         DropDownValueModel(name: 'Touring', value: "Touring"),
         DropDownValueModel(name: 'Other', value: "Other"),
-
       ],
       onChanged: (val) {
         if (val == "") {
