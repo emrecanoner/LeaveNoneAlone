@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:lna/screens/chats/create_chat.dart';
 import 'package:lna/screens/chats/members.dart';
+import 'package:lna/screens/events/event_account.dart';
 import 'package:lna/screens/home/create_event.dart';
 import 'package:lna/screens/home/home_page.dart';
 import 'package:lna/screens/profile/profile_page.dart';
@@ -33,11 +34,27 @@ DatePickerController dateControl = DatePickerController();
 
 String userName = FirebaseAuth.instance.currentUser!.displayName.toString();
 
-class HomePageHomeIcon extends StatelessWidget {
+class HomePageHomeIcon extends StatefulWidget {
   const HomePageHomeIcon({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<HomePageHomeIcon> createState() => _HomePageHomeIconState();
+}
+
+class _HomePageHomeIconState extends State<HomePageHomeIcon> {
+  Map Curr = {};
+
+  void initState(){
+    super.initState();
+    getCurrdetails();
+  }
+
+  void getCurrdetails() async{
+    Curr = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
+    var i;
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -48,9 +65,52 @@ class HomePageHomeIcon extends StatelessWidget {
           buildTaskBar(context),
           SizedBox(height: gHeight / 50),
           buildDateBar(),
+          
+          FutureBuilder(
+            future: getEventsbyCity(Curr['city']),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return buildEventList(context, snapshot);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }
+          ),
         ],
       ),
     );
+  }
+
+  Widget buildEventList(context, snapshot){
+    List<LNAevent> eventmap = snapshot.data as List<LNAevent>;
+    return ListView.builder(
+        itemCount: eventmap.length,
+        itemBuilder: (BuildContext context, int index){
+          LNAevent event = eventmap[index];
+          return ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.network(
+                event.event_photo,
+                height: gHeight / 18,
+                width: gWidth / 9,
+              ),
+            ),
+            title: Text(event.event_title),
+            onTap: () async{
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => eventAccount(eventName: event.event_title),
+                )
+              );
+            },
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+    );
+
   }
 
   Container buildDateBar() {

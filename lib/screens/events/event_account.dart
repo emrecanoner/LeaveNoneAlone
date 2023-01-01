@@ -174,44 +174,44 @@ class _eventAccountState extends State<eventAccount> {
             child: DefaultButton(
               text: 'Join Event', 
               press: () async{
-                // // String chatKey = await getChatUID(EventSearched['event_title']);
-                // Map newItem = {
-                //   'member_name': FirebaseAuth.instance.currentUser!.displayName,
-                //   'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
-                //   'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
-                //   'member_authid': FirebaseAuth.instance.currentUser!.uid,
-                // };
-                // Map chatsOfEvent = await getChatsforEvent(EventSearched['event_title']);
-                // chatsOfEvent.forEach((key, value) { 
-                //   chatsOfEvent[key]['chat_members'].add(newItem);
-                //   chatDf.child(key).update({
-                //     'chat_members': chatsOfEvent[key]['chat_members']
-                //   });
-                // });
-                // Map selectedChat;
-                // chatsOfEvent.forEach((key, value) { 
-                //   if (value['chat_name'] == EventSearched['event_title']) {
-                //     selectedChat = value;
-                //   }
-                // });
+                String chatKey = await getChatUID(EventSearched['event_title']);
+                Map newItem = {
+                  'member_name': FirebaseAuth.instance.currentUser!.displayName,
+                  'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
+                  'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+                  'member_authid': FirebaseAuth.instance.currentUser!.uid,
+                };
+                Map chatsOfEvent = await getChatsforEvent(EventSearched['event_title']);
+                chatsOfEvent.forEach((key, value) { 
+                  chatsOfEvent[key]['chat_members'].add(newItem);
+                  chatDf.child(key).update({
+                    'chat_members': chatsOfEvent[key]['chat_members']
+                  });
+                });
+                Map selectedChat;
+                chatsOfEvent.forEach((key, value) { 
+                  if (value['chat_name'] == EventSearched['event_title']) {
+                    selectedChat = value;
+                  }
+                });
 
                 
                 
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //   builder: (_) =>SplashScreenEAnimated(chatK: chatKey,),
-                //   )
-                // );
-                // Fluttertoast.showToast(
-                //   msg: "Friend Request sent",
-                //   toastLength: Toast.LENGTH_SHORT,
-                //   gravity: ToastGravity.CENTER,
-                //   timeInSecForIosWeb: 1,
-                //   backgroundColor: buttonColor,
-                //   textColor: Colors.white,
-                //   fontSize: 16,
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (_) =>SplashScreenEAnimated(chatK: chatKey),
+                  )
+                );
+                Fluttertoast.showToast(
+                  msg: "Friend Request sent",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: buttonColor,
+                  textColor: Colors.white,
+                  fontSize: 16,
+                );
               }
             ),
             visible: eventJoined,

@@ -377,7 +377,7 @@ class _CreateEventState extends State<CreateEvent> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => createChat(chatN: titleController.text, chatMap: event),
+                            builder: (context) => createChat(chatN: titleController.text,chatP: event_photo,chatMap: event),
                           ));
                     })),
               ),

@@ -31,6 +31,21 @@ const kAnimationDuration = Duration(milliseconds: 200);
 final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
 
+
+Future<Map> getChatsforEvent(String chatNAME) async{
+  final chDref = FirebaseDatabase.instance.ref();
+  final query = chDref.orderByChild("chat_name").equalTo(chatNAME);
+  final queryResult = await query.once();
+  final snap = queryResult.snapshot;
+  if(snap.exists){
+    Map chats = snap.value as Map;
+    return chats;
+  }else{
+    print('no chats which such name exists');
+    return {};
+  }
+}
+
 class LNAevent {
   final String event_title;
   final String event_photo;
@@ -50,6 +65,53 @@ class LNAevent {
       this.event_starttime,
       this.event_endtime,
       this.event_location);
+}
+
+Future<List<LNAevent>> getEventsbyCity(String userCity) async{
+  List<LNAevent> events = [];
+  List<LNAevent> eventsInCity = [];
+  final snapshot = await DBref.child('Events').get();
+
+  try {
+    if (snapshot.exists) {
+      Map data = snapshot.value as Map;
+      data.forEach((key, value) {
+        events.add(LNAevent(
+            value['event_title'],
+            value['event_photo'],
+            value['event_city'],
+            value['event_type'],
+            value['event_date'],
+            value['start_time'],
+            value['end_time'],
+            value['event_location']));
+      });
+      for(var element in events){
+        if (element.event_city==userCity){
+          eventsInCity.add(LNAevent(
+            element.event_title, 
+            element.event_photo, 
+            element.event_city, 
+            element.event_type, 
+            element.event_date, 
+            element.event_starttime, 
+            element.event_endtime, 
+            element.event_location));
+        }
+      }
+      return eventsInCity;
+      
+    } else {
+      return [];
+    }
+  } on TypeError catch (e) {
+    print('Events: ${e.toString()}');
+    return [];
+  } catch (e) {
+    print('Events: ${e.toString()}');
+    return [];
+  }
+
 }
 
 Future<Map> getEventDetails(String Ename) async {

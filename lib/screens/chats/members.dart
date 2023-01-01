@@ -14,11 +14,12 @@ import 'package:lna/screens/chats/user_chat.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 
 class membersList extends StatefulWidget {
-  const membersList({Key? key, required this.boolKey, required this.chatN, required this.chatMap}) : super(key: key);
+  const membersList({Key? key, required this.boolKey, required this.chatN,required this.chatP,required this.chatMap}) : super(key: key);
 
   final bool boolKey;
   final String chatN;
   final Map chatMap;
+  final String chatP;
 
   State<membersList> createState() => _membersListState();
 }
@@ -108,7 +109,7 @@ class _membersListState extends State<membersList> {
             Map<dynamic,dynamic> group_chat = {
               'chat_name': widget.chatN,
               'chat_members': chat_MEM,
-              'chat_photo': photo,
+              'chat_photo': widget.chatP,
               'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
             };
             chatdbRef.push().set(group_chat);
@@ -171,7 +172,7 @@ class _membersListState extends State<membersList> {
                   Map<dynamic,dynamic> single_chat = {
                     'chat_members': chat_MEM,
                     'chat_name': widget.chatN,
-                    'chat_photo': friend.friend_photo,
+                    'chat_photo': widget.chatP,
                     'user_uid': friend.friend_auth_uid,
                   };
                   chatdbRef.push().set(single_chat);
