@@ -308,7 +308,9 @@ class _CreateEventState extends State<CreateEvent> {
                   ),
                 ],
               ),
+              SizedBox(height: 30),
               buildEventTypeDropdown(),
+              SizedBox(height: 30),
               InputField(
                 title: "Location",
                 hint: location ?? "Enter your location",
