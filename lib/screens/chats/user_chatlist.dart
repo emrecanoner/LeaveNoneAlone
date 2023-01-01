@@ -63,7 +63,7 @@ class _userChatListState extends State<userChatList> {
           children: <Widget>[
               Expanded(
                 child: FutureBuilder(
-                  future: getUserChats(),
+                  future: getUserChats(FirebaseAuth.instance.currentUser!.uid),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return chatsListItem(context, snapshot);

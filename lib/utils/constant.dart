@@ -231,8 +231,8 @@ class Chat {
   Chat(this.chat_uid, this.chat_name, this.chat_photo, this.user_id);
 }
 
-Future<String> getChatUID(String chatName) async {
-  List<Chat> chat = await getUserChats();
+Future<String> getChatUID(String chatName, String useruid) async {
+  List<Chat> chat = await getUserChats(useruid);
   String chatUID = '';
   try {
     for (var element in chat) {
@@ -253,10 +253,10 @@ Future<String> getChatUID(String chatName) async {
   }
 }
 
-Future<List<Chat>> getUserChats() async {
+Future<List<Chat>> getUserChats(String useruid) async {
   List<Chat> chatInfo = [];
   final snapshot = await DBref.child('Chats')
-      .child(FirebaseAuth.instance.currentUser!.uid)
+      .child(useruid)
       .get();
 
   try {

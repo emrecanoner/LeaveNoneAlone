@@ -38,7 +38,7 @@ class _eventAccountState extends State<eventAccount> {
   }
 
   void getEvent()async{
-    List<Chat> events  = await getUserChats();
+    List<Chat> events  = await getUserChats(FirebaseAuth.instance.currentUser!.uid);
     for (var element in events){
       if(element.chat_name== widget.eventName){
         eventJoined = false;
@@ -174,32 +174,29 @@ class _eventAccountState extends State<eventAccount> {
             child: DefaultButton(
               text: 'Join Event', 
               press: () async{
-                String chatKey = await getChatUID(EventSearched['event_title']);
+                String chatKey = await getChatUID(EventSearched['event_title'],EventSearched['event_creator']);
                 Map newItem = {
                   'member_name': FirebaseAuth.instance.currentUser!.displayName,
                   'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
                   'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
                   'member_authid': FirebaseAuth.instance.currentUser!.uid,
                 };
-                var chDref = FirebaseDatabase.instance.ref().child('Child').child(EventSearched['event_creator']);
+                var chDref = FirebaseDatabase.instance.ref().child('Chats').child(EventSearched['event_creator']).child(chatKey);
                 bool gotiT = false;
                 final shnap = await chDref.get();
                 if (shnap.exists) {
                   Map<Object?, Object?> data = shnap.value as Map<Object?, Object?>;
-                  data.forEach((key, value) {
-                    if (key=='chat_name') {
-                      if(value == EventSearched){
-                        gotiT = true;
-                      }
-                    }else if (key=='chat_members'){
-                      if(gotiT){
-                        if (value is List) {
-                          List<Object?> objList = value as List<Object?>;
-                          objList.add(newItem);
-                          chDref.child(chatKey).update({
-                            'chat_members': objList
+                  
+                  data.forEach((key, value) async {
+                    if (key=='chat_members'){
+                      if (value is List) {
+                          // List<Object?> objList = value as List<Object?>;
+                          List ok = [];
+                          ok.addAll(value);
+                          ok.add(newItem);
+                          chDref.update({
+                            'chat_members': ok
                           });
-                        }
                       }
                     }
                   });
@@ -208,8 +205,8 @@ class _eventAccountState extends State<eventAccount> {
                 }
 
                 final shap = await chDref.get();
-                var currUs = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);
-                currUs.set(shap);
+                var currUs = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid).child(chatKey);
+                currUs.set(shap.value);
                 
 
                 final snap = await chDref.get();
@@ -225,8 +222,10 @@ class _eventAccountState extends State<eventAccount> {
                               Map map = obj as Map;
                               map.forEach((key, value) async {
                                 if (key == 'member_authid') {
-                                  if (value !=
-                                      FirebaseAuth.instance.currentUser!.uid||value!=EventSearched['event_creator']) {
+                                  if (value ==
+                                      FirebaseAuth.instance.currentUser!.uid||value==EventSearched['event_creator']) {
+                                    
+                                  }else{
                                     String valueKey = value;
                                     var DestRef = FirebaseDatabase.instance
                                         .ref()
@@ -258,7 +257,7 @@ class _eventAccountState extends State<eventAccount> {
                   )
                 );
                 Fluttertoast.showToast(
-                  msg: "Friend Request sent",
+                  msg: "Joining Event",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
