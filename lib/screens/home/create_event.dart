@@ -77,60 +77,72 @@ class _CreateEventState extends State<CreateEvent> {
       setState(() {
         selectedDateAtBar = pickerDate!;
       });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: CustomSnackBarContent(
-              errorMessage: "You didn't select date, select it immediately"),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-      );
-    }
+    } 
   }
 
   getTimeFromUser({required bool isStarted}) async {
-    if (pickerDate != null) {
+    if (selectedDateAtBar != null) {
       var pickedTime = await buildShowTimePicker();
-      String formattedTime = pickedTime?.format(context);
-      DateTime selectedTime = DateTime(
-        pickerDate!.year,
-        pickerDate!.month,
-        pickerDate!.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
       if (pickedTime == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: CustomSnackBarContent(
-                errorMessage: "You didn't select time, select it immediately"),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-        );
-      } else if (selectedTime.isBefore(DateTime.now())) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: CustomSnackBarContent(
-                errorMessage: "You can't select a time before now"),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-        );
-      } else {
-        if (isStarted == true) {
-          setState(() {
-            startTime = formattedTime;
-          });
-        } else if (isStarted == false) {
-          setState(() {
-            endTime = formattedTime;
-          });
-        }
+        DateTime selectedTime = DateTime(
+          selectedDateAtBar.year,
+          selectedDateAtBar.month,
+          selectedDateAtBar.day,
+          DateTime.now().hour,
+          DateTime.now().minute,
+        ); 
+        if (selectedTime.isBefore(DateTime.now())) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: CustomSnackBarContent(
+                  errorMessage: "You can't select a time before now"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+          );
+        } else{
+          String formattedTime = DateFormat('HH:mm').format(DateTime.now()).toString();
+          if (isStarted == true) {
+            setState(() {
+              startTime = formattedTime;
+            });
+          } else if (isStarted == false) {
+            setState(() {
+              endTime = formattedTime;
+            });
+          }
+        } 
+      }else{
+        DateTime selectedTime = DateTime(
+          selectedDateAtBar.year,
+          selectedDateAtBar.month,
+          selectedDateAtBar.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        ); 
+        if (selectedTime.isBefore(DateTime.now())) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: CustomSnackBarContent(
+                  errorMessage: "You can't select a time before now"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
+          );
+        } else{
+          String formattedTime = pickedTime?.format(context);
+          if (isStarted == true) {
+            setState(() {
+              startTime = formattedTime;
+            });
+          } else if (isStarted == false) {
+            setState(() {
+              endTime = formattedTime;
+            });
+          }
+        } 
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
