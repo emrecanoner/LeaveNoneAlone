@@ -69,36 +69,34 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
     );
   }
 
-  Widget buildEventList(context, snapshot){
+  Widget buildEventList(context, snapshot) {
     List<LNAevent> eventmap = snapshot.data as List<LNAevent>;
     return ListView.builder(
-        itemCount: eventmap.length,
-        itemBuilder: (BuildContext context, int index){
-          LNAevent event = eventmap[index];
-          return ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image.network(
-                event.event_photo,
-                height: gHeight / 18,
-                width: gWidth / 9,
-              ),
+      itemCount: eventmap.length,
+      itemBuilder: (BuildContext context, int index) {
+        LNAevent event = eventmap[index];
+        return ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: Image.network(
+              event.event_photo,
+              height: gHeight / 18,
+              width: gWidth / 9,
             ),
-            title: Text(event.event_title),
-            onTap: () async{
-              Navigator.push(
+          ),
+          title: Text(event.event_title),
+          onTap: () async {
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => eventAccount(eventName: event.event_title),
-                )
-              );
-            },
-          );
-        },
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+                ));
+          },
+        );
+      },
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
     );
-
   }
 
   Container buildDateBar() {
