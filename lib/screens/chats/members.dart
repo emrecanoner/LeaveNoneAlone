@@ -98,6 +98,13 @@ class _membersListState extends State<membersList> {
               ),
             );
           }else{
+            Map CU ={
+              'member_name': FirebaseAuth.instance.currentUser!.displayName,
+              'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
+              'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+              'member_authid': FirebaseAuth.instance.currentUser!.uid,
+            };
+            chat_MEM.add(CU);
             Map<dynamic,dynamic> group_chat = {
               'chat_name': widget.chatN,
               'chat_members': chat_MEM,
@@ -146,12 +153,21 @@ class _membersListState extends State<membersList> {
               }else{
                 String userid = FirebaseAuth.instance.currentUser!.uid;
                 Map GroupUserDetail ={
-                    'member_name': friend.friend_name,
-                    'member_phone': friend.friend_phone,
-                    'member_photo': friend.friend_photo,
-                    'member_authid': friend.friend_auth_uid,
-                  };
-                  chat_MEM.add(GroupUserDetail);
+                  'member_name': friend.friend_name,
+                  'member_phone': friend.friend_phone,
+                  'member_photo': friend.friend_photo,
+                  'member_authid': friend.friend_auth_uid,
+                };
+                Map CU ={
+                  'member_name': FirebaseAuth.instance.currentUser!.displayName,
+                  'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
+                  'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+                  'member_authid': FirebaseAuth.instance.currentUser!.uid,
+                };
+
+                chat_MEM.add(GroupUserDetail);
+                chat_MEM.add(CU);
+
                   Map<dynamic,dynamic> single_chat = {
                     'chat_members': chat_MEM,
                     'chat_name': widget.chatN,

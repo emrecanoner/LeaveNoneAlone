@@ -34,13 +34,22 @@ final storageref = FirebaseStorage.instance.ref();
 class LNAevent {
   final String event_title;
   final String event_photo;
+  final String event_city;
+  final String event_type;
   final String event_date;
   final String event_starttime;
   final String event_endtime;
   final String event_location;
 
-  LNAevent(this.event_title, this.event_photo, this.event_date,
-      this.event_starttime, this.event_endtime, this.event_location);
+  LNAevent(
+      this.event_title,
+      this.event_photo,
+      this.event_city,
+      this.event_type,
+      this.event_date,
+      this.event_starttime,
+      this.event_endtime,
+      this.event_location);
 }
 
 Future<Map> getEventDetails(String Ename) async {
@@ -55,6 +64,8 @@ Future<Map> getEventDetails(String Ename) async {
         eventsInfo.add(LNAevent(
             value['event_title'],
             value['event_photo'],
+            value['event_city'],
+            value['event_type'],
             value['event_date'],
             value['start_time'],
             value['end_time'],
@@ -65,6 +76,8 @@ Future<Map> getEventDetails(String Ename) async {
           specificEvent = {
             'event_title': element.event_title,
             'event_photo': element.event_photo,
+            'event_city': element.event_city,
+            'event_type': element.event_type,
             'event_date': element.event_date,
             'event_starttime': element.event_starttime,
             'event_endtime': element.event_endtime,
