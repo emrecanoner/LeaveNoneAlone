@@ -28,6 +28,7 @@ class AuthService {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   signOut() async {
+    pageIndex = 1;
     return await auth.signOut();
   }
 }
