@@ -46,15 +46,17 @@ class HomePageHomeIcon extends StatefulWidget {
 class _HomePageHomeIconState extends State<HomePageHomeIcon> {
   Map Curr = {};
 
-  void initState(){
+  void initState() {
     super.initState();
     getCurrdetails();
   }
 
-  void getCurrdetails() async{
-    Curr = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
+  void getCurrdetails() async {
+    Curr = await customerAccountDetails(
+        FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
     var i;
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -65,52 +67,48 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
           buildTaskBar(context),
           SizedBox(height: gHeight / 50),
           buildDateBar(),
-          
           FutureBuilder(
-            future: getEventsbyCity(Curr['city']),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildEventList(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
-          ),
+              future: getEventsbyCity(Curr['city']),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return buildEventList(context, snapshot);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
         ],
       ),
     );
   }
 
-  Widget buildEventList(context, snapshot){
+  Widget buildEventList(context, snapshot) {
     List<LNAevent> eventmap = snapshot.data as List<LNAevent>;
     return ListView.builder(
-        itemCount: eventmap.length,
-        itemBuilder: (BuildContext context, int index){
-          LNAevent event = eventmap[index];
-          return ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image.network(
-                event.event_photo,
-                height: gHeight / 18,
-                width: gWidth / 9,
-              ),
+      itemCount: eventmap.length,
+      itemBuilder: (BuildContext context, int index) {
+        LNAevent event = eventmap[index];
+        return ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: Image.network(
+              event.event_photo,
+              height: gHeight / 18,
+              width: gWidth / 9,
             ),
-            title: Text(event.event_title),
-            onTap: () async{
-              Navigator.push(
+          ),
+          title: Text(event.event_title),
+          onTap: () async {
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => eventAccount(eventName: event.event_title),
-                )
-              );
-            },
-          );
-        },
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+                ));
+          },
+        );
+      },
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
     );
-
   }
 
   Container buildDateBar() {
