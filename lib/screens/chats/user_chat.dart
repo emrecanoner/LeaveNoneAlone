@@ -90,6 +90,7 @@ class _userChatState extends State<userChat> {
         ),
         leading: IconButton(
             onPressed: () {
+              Messageback();
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -172,6 +173,47 @@ class _userChatState extends State<userChat> {
         ),
       ),
     );
+  }
+
+  void Messageback() async {
+    final snap = await chatdbRef.get();
+    if (snap.exists) {
+      Map<Object?, Object?> data = snap.value as Map<Object?, Object?>;
+      data.forEach((key, value) {
+        if (key == 'chat_members') {
+          if (value is List) {
+            List<Object?> objList = value as List<Object?>;
+            objList.forEach((obj) {
+              if (obj is Map) {
+                Map map = obj as Map;
+                map.forEach((key, value) async {
+                  if (key == 'member_authid') {
+                    if (value != FirebaseAuth.instance.currentUser!.uid) {
+                      String valueKey = value;
+                      var DestRef = FirebaseDatabase.instance
+                          .ref()
+                          .child('Chats')
+                          .child(valueKey)
+                          .child(widget.messageKey);
+                      DataSnapshot sappy = await chatdbRef.get();
+                      await DestRef.set(sappy.value);
+                    }
+                  }
+                });
+              }
+            });
+          } else {
+            // value is not a Map, so do something else
+            // ...
+          }
+        }
+      });
+    } else {
+      print('no data');
+    }
+    setState(() {
+      ChatTextController.clear();
+    });
   }
 
   Widget chatListItem(context, snapshot) {
