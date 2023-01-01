@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:lna/screens/events/splash/animated_splash.dart';
 import 'package:lna/screens/friends/search_Users_list.dart';
 import 'package:lna/screens/friends/splash/animated_splash.dart';
 import 'package:lna/screens/home/home_page.dart';
@@ -26,11 +27,13 @@ class _eventAccountState extends State<eventAccount> {
   bool eventJoined = true;
 
   late DatabaseReference eventdbref;
+  late DatabaseReference chatDf;
 
   @override
   void initState() {
     super.initState();
     eventdbref = FirebaseDatabase.instance.ref().child('Events');
+    chatDf = FirebaseDatabase.instance.ref().child('Chats');
     getEvent();
   }
 
@@ -171,8 +174,44 @@ class _eventAccountState extends State<eventAccount> {
             child: DefaultButton(
               text: 'Join Event', 
               press: () async{
+                // // String chatKey = await getChatUID(EventSearched['event_title']);
+                // Map newItem = {
+                //   'member_name': FirebaseAuth.instance.currentUser!.displayName,
+                //   'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
+                //   'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+                //   'member_authid': FirebaseAuth.instance.currentUser!.uid,
+                // };
+                // Map chatsOfEvent = await getChatsforEvent(EventSearched['event_title']);
+                // chatsOfEvent.forEach((key, value) { 
+                //   chatsOfEvent[key]['chat_members'].add(newItem);
+                //   chatDf.child(key).update({
+                //     'chat_members': chatsOfEvent[key]['chat_members']
+                //   });
+                // });
+                // Map selectedChat;
+                // chatsOfEvent.forEach((key, value) { 
+                //   if (value['chat_name'] == EventSearched['event_title']) {
+                //     selectedChat = value;
+                //   }
+                // });
+
                 
                 
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //   builder: (_) =>SplashScreenEAnimated(chatK: chatKey,),
+                //   )
+                // );
+                // Fluttertoast.showToast(
+                //   msg: "Friend Request sent",
+                //   toastLength: Toast.LENGTH_SHORT,
+                //   gravity: ToastGravity.CENTER,
+                //   timeInSecForIosWeb: 1,
+                //   backgroundColor: buttonColor,
+                //   textColor: Colors.white,
+                //   fontSize: 16,
+                // );
               }
             ),
             visible: eventJoined,

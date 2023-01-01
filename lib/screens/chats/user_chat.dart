@@ -139,10 +139,12 @@ class _userChatState extends State<userChat> {
                               Map map = obj as Map;
                               map.forEach((key,value) async {
                                 if(key=='member_authid'){
-                                  String valueKey = value;
-                                  var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
-                                  DataSnapshot sappy = await chatdbRef.get();
-                                  await DestRef.set(data);
+                                  if(value!=FirebaseAuth.instance.currentUser!.uid){
+                                    String valueKey = value;
+                                    var DestRef = FirebaseDatabase.instance.ref().child('Chats').child(valueKey).child(widget.messageKey);
+                                    DataSnapshot sappy = await chatdbRef.get();
+                                    await DestRef.set(sappy.value);
+                                  }
                                 }
                               });
                             }

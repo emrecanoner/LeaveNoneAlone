@@ -32,12 +32,14 @@ final storageref = FirebaseStorage.instance.ref();
 class LNAevent {
   final String event_title;
   final String event_photo;
+  final String event_city;
+  final String event_type;
   final String event_date;
   final String event_starttime;
   final String event_endtime;
   final String event_location;
 
-  LNAevent(this.event_title,this.event_photo,this.event_date,this.event_starttime,this.event_endtime,this.event_location);
+  LNAevent(this.event_title,this.event_photo,this.event_city,this.event_type,this.event_date,this.event_starttime,this.event_endtime,this.event_location);
 }
 
 Future<Map> getEventDetails(String Ename) async{
@@ -49,13 +51,15 @@ Future<Map> getEventDetails(String Ename) async{
     if(snapshot.exists){
       Map data = snapshot.value as Map;
       data.forEach((key, value) {
-        eventsInfo.add(LNAevent(value['event_title'],value['event_photo'],value['event_date'],value['start_time'],value['end_time'],value['event_location']));
+        eventsInfo.add(LNAevent(value['event_title'],value['event_photo'],value['event_city'],value['event_type'],value['event_date'],value['start_time'],value['end_time'],value['event_location']));
       });
       for(var element in eventsInfo){
         if(element.event_title==Ename){
           specificEvent = {
             'event_title': element.event_title,
             'event_photo': element.event_photo,
+            'event_city': element.event_city,
+            'event_type': element.event_type,
             'event_date': element.event_date,
             'event_starttime': element.event_starttime,
             'event_endtime': element.event_endtime,
@@ -78,6 +82,86 @@ Future<Map> getEventDetails(String Ename) async{
     return{};
   }
 }
+
+// final chatDf = FirebaseDatabase.instance.ref().child('Chats');
+// Map newItem = {
+//                   'member_name': FirebaseAuth.instance.currentUser!.displayName,
+//                   'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3),
+//                   'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+//                   'member_authid': FirebaseAuth.instance.currentUser!.uid,
+//                 };
+//                 Map chatsOfEvent = await getChatsforEvent('q');
+                 
+
+// Future<Map> getChatsforEvent(String chatNAME) async{
+//   final chDref = FirebaseDatabase.instance.ref().child("Chats");
+//   final query = chDref.orderByChild("chat_name").equalTo(chatNAME);
+//   final queryResult = await query.once();
+//   final snap = queryResult.snapshot;
+//   if(snap.exists){
+//     Map chats = snap.value as Map;
+//     return chats;
+//   }else{
+//     print('no chats which such name exists');
+//     return {};
+//   }
+// }
+// chats:{
+//   user1:{
+//     chatM:{
+//       chat_uid:123
+//       chat_name:k
+//       chat_members:{
+//         0-> A
+//         1-> B
+//       }
+//     }
+//     chatN:{
+//       chat_uid:456
+//       chat_name:q
+//       chat_members:{
+//         0-> C
+//         1-> D
+//       }
+//     }
+//   }
+//   user2:{
+//     chatP:{
+//       chat_uid:789
+//       chat_name:m
+//       chat_members:{
+//         0-> E
+//         1-> F
+//       }
+//     }
+//     chatQ:{
+//       chat_uid:963
+//       chat_name:n
+//       chat_members:{
+//         0-> G
+//         1-> H
+//       }
+//     }
+//   }
+//   user3:{
+//     chatL:{
+//       chat_uid:741
+//       chat_name:p
+//       chat_members:{
+//         0-> D
+//         1-> S
+//       }
+//     }
+//     chatN:{
+//       chat_uid:456
+//       chat_name:q
+//       chat_members:{
+//         0-> C
+//         1-> D
+//       }
+//     }
+//   }
+// }
 
 class Friends{
   final String friend_auth_uid;

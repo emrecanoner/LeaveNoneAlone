@@ -21,6 +21,7 @@ import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -37,19 +38,28 @@ class _CreateEventState extends State<CreateEvent> {
   int long = 10;
   String? _currentAddress;
   Position? _currentPosition;
+  String selectedevent = '';
 
   DateTime? pickerDate;
 
   final titleController = TextEditingController();
+  late SingleValueDropDownController eventTypeController;
+
 
   late DatabaseReference eventdref;
 
   void initState() {
     eventdref = FirebaseDatabase.instance.ref().child('Events');
+    eventTypeController = SingleValueDropDownController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCurrentPosition();
     });
     super.initState();
+  }
+
+  void dispose() {
+    eventTypeController.dispose();
+    super.dispose();
   }
 
   getDateFromUser(BuildContext context) async {
@@ -298,6 +308,7 @@ class _CreateEventState extends State<CreateEvent> {
                   ),
                 ],
               ),
+              buildEventTypeDropdown(),
               InputField(
                 title: "Location",
                 hint: location ?? "Enter your location",
@@ -313,18 +324,54 @@ class _CreateEventState extends State<CreateEvent> {
               Center(
                 child: DefaultButton(
                     text: "Create",
-                    press: (() {
+                    press: (() async{
                       String date = DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
+                      Map Curruser = await customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3));
+                      String event_photo = '';
+                      if(selectedevent=='Basketball'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fbasketball.png?alt=media&token=13852706-3211-41fd-8744-3dc3bc3479e2';
+                      }else if(selectedevent=='Coffee'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
+                      }else if(selectedevent=='Dance party'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
+                      }else if(selectedevent=='Football'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
+                      }else if(selectedevent=='Ice Skate'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
+                      }else if(selectedevent=='Normal party'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
+                      }else if(selectedevent=='Surfing'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fsurfing.png?alt=media&token=f751c534-671b-42a0-893c-480255668a84';
+                      }else if(selectedevent=='Swimming'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fswimming.png?alt=media&token=dfa1aa98-557f-4990-aa68-778ccb083eb4';
+                      }else if(selectedevent=='Tennis'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftennis.png?alt=media&token=b62bbecf-919c-402d-aad2-e52ee490488d';
+                      }else if(selectedevent=='Touring'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftouring.png?alt=media&token=f740a298-178c-4ec5-9496-a6dd9613a018';
+                      }else if(selectedevent=='Other'){
+                        event_photo = 
+                        'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fevent.png?alt=media&token=27dc400e-158c-4973-acf5-06b5956f7779';
+                      }
                       Map event = {
                         'event_title': titleController.text,
-                        'event_photo': '',
+                        'event_photo': event_photo,
+                        'event_city': Curruser['city'],
+                        'event_type': selectedevent,
                         'event_date': date,
                         'start_time': startTime,
                         'end_time': endTime,
                         'event_location': location
                       };
-
-
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -336,6 +383,61 @@ class _CreateEventState extends State<CreateEvent> {
           ),
         ),
       ),
+    );
+  }
+
+  DropDownTextField buildEventTypeDropdown() {
+    return DropDownTextField(
+      controller: eventTypeController,
+      clearOption: true,
+      enableSearch: true,
+      dropDownIconProperty: IconProperty(color: buttonColor),
+      clearIconProperty: IconProperty(color: buttonColor),
+      searchShowCursor: true,
+      searchDecoration: InputDecoration(
+        labelText: "Choose the event type",
+        labelStyle: TextStyle(color: iconColor, fontSize: 13),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      textFieldDecoration: InputDecoration(
+        prefix: Padding(
+          padding: EdgeInsets.all(4),
+        ),
+        labelText: "Event Type",
+        labelStyle: TextStyle(color: iconColor),
+        hintText: "Select your event",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      validator: (value) {
+        if (value == null) {
+          return "Required field";
+        } else {
+          selectedevent = value.toString();
+          return null;
+        }
+      },
+      dropDownItemCount: 6,
+      dropDownList: const [
+        DropDownValueModel(name: 'Basketball', value: "Basketball"),
+        DropDownValueModel(name: 'Coffee', value: "Coffee"),
+        DropDownValueModel(name: 'Dance party', value: "Dance party"),
+        DropDownValueModel(name: 'Football', value: "Football"),
+        DropDownValueModel(name: 'Ice Skate', value: "Ice Skate"),
+        DropDownValueModel(name: 'Normal party', value: "Normal party"),
+        DropDownValueModel(name: 'Surfing', value: "Surfing"),
+        DropDownValueModel(name: 'Swimming', value: "Swimming"),
+        DropDownValueModel(name: 'Tennis', value: "Tennis"),
+        DropDownValueModel(name: 'Touring', value: "Touring"),
+        DropDownValueModel(name: 'Other', value: "Other"),
+
+      ],
+      onChanged: (val) {
+        if (val == "") {
+          selectedevent = "";
+        } else {
+          selectedevent = val.value;
+        }
+      },
     );
   }
 }
