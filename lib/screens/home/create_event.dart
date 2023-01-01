@@ -424,6 +424,7 @@ class _CreateEventState extends State<CreateEvent> {
                         }
                         Map event = {
                           'event_title': titleController.text,
+                          'event_creator': FirebaseAuth.instance.currentUser!.uid,
                           'event_photo': event_photo,
                           'event_city': Curruser['city'],
                           'event_type': selectedevent,

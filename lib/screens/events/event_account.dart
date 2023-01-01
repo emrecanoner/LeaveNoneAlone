@@ -181,21 +181,75 @@ class _eventAccountState extends State<eventAccount> {
                   'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
                   'member_authid': FirebaseAuth.instance.currentUser!.uid,
                 };
-                Map chatsOfEvent = await getChatsforEvent(EventSearched['event_title']);
-                chatsOfEvent.forEach((key, value) { 
-                  chatsOfEvent[key]['chat_members'].add(newItem);
-                  chatDf.child(key).update({
-                    'chat_members': chatsOfEvent[key]['chat_members']
+                var chDref = FirebaseDatabase.instance.ref().child('Child').child(EventSearched['event_creator']);
+                bool gotiT = false;
+                final shnap = await chDref.get();
+                if (shnap.exists) {
+                  Map<Object?, Object?> data = shnap.value as Map<Object?, Object?>;
+                  data.forEach((key, value) {
+                    if (key=='chat_name') {
+                      if(value == EventSearched){
+                        gotiT = true;
+                      }
+                    }else if (key=='chat_members'){
+                      if(gotiT){
+                        if (value is List) {
+                          List<Object?> objList = value as List<Object?>;
+                          objList.add(newItem);
+                          chDref.child(chatKey).update({
+                            'chat_members': objList
+                          });
+                        }
+                      }
+                    }
                   });
-                });
-                Map selectedChat;
-                chatsOfEvent.forEach((key, value) { 
-                  if (value['chat_name'] == EventSearched['event_title']) {
-                    selectedChat = value;
-                  }
-                });
+                } else {
+                  print('no data');
+                }
 
+                final shap = await chDref.get();
+                var currUs = FirebaseDatabase.instance.ref().child('Chats').child(FirebaseAuth.instance.currentUser!.uid);
+                currUs.set(shap);
                 
+
+                final snap = await chDref.get();
+                  if (snap.exists) {
+                    Map<Object?, Object?> data =
+                        snap.value as Map<Object?, Object?>;
+                    data.forEach((key, value) {
+                      if (key == 'chat_members') {
+                        if (value is List) {
+                          List<Object?> objList = value as List<Object?>;
+                          objList.forEach((obj) {
+                            if (obj is Map) {
+                              Map map = obj as Map;
+                              map.forEach((key, value) async {
+                                if (key == 'member_authid') {
+                                  if (value !=
+                                      FirebaseAuth.instance.currentUser!.uid||value!=EventSearched['event_creator']) {
+                                    String valueKey = value;
+                                    var DestRef = FirebaseDatabase.instance
+                                        .ref()
+                                        .child('Chats')
+                                        .child(valueKey)
+                                        .child(chatKey);
+                                    DataSnapshot sappy = await chDref.get();
+                                    await DestRef.set(sappy.value);
+                                  }
+                                }
+                              });
+                            }
+                          });
+                        } else {
+                          // value is not a Map, so do something else
+                          // ...
+                        }
+                      }
+                    });
+                  } else {
+                    print('no data');
+                  }
+
                 
                 Navigator.push(
                   context,

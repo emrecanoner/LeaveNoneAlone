@@ -32,22 +32,9 @@ final DBref = FirebaseDatabase.instance.ref();
 final storageref = FirebaseStorage.instance.ref();
 
 
-Future<Map> getChatsforEvent(String chatNAME) async{
-  final chDref = FirebaseDatabase.instance.ref();
-  final query = chDref.orderByChild("chat_name").equalTo(chatNAME);
-  final queryResult = await query.once();
-  final snap = queryResult.snapshot;
-  if(snap.exists){
-    Map chats = snap.value as Map;
-    return chats;
-  }else{
-    print('no chats which such name exists');
-    return {};
-  }
-}
-
 class LNAevent {
   final String event_title;
+  final String event_creator;
   final String event_photo;
   final String event_city;
   final String event_type;
@@ -58,6 +45,7 @@ class LNAevent {
 
   LNAevent(
       this.event_title,
+      this.event_creator,
       this.event_photo,
       this.event_city,
       this.event_type,
@@ -78,6 +66,7 @@ Future<List<LNAevent>> getEventsbyCity(String userCity) async{
       data.forEach((key, value) {
         events.add(LNAevent(
             value['event_title'],
+            value['event_creator'],
             value['event_photo'],
             value['event_city'],
             value['event_type'],
@@ -90,6 +79,7 @@ Future<List<LNAevent>> getEventsbyCity(String userCity) async{
         if (element.event_city==userCity){
           eventsInCity.add(LNAevent(
             element.event_title, 
+            element.event_creator,
             element.event_photo, 
             element.event_city, 
             element.event_type, 
@@ -125,6 +115,7 @@ Future<Map> getEventDetails(String Ename) async {
       data.forEach((key, value) {
         eventsInfo.add(LNAevent(
             value['event_title'],
+            value['event_creator'],
             value['event_photo'],
             value['event_city'],
             value['event_type'],
@@ -137,6 +128,7 @@ Future<Map> getEventDetails(String Ename) async {
         if (element.event_title == Ename) {
           specificEvent = {
             'event_title': element.event_title,
+            'event_creator': element.event_creator,
             'event_photo': element.event_photo,
             'event_city': element.event_city,
             'event_type': element.event_type,
@@ -172,6 +164,7 @@ Future<List<LNAevent>> getallEvents() async{
       data.forEach((key, value) {
         ev.add(LNAevent(
             value['event_title'],
+            value['event_creator'],
             value['event_photo'],
             value['event_city'],
             value['event_type'],
