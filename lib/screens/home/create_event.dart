@@ -23,7 +23,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 
-enum SampleItem { Coffee, Basketball, itemThree }
+enum SampleItem { Coffee, Basketball, Football, Dance_party, Ice_skate, Normal_party, Surfing, Swimming, Tennis, Touring, Other}
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -392,18 +392,16 @@ class _CreateEventState extends State<CreateEvent> {
                         } else if (selectedevent.split('.').last == 'Coffee') {
                           event_photo =
                               'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
-                        } else if (selectedevent.split('.').last ==
-                            'Dance party') {
+                        } else if (selectedevent.split('.').last =='Dance_party') {
                           event_photo =
                               'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
                         } else if (selectedevent.split('.').last == 'Football') {
                           event_photo =
                               'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
-                        } else if (selectedevent.split('.').last == 'Ice Skate') {
+                        } else if (selectedevent.split('.').last == 'Ice_skate') {
                           event_photo =
                               'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
-                        } else if (selectedevent.split('.').last ==
-                            'Normal party') {
+                        } else if (selectedevent.split('.').last =='Normal_party') {
                           event_photo =
                               'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
                         } else if (selectedevent.split('.').last == 'Surfing') {
@@ -465,15 +463,47 @@ class _CreateEventState extends State<CreateEvent> {
       itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
         const PopupMenuItem<SampleItem>(
           value: SampleItem.Coffee,
-          child: Text('Item 1'),
+          child: Text('Coffee'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Dance_party,
+          child: Text('Dance Party'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Ice_skate,
+          child: Text('Ice Skate'),
         ),
         const PopupMenuItem<SampleItem>(
           value: SampleItem.Basketball,
-          child: Text('Item 2'),
+          child: Text('Basketball'),
         ),
         const PopupMenuItem<SampleItem>(
-          value: SampleItem.itemThree,
-          child: Text('Item 3'),
+          value: SampleItem.Football,
+          child: Text('Football'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Normal_party,
+          child: Text('Normal Party'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Swimming,
+          child: Text('Swimming'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Surfing,
+          child: Text('Surfing'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Tennis,
+          child: Text('Tennis'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Touring,
+          child: Text('Touring'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.Other,
+          child: Text('Other'),
         ),
       ],
     );
