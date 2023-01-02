@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
+import 'package:lna/screens/database/terms_and_conditions.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
@@ -112,6 +113,8 @@ class _SignUpState extends State<SignUp> {
               buildAgeFormField(),
               SizedBox(height: gHeight / 40),
               buildPhoneNumberFormField(),
+              SizedBox(height: gHeight / 40),
+              TermsAndConditions(),
               SizedBox(height: gHeight / 20),
               DefaultButton(
                 press: () async {
@@ -186,7 +189,7 @@ class _SignUpState extends State<SignUp> {
                     userName = name.text;
                     List<String> phones = [];
                     List<Customer> items = await customerListMaker();
-                    
+
                     for (var element in items) {
                       phones.add(element.phone);
                     }
@@ -304,7 +307,7 @@ class _SignUpState extends State<SignUp> {
         hintText: "Enter your surname",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
-          Icons.account_circle,
+          Icons.account_circle_outlined,
           color: buttonColor,
         ),
       ),
@@ -498,4 +501,3 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-

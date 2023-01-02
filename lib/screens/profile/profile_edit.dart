@@ -224,25 +224,27 @@ class _EditProfileState extends State<EditProfile> {
                       dbRef
                           .child(widget.userKey)
                           .update(users)
-                          .then((value) => {
-                                
-                              });
-                      FirebaseAuth.instance.currentUser!.updateDisplayName(name.text);
-                      String? authcurrent = FirebaseAuth.instance.currentUser?.phoneNumber?.substring(3);
-                      if(authcurrent.toString()!=phoneN.text){
+                          .then((value) => {});
+                      FirebaseAuth.instance.currentUser!
+                          .updateDisplayName(name.text);
+                      String? authcurrent = FirebaseAuth
+                          .instance.currentUser?.phoneNumber
+                          ?.substring(3);
+                      if (authcurrent.toString() != phoneN.text) {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                              phoneNumberChange(newPhone: phoneN.text, userK: widget.userKey,),
+                            builder: (context) => phoneNumberChange(
+                              newPhone: phoneN.text,
+                              userK: widget.userKey,
+                            ),
                           ),
                         );
-                      }else{
+                      } else {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                              SplashScreenPAnimated(),
+                            builder: (context) => SplashScreenPAnimated(),
                           ),
                         );
                         Fluttertoast.showToast(
@@ -307,7 +309,9 @@ class _EditProfileState extends State<EditProfile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditProfilePicture(userKey: widget.userKey,),
+                      builder: (context) => EditProfilePicture(
+                        userKey: widget.userKey,
+                      ),
                     ),
                   );
                 },
@@ -402,7 +406,7 @@ class _EditProfileState extends State<EditProfile> {
         hintText: "Enter your surname",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
-          Icons.account_circle,
+          Icons.account_circle_outlined,
           color: buttonColor,
         ),
       ),

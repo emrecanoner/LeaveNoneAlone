@@ -45,11 +45,10 @@ class HomePageHomeIcon extends StatefulWidget {
 }
 
 class _HomePageHomeIconState extends State<HomePageHomeIcon> {
-
-  late SingleValueDropDownController cityController ;
+  late SingleValueDropDownController cityController;
   String cityEvent = '';
 
-    @override
+  @override
   void initState() {
     cityController = SingleValueDropDownController();
     super.initState();
@@ -68,29 +67,30 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
       child: Column(
         children: [
           // SizedBox(height: gHeight / 50),
-          
           FutureBuilder(
-            future: customerAccountDetails(FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildTaskBar(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
+              future: customerAccountDetails(
+                  FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return buildTaskBar(context, snapshot);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: gWidth / 45),
+            child: buildCityDropdown(),
           ),
-          buildCityDropdown(),
           SizedBox(height: 10),
           FutureBuilder(
-            future: getEventsbyCity(cityEvent),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildEventList(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
-          ),
+              future: getEventsbyCity(cityEvent),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return buildEventList(context, snapshot);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
         ],
       ),
     );
@@ -294,66 +294,63 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
     Map CurrUser = snapshot.data as Map;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hello, ${CurrUser['name']}",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 21,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: gHeight / 250),
-                  Text(
-                    "Let's explore what's happening nearby",
-                    style: TextStyle(
+      child: Column(children: <Widget>[
+        Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Hello, ${CurrUser['name']}",
+                  style: TextStyle(
                       color: Colors.black,
-                      fontSize: 15,
-                    ),
-                  )
-                ],
-              ),
-              Spacer(),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 3, color: buttonColor),
-                  borderRadius: BorderRadius.circular(50),
+                      fontSize: 21,
+                      fontWeight: FontWeight.w700),
                 ),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfilePage(),
-                      ),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.network(
-                      CurrUser['photoURL'],
-                      height: gHeight / 18,
-                      width: gWidth / 9,
+                SizedBox(height: gHeight / 150),
+                Text(
+                  "Let's explore what's happening nearby",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                  ),
+                )
+              ],
+            ),
+            Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 3, color: buttonColor),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(),
                     ),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    CurrUser['photoURL'],
+                    height: gHeight / 18,
+                    width: gWidth / 9,
                   ),
                 ),
               ),
-            ],
-          ),
-          buildDateBar(),
-          SizedBox(height: 20),
-        ]
-      ),
+            ),
+          ],
+        ),
+        SizedBox(height: gHeight / 150),
+        buildDateBar(),
+        SizedBox(height: gHeight / 50),
+      ]),
     );
   }
 }
-
-
 
 class HomePageEventIcon extends StatelessWidget {
   const HomePageEventIcon({

@@ -12,7 +12,9 @@ import 'package:lna/utils/custom_snackbar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class phoneNumberChange extends StatefulWidget {
-  const phoneNumberChange({Key? key, required this.newPhone, required this.userK}) : super(key: key);
+  const phoneNumberChange(
+      {Key? key, required this.newPhone, required this.userK})
+      : super(key: key);
 
   final String newPhone;
   final String userK;
@@ -32,7 +34,7 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
   late DatabaseReference dbref;
   FirebaseAuth auth = FirebaseAuth.instance;
   String verificationID = "";
-  
+
   void initState() {
     super.initState();
     newPhoneController.text = widget.newPhone;
@@ -42,69 +44,62 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ));
-            },
-            icon: Icon(LineAwesomeIcons.arrow_left)),
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: gHeight / 40),
-            buildNewPhoneFormField(),
-            buildSMSCodeFormField(),
-            SizedBox(height: gHeight / 40),
-            DefaultButton(
-              text: otpVisibility ? 'Verify' : 'Update', 
-              press: () async{
-                if (newPhoneController.text.length < 10 && newPhoneController.text.length > 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: CustomSnackBarContent(
-                          errorMessage:
-                              'You entered a missing number, correct it immediately.'),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                    ),
-                  );
-                } else if (newPhoneController.text.length == 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: CustomSnackBarContent(
-                          errorMessage:
-                              "You didn't enter a number, write it immediately."),
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
-                    ),
-                  );
-                } else {
-                  if (otpVisibility == true &&
-                      registerVisibility == false &&
-                      phoneVisibility == false) {
-                    verifyOTP();
-                  } else {
-                    phoneNExists();
-                  }
-                }
-              },
-            ),
-          ]
-        )
-      )
-    );
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("New Phone Number"),
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: gWidth / 20, vertical: gHeight / 40),
+          child: Container(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                buildNewPhoneFormField(),
+                buildSMSCodeFormField(),
+                SizedBox(height: gHeight / 40),
+                DefaultButton(
+                  text: otpVisibility ? 'Verify' : 'Update',
+                  press: () async {
+                    if (newPhoneController.text.length < 10 &&
+                        newPhoneController.text.length > 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage:
+                                  'You entered a missing number, correct it immediately.'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else if (newPhoneController.text.length == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage:
+                                  "You didn't enter a number, write it immediately."),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else {
+                      if (otpVisibility == true &&
+                          registerVisibility == false &&
+                          phoneVisibility == false) {
+                        verifyOTP();
+                      } else {
+                        phoneNExists();
+                      }
+                    }
+                  },
+                ),
+              ])),
+        ));
   }
 
-   Visibility buildNewPhoneFormField() {
+  Visibility buildNewPhoneFormField() {
     return Visibility(
       child: Container(
         child: TextFormField(
@@ -189,9 +184,7 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
 
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationID, 
-      smsCode: smsCodeController.text
-    );
+        verificationId: verificationID, smsCode: smsCodeController.text);
     if (credential.smsCode.toString().length == 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: CustomSnackBarContent(
@@ -253,16 +246,15 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
   }
 
   void phoneNExists() {
-    if(widget.newPhone!=newPhoneController.text){
-      dbref.update({
-        'phone_number': newPhoneController
-      });
+    if (widget.newPhone != newPhoneController.text) {
+      dbref.update({'phone_number': newPhoneController});
       ch();
-    }else{
+    } else {
       loginWithPhone();
     }
   }
-  void ch () async{
+
+  void ch() async {
     List<String> phones = [];
     List<Customer> items = await customerListMaker();
 
@@ -287,5 +279,4 @@ class _phoneNumberChangeState extends State<phoneNumberChange> {
       loginWithPhone();
     }
   }
-
 }
