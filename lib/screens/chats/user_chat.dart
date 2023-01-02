@@ -47,7 +47,7 @@ class _userChatState extends State<userChat> {
       Map chat_MAP = chatsnapshot.value as Map;
       Map chat_details = {
         'chat_NAME': chat_MAP['chat_name'],
-        'chat_PHOTO': chat_MAP['chat_photo']
+        //'chat_PHOTO': chat_MAP['chat_photo']
       };
 
       return chat_details;
@@ -61,14 +61,14 @@ class _userChatState extends State<userChat> {
     Map chTitle = snapshot.data as Map;
     return Column(
       children: <Widget>[
-        ClipRRect(
+        /*ClipRRect(
           borderRadius: BorderRadius.circular(25),
           child: Image.network(
             chTitle['chat_PHOTO'],
             height: gHeight / 18,
             width: gWidth / 9,
           ),
-        ),
+        ),*/
         Text('${chTitle['chat_NAME']}'),
       ],
     );
@@ -169,6 +169,7 @@ class _userChatState extends State<userChat> {
                     ChatTextController.clear();
                   });
                 }),
+            SizedBox(height: gHeight / 150)
           ],
         ),
       ),
@@ -224,71 +225,78 @@ class _userChatState extends State<userChat> {
         Message message = messages[index];
         return Container(
           margin: const EdgeInsets.only(top: 10, bottom: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Image.network(
-                    message.message_sender_image,
-                    height: gHeight / 18,
-                    width: gWidth / 9,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: gWidth / 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: Image.network(
+                      message.message_sender_image,
+                      height: gHeight / 18,
+                      width: gWidth / 9,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      message.message_sender,
-                      style: ((FirebaseAuth.instance.currentUser!.displayName ==
-                              message.message_sender)
-                          ? TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.deepOrange)
-                          : TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400)),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 5),
-                      child: Text(message.message_text,
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400)),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        message.message_sender,
+                        style:
+                            ((FirebaseAuth.instance.currentUser!.displayName ==
+                                    message.message_sender)
+                                ? TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.deepOrange)
+                                : TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w400)),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: Text(message.message_text,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400)),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Text(
-                  message.message_timestamp,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    message.message_timestamp,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  TextFormField buildChatFormField() {
-    return TextFormField(
-      keyboardType: TextInputType.text,
-      controller: ChatTextController,
-      showCursor: true,
-      decoration: InputDecoration(
-        prefix: Padding(
-          padding: EdgeInsets.all(4),
+  Padding buildChatFormField() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: TextFormField(
+        keyboardType: TextInputType.text,
+        controller: ChatTextController,
+        showCursor: true,
+        decoration: InputDecoration(
+          prefix: Padding(
+            padding: EdgeInsets.all(4),
+          ),
+          labelText: "Chat",
+          labelStyle: TextStyle(color: iconColor),
+          hintText: "Enter your message",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
-        labelText: "Chat",
-        labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your message",
-        floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
     );
   }

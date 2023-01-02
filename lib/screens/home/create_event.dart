@@ -23,7 +23,19 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 
-enum SampleItem { Coffee, Basketball, Football, Dance_party, Ice_skate, Normal_party, Surfing, Swimming, Tennis, Touring, Other}
+enum SampleItem {
+  Coffee,
+  Basketball,
+  Football,
+  Dance_party,
+  Ice_skate,
+  Normal_party,
+  Surfing,
+  Swimming,
+  Tennis,
+  Touring,
+  Other
+}
 
 class CreateEvent extends StatefulWidget {
   const CreateEvent({super.key});
@@ -53,6 +65,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   void initState() {
     eventdref = FirebaseDatabase.instance.ref().child('Events');
+    selectedevent = "";
     eventTypeController = SingleValueDropDownController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCurrentPosition();
@@ -62,6 +75,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   void dispose() {
     eventTypeController.dispose();
+    selectedevent;
     super.dispose();
   }
 
@@ -77,7 +91,7 @@ class _CreateEventState extends State<CreateEvent> {
       setState(() {
         selectedDateAtBar = pickerDate!;
       });
-    } 
+    }
   }
 
   getTimeFromUser({required bool isStarted}) async {
@@ -90,7 +104,7 @@ class _CreateEventState extends State<CreateEvent> {
           selectedDateAtBar.day,
           DateTime.now().hour,
           DateTime.now().minute,
-        ); 
+        );
         if (selectedTime.isBefore(DateTime.now())) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -101,8 +115,9 @@ class _CreateEventState extends State<CreateEvent> {
               elevation: 0,
             ),
           );
-        } else{
-          String formattedTime = DateFormat('HH:mm').format(DateTime.now()).toString();
+        } else {
+          String formattedTime =
+              DateFormat('HH:mm').format(DateTime.now()).toString();
           if (isStarted == true) {
             setState(() {
               startTime = formattedTime;
@@ -112,15 +127,15 @@ class _CreateEventState extends State<CreateEvent> {
               endTime = formattedTime;
             });
           }
-        } 
-      }else{
+        }
+      } else {
         DateTime selectedTime = DateTime(
           selectedDateAtBar.year,
           selectedDateAtBar.month,
           selectedDateAtBar.day,
           pickedTime.hour,
           pickedTime.minute,
-        ); 
+        );
         if (selectedTime.isBefore(DateTime.now())) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -131,7 +146,7 @@ class _CreateEventState extends State<CreateEvent> {
               elevation: 0,
             ),
           );
-        } else{
+        } else {
           String formattedTime = pickedTime?.format(context);
           if (isStarted == true) {
             setState(() {
@@ -142,7 +157,7 @@ class _CreateEventState extends State<CreateEvent> {
               endTime = formattedTime;
             });
           }
-        } 
+        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -324,12 +339,9 @@ class _CreateEventState extends State<CreateEvent> {
               ),
               InputField(
                 title: "Event Type",
-                hint: selectedevent.split('.').last,
+                hint: selectedevent.split(".").last,
                 widget: popUp(),
               ),
-              SizedBox(height: 30),
-              //buildEventTypeDropdown(),
-              SizedBox(height: 30),
               InputField(
                 title: "Location",
                 hint: location ?? "Enter your location",
@@ -341,108 +353,129 @@ class _CreateEventState extends State<CreateEvent> {
                   color: buttonColor,
                 ),
               ),
-              SizedBox(height: gHeight / 15),
+              SizedBox(height: gHeight / 25),
               Center(
                 child: DefaultButton(
-                    text: "Create",
-                    press: () async {
-                      bool nameExists=false;
-                      List<LNAevent> eventK = await getallEvents();
-                      for(var element in eventK){
-                        if(element.event_title==titleController.text){
-                          nameExists = true;
-                          break;
-                        }else{
-                          continue;
-                        }
-                      }
-                      if(titleController.text.length==0){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: CustomSnackBarContent(
-                              errorMessage:
-                                'Type event title'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                          ),
-                        );
-                      }else if(nameExists){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: CustomSnackBarContent(
-                              errorMessage:
-                                'Type a unique event title. This one exists'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                          ),
-                        );
-                      }else{
-                        String date =
-                            DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
-                        Map Curruser = await customerAccountDetails(FirebaseAuth
-                            .instance.currentUser!.phoneNumber
-                            ?.substring(3));
-                        String event_photo = '';
-                        String sdf = selectedevent.split('.').last;
-                        if (selectedevent.split('.').last == 'Basketball') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fbasketball.png?alt=media&token=13852706-3211-41fd-8744-3dc3bc3479e2';
-                        } else if (selectedevent.split('.').last == 'Coffee') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
-                        } else if (selectedevent.split('.').last =='Dance_party') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
-                        } else if (selectedevent.split('.').last == 'Football') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
-                        } else if (selectedevent.split('.').last == 'Ice_skate') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
-                        } else if (selectedevent.split('.').last =='Normal_party') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
-                        } else if (selectedevent.split('.').last == 'Surfing') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fsurfing.png?alt=media&token=f751c534-671b-42a0-893c-480255668a84';
-                        } else if (selectedevent.split('.').last == 'Swimming') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fswimming.png?alt=media&token=dfa1aa98-557f-4990-aa68-778ccb083eb4';
-                        } else if (selectedevent.split('.').last == 'Tennis') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftennis.png?alt=media&token=b62bbecf-919c-402d-aad2-e52ee490488d';
-                        } else if (selectedevent.split('.').last == 'Touring') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftouring.png?alt=media&token=f740a298-178c-4ec5-9496-a6dd9613a018';
-                        } else if (selectedevent.split('.').last == 'Other') {
-                          event_photo =
-                              'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fevent.png?alt=media&token=27dc400e-158c-4973-acf5-06b5956f7779';
-                        }
-                        Map event = {
-                          'event_title': titleController.text,
-                          'event_creator': FirebaseAuth.instance.currentUser!.uid,
-                          'event_photo': event_photo,
-                          'event_city': Curruser['city'],
-                          'event_type': selectedevent,
-                          'event_date': date,
-                          'start_time': startTime,
-                          'end_time': endTime,
-                          'event_location': location
-                        };
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => createChat(
-                                  chatN: titleController.text,
-                                  chatP: event_photo,
-                                  chatMap: event),
-                            ));
+                  text: "Create",
+                  press: () async {
+                    bool nameExists = false;
+                    List<LNAevent> eventK = await getallEvents();
+                    for (var element in eventK) {
+                      if (element.event_title == titleController.text) {
+                        nameExists = true;
+                        break;
+                      } else {
+                        continue;
                       }
                     }
-                  )
+                    if (titleController.text.length == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage: 'Type event title'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else if (nameExists) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage:
+                                  'Type a unique event title. This one exists'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else if (selectedevent == "") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage: 'Select event type'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else if (location == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: CustomSnackBarContent(
+                              errorMessage: 'Select event location'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                      );
+                    } else {
+                      String date =
+                          DateFormat('dd-MM-yyyy').format(selectedDateAtBar);
+                      Map Curruser = await customerAccountDetails(FirebaseAuth
+                          .instance.currentUser!.phoneNumber
+                          ?.substring(3));
+                      String event_photo = '';
+                      if (selectedevent.split('.').last == 'Basketball') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fbasketball.png?alt=media&token=13852706-3211-41fd-8744-3dc3bc3479e2';
+                      } else if (selectedevent.split('.').last == 'Coffee') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fcoffee.png?alt=media&token=80504e6d-08c8-4159-84e2-34571f6f910f';
+                      } else if (selectedevent.split('.').last ==
+                          'Dance_party') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fdance%20party.png?alt=media&token=1bb64657-411b-4302-9e2a-6c1059b1221a';
+                      } else if (selectedevent.split('.').last == 'Football') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ffootball.png?alt=media&token=55a1dcf8-10c8-4baa-8dca-36d896e1cebf';
+                      } else if (selectedevent.split('.').last == 'Ice_skate') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fice-skate.png?alt=media&token=7a731396-b665-40ce-b5c4-b6774866ba62';
+                      } else if (selectedevent.split('.').last ==
+                          'Normal_party') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fnormal%20party.png?alt=media&token=9ad1fb04-6ef9-4a04-915e-669d647c191d';
+                      } else if (selectedevent.split('.').last == 'Surfing') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fsurfing.png?alt=media&token=f751c534-671b-42a0-893c-480255668a84';
+                      } else if (selectedevent.split('.').last == 'Swimming') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fswimming.png?alt=media&token=dfa1aa98-557f-4990-aa68-778ccb083eb4';
+                      } else if (selectedevent.split('.').last == 'Tennis') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftennis.png?alt=media&token=b62bbecf-919c-402d-aad2-e52ee490488d';
+                      } else if (selectedevent.split('.').last == 'Touring') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Ftouring.png?alt=media&token=f740a298-178c-4ec5-9496-a6dd9613a018';
+                      } else if (selectedevent.split('.').last == 'Other') {
+                        event_photo =
+                            'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/event%20icons%2Fevent.png?alt=media&token=27dc400e-158c-4973-acf5-06b5956f7779';
+                      }
+                      Map event = {
+                        'event_title': titleController.text,
+                        'event_creator': FirebaseAuth.instance.currentUser!.uid,
+                        'event_photo': event_photo,
+                        'event_city': Curruser['city'],
+                        'event_type': selectedevent,
+                        'event_date': date,
+                        'start_time': startTime,
+                        'end_time': endTime,
+                        'event_location': location
+                      };
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => createChat(
+                                chatN: titleController.text,
+                                chatP: event_photo,
+                                chatMap: event),
+                          ));
+                    }
+                  },
+                ),
               ),
+              SizedBox(height: gHeight / 25),
             ],
           ),
         ),

@@ -43,8 +43,9 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          /*leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
                   context,
@@ -52,59 +53,55 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
                     builder: (context) => HomePage(),
                   ));
             },
-            icon: Icon(LineAwesomeIcons.arrow_left)),
-      ),
-      body: Container(
-        height: 500,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(height: gHeight / 40),
-              buildFriendNameFormField(),
-              SizedBox(height: gHeight / 40),
-              DefaultButton(
-                text: 'Search', 
-                press: () async{
-
-                  List<Customer> items = await customerListMaker();
-                  
-                  for(var element in items){
-                    if(userLNA_name.text.contains(element.name)||
-                    userLNA_name.text.contains(element.surname)){
-                      searchedusersLNA={
-                        element.name: element.phone
-                      };
-                    }
-                  }
-                  setState(() {
-                    searchlistExist = true;
-                    searchedNames = searchedusersLNA.keys.toList();
-                  });
-                }
-              ),
-              buildUSERSLNAList(),
-              SizedBox(height: gHeight / 40),
-              FloatingActionButton(
-                child: Icon(Icons.message_sharp),
-                backgroundColor: Color(0xffffaa17),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                    builder: (_) => userChatList(),
-                    )
-                  );
-                },
-              )
-            ]
-          ),
+            icon: Icon(LineAwesomeIcons.arrow_left)),*/
         ),
-      )
-    );
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Container(
+            height: gHeight / 1,
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(height: gHeight / 40),
+                    buildFriendNameFormField(),
+                    SizedBox(height: gHeight / 40),
+                    DefaultButton(
+                        text: 'Search',
+                        press: () async {
+                          List<Customer> items = await customerListMaker();
+
+                          for (var element in items) {
+                            if (userLNA_name.text.contains(element.name) ||
+                                userLNA_name.text.contains(element.surname)) {
+                              searchedusersLNA = {element.name: element.phone};
+                            }
+                          }
+                          setState(() {
+                            searchlistExist = true;
+                            searchedNames = searchedusersLNA.keys.toList();
+                          });
+                        }),
+                    buildUSERSLNAList(),
+                    SizedBox(height: gHeight / 40),
+                    FloatingActionButton(
+                      child: Icon(Icons.message_sharp),
+                      backgroundColor: Color(0xffffaa17),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => userChatList(),
+                            ));
+                      },
+                    )
+                  ]),
+            ),
+          ),
+        ));
   }
 
-  TextFormField buildFriendNameFormField(){
+  TextFormField buildFriendNameFormField() {
     return TextFormField(
       keyboardType: TextInputType.text,
       controller: userLNA_name,
@@ -115,7 +112,7 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
         ),
         labelText: "User LNA Name",
         labelStyle: TextStyle(color: iconColor),
-        hintText: "Enter your User LNA name",
+        hintText: "Enter your user LNA name",
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: Icon(
           Icons.account_circle,
@@ -125,35 +122,35 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
     );
   }
 
-  Visibility buildUSERSLNAList(){
+  Visibility buildUSERSLNAList() {
     return Visibility(
       child: ListView.builder(
         itemCount: searchedusersLNA.length,
-        itemBuilder: (context,index){
+        itemBuilder: (context, index) {
           String key = searchedNames[index];
           String value = searchedusersLNA[key].toString();
           return ListTile(
             leading: ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: CircleAvatar(
-                backgroundColor: Color(0xffffaa17),
-              )
-            ),
-            onTap: (){
-              if(value==FirebaseAuth.instance.currentUser!.phoneNumber.toString().substring(3)){
+                borderRadius: BorderRadius.circular(25),
+                child: CircleAvatar(
+                  backgroundColor: Color(0xffffaa17),
+                )),
+            onTap: () {
+              if (value ==
+                  FirebaseAuth.instance.currentUser!.phoneNumber
+                      .toString()
+                      .substring(3)) {
                 Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ProfilePage(),
-                  )
-                );
-              }else{
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProfilePage(),
+                    ));
+              } else {
                 Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => userAccount(phoneKey: value),
-                  )
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => userAccount(phoneKey: value),
+                    ));
               }
             },
             title: Text(key),
@@ -165,5 +162,4 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
       visible: searchlistExist,
     );
   }
-
 }
