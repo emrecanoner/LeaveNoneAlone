@@ -47,7 +47,7 @@ class _userChatListState extends State<userChatList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chats'),
+        title: Text('My events'),
         leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
