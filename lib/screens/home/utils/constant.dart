@@ -68,27 +68,28 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
         children: [
           // SizedBox(height: gHeight / 50),
           FutureBuilder(
-              future: customerAccountDetails(
-                  FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return buildTaskBar(context, snapshot);
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              }),
+            future: customerAccountDetails(
+                FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return buildTaskBar(context, snapshot);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }
+          ),
           buildCityDropdown(),
           SizedBox(height: 10),
           FutureBuilder(
-              future: getEventsbyCity(cityEvent),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return buildEventList(context, snapshot);
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
+            future: getEventsbyCity(cityEvent),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return buildEventList(context, snapshot);
+              } else {
+                return Center(child: CircularProgressIndicator());
               }
-            ),
+            }
+          ),
         ],
       ),
     );
