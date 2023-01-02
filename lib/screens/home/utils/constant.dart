@@ -77,10 +77,7 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
                   return Center(child: CircularProgressIndicator());
                 }
               }),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: gWidth / 45),
-            child: buildCityDropdown(),
-          ),
+          buildCityDropdown(),
           SizedBox(height: 10),
           FutureBuilder(
               future: getEventsbyCity(cityEvent),
@@ -90,7 +87,8 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }
-              }),
+              }
+            ),
         ],
       ),
     );
