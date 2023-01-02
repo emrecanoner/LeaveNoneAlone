@@ -24,6 +24,7 @@ class userAccount extends StatefulWidget {
 class _userAccountState extends State<userAccount> {
   late String photo;
   bool FriendsAlready = true;
+  bool isActive = false;
 
   late DatabaseReference FriendBbref;
 
@@ -36,8 +37,14 @@ class _userAccountState extends State<userAccount> {
 
   void getFriends()async{
     List<Friends> CurrFriends = await getUserFriends();
+    
     for (var element in CurrFriends){
       if(element.friend_phone== widget.phoneKey){
+        FriendsAlready = false;
+      }
+      Map SearchedFriend = await customerAccountDetails(element.friend_phone);
+      if(SearchedFriend['auth_uid']==''){
+        isActive = true;
         FriendsAlready = false;
       }
     }
@@ -146,6 +153,10 @@ class _userAccountState extends State<userAccount> {
                     ),
                   ),
                 ),
+                Visibility(
+                  child: Text('Inactive'),
+                  visible: isActive,
+                )
                 /*Positioned(
                     bottom: 0,
                     right: 0,

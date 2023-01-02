@@ -74,8 +74,12 @@ class _membersListState extends State<membersList> {
               }
             ),
             SizedBox(height: gHeight / 40),
+            Visibility(
+              child: Text('People in the Group: ${group_members_selected.length}'),
+              visible: widget.boolKey,
+            ),
+            SizedBox(height: gHeight / 40),
             buildContinueButton(),
-            Text('${group_members_selected.length}'),
           ]
         ),
       ),
