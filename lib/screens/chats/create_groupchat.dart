@@ -16,6 +16,7 @@ import 'package:lna/screens/chats/user_chatlist.dart';
 class createGroupChat extends StatefulWidget {
   const createGroupChat(
       {Key? key,
+      required this.SelfKey,
       required this.boolKey,
       required this.chatN,
       required this.chatP,
@@ -23,6 +24,7 @@ class createGroupChat extends StatefulWidget {
       : super(key: key);
 
   final bool boolKey;
+  final bool SelfKey;
   final String chatN;
   final Map chatMap;
   final String chatP;
@@ -49,6 +51,7 @@ class _createGroupChatState extends State<createGroupChat> {
             icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
       body: membersList(
+          SelfKey: widget.SelfKey,
           boolKey: widget.boolKey,
           chatN: widget.chatN,
           chatP: widget.chatP,

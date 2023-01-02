@@ -18,6 +18,7 @@ import 'package:lna/utils/custom_snackbar.dart';
 class membersList extends StatefulWidget {
   const membersList(
       {Key? key,
+      required this.SelfKey,
       required this.boolKey,
       required this.chatN,
       required this.chatP,
@@ -25,6 +26,7 @@ class membersList extends StatefulWidget {
       : super(key: key);
 
   final bool boolKey;
+  final bool SelfKey;
   final String chatN;
   final Map chatMap;
   final String chatP;
@@ -101,6 +103,37 @@ class _membersListState extends State<membersList> {
           ),
           SizedBox(height: gHeight / 40),
           buildContinueButton(),
+          Visibility(
+            child: DefaultButton(
+              text: "Create By Yourself",
+              press: () async {
+                Map CU = {
+                  'member_name': FirebaseAuth.instance.currentUser!.displayName,
+                  'member_phone': FirebaseAuth.instance.currentUser!.phoneNumber
+                      ?.substring(3),
+                  'member_photo': FirebaseAuth.instance.currentUser!.photoURL,
+                  'member_authid': FirebaseAuth.instance.currentUser!.uid,
+                };
+                chat_MEM.add(CU);
+                Map<dynamic, dynamic> group_chat = {
+                  'chat_name': widget.chatN,
+                  'chat_members': chat_MEM,
+                  'chat_photo': widget.chatP,
+                  'user_uid': FirebaseAuth.instance.currentUser?.uid.toString(),
+                };
+                chatdbRef.push().set(group_chat);
+                eventdref.push().set(widget.chatMap);
+                String group_chat_uid = await getChatUID(
+                    widget.chatN, FirebaseAuth.instance.currentUser!.uid);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => userChat(messageKey: group_chat_uid),
+                    ));
+              },
+            ),
+            visible: widget.SelfKey,
+          )
         ]),
       ),
     );

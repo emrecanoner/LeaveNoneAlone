@@ -29,6 +29,7 @@ class createChat extends StatefulWidget {
 
 class _createChatState extends State<createChat> {
   bool boolGroupKey = false;
+  bool Self = true;
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,12 @@ class _createChatState extends State<createChat> {
                 text: 'Create Group',
                 press: () {
                   boolGroupKey = true;
+                  Self = false;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => createGroupChat(
+                            SelfKey: Self,
                             boolKey: boolGroupKey,
                             chatN: widget.chatN,
                             chatP: widget.chatP,
@@ -66,6 +69,7 @@ class _createChatState extends State<createChat> {
               height: gHeight / 1000,
             ),
             membersList(
+                SelfKey: Self,
                 boolKey: boolGroupKey,
                 chatN: widget.chatN,
                 chatP: widget.chatP,
