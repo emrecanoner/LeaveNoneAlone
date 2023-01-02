@@ -293,7 +293,7 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
   Widget buildTaskBar(context, snapshot) {
     Map CurrUser = snapshot.data as Map;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: gHeight / 40),
+      padding: EdgeInsets.symmetric(horizontal: gWidth / 40),
       child: Column(children: <Widget>[
         Row(
           children: [
