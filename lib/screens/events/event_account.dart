@@ -51,7 +51,7 @@ class _eventAccountState extends State<eventAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text("Event Details"),
         leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
