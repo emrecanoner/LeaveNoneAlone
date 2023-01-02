@@ -133,6 +133,12 @@ class _searchLNAUserBarState extends State<searchLNAUserBar> {
           String key = searchedNames[index];
           String value = searchedusersLNA[key].toString();
           return ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: CircleAvatar(
+                backgroundColor: Color(0xffffaa17),
+              )
+            ),
             onTap: (){
               if(value==FirebaseAuth.instance.currentUser!.phoneNumber.toString().substring(3)){
                 Navigator.pushReplacement(
