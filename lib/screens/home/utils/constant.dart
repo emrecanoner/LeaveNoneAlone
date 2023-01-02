@@ -11,6 +11,7 @@ import 'package:lna/screens/profile/profile_page.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 //<<<<<<< HEAD
 import 'package:lna/utils/custom_snackbar.dart';
 //=======
@@ -45,6 +46,20 @@ class HomePageHomeIcon extends StatefulWidget {
 
 class _HomePageHomeIconState extends State<HomePageHomeIcon> {
 
+  late SingleValueDropDownController cityController ;
+  String cityEvent = '';
+
+    @override
+  void initState() {
+    cityController = SingleValueDropDownController();
+    super.initState();
+  }
+
+  void dispose() {
+    cityController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -59,6 +74,18 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return buildTaskBar(context, snapshot);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }
+          ),
+          buildCityDropdown(),
+          SizedBox(height: 10),
+          FutureBuilder(
+            future: getEventsbyCity(cityEvent),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return buildEventList(context, snapshot);
               } else {
                 return Center(child: CircularProgressIndicator());
               }
@@ -137,6 +164,132 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
     );
   }
 
+  DropDownTextField buildCityDropdown() {
+    return DropDownTextField(
+      controller: cityController,
+      clearOption: true,
+      enableSearch: true,
+      dropDownIconProperty: IconProperty(color: buttonColor),
+      clearIconProperty: IconProperty(color: buttonColor),
+      searchShowCursor: true,
+      searchDecoration: InputDecoration(
+        labelText: "Search City for Events",
+        labelStyle: TextStyle(color: iconColor, fontSize: 13),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      textFieldDecoration: InputDecoration(
+        prefix: Padding(
+          padding: EdgeInsets.all(4),
+        ),
+        labelText: "City",
+        labelStyle: TextStyle(color: iconColor),
+        hintText: "Select city for events",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
+      validator: (value) {
+        if (value == null) {
+          return "Required field";
+        } else {
+          cityEvent = value.toString();
+          return null;
+        }
+      },
+      dropDownItemCount: 6,
+      dropDownList: const [
+        DropDownValueModel(name: 'Adana', value: "Adana"),
+        DropDownValueModel(name: 'Adıyaman', value: "Adıyaman"),
+        DropDownValueModel(name: 'Afyonkarahisar', value: "Afyonkarahisar"),
+        DropDownValueModel(name: 'Ağrı', value: "Ağrı"),
+        DropDownValueModel(name: 'Aksaray', value: "Aksaray"),
+        DropDownValueModel(name: 'Amasya', value: "Amasya"),
+        DropDownValueModel(name: 'Ankara', value: "Ankara"),
+        DropDownValueModel(name: 'Antalya', value: "Antalya"),
+        DropDownValueModel(name: 'Ardahan', value: "Ardahan"),
+        DropDownValueModel(name: 'Artvin', value: "Artvin"),
+        DropDownValueModel(name: 'Aydın', value: "Aydın"),
+        DropDownValueModel(name: 'Balıkesir', value: "Balıkesir"),
+        DropDownValueModel(name: 'Bartın', value: "Bartın"),
+        DropDownValueModel(name: 'Batman', value: "Batman"),
+        DropDownValueModel(name: 'Bayburt', value: "Bayburt"),
+        DropDownValueModel(name: 'Bilecik', value: "Bilecik"),
+        DropDownValueModel(name: 'Bingöl', value: "Bingöl"),
+        DropDownValueModel(name: 'Bitlis', value: "Bitlis"),
+        DropDownValueModel(name: 'Bolu', value: "Bolu"),
+        DropDownValueModel(name: 'Burdur', value: "Burdur"),
+        DropDownValueModel(name: 'Bursa', value: "Bursa"),
+        DropDownValueModel(name: 'Çanakkale', value: "Çanakkale"),
+        DropDownValueModel(name: 'Çankırı', value: "Çankırı"),
+        DropDownValueModel(name: 'Çorum', value: "Çorum"),
+        DropDownValueModel(name: 'Denizli', value: "Denizli"),
+        DropDownValueModel(name: 'Diyarbakır', value: "Diyarbakır"),
+        DropDownValueModel(name: 'Düzce', value: "Düzce"),
+        DropDownValueModel(name: 'Edirne', value: "Edirne"),
+        DropDownValueModel(name: 'Elazığ', value: "Elazığ"),
+        DropDownValueModel(name: 'Erzincan', value: "Erzincan"),
+        DropDownValueModel(name: 'Erzurum', value: "Erzurum"),
+        DropDownValueModel(name: 'Eskişehir', value: "Eskişehir"),
+        DropDownValueModel(name: 'Gaziantep', value: "Gaziantep"),
+        DropDownValueModel(name: 'Giresun', value: "Giresun"),
+        DropDownValueModel(name: 'Gümüşhane', value: "Gümüşhane"),
+        DropDownValueModel(name: 'Hakkâri', value: "Hakkâri"),
+        DropDownValueModel(name: 'Hatay', value: "Hatay"),
+        DropDownValueModel(name: 'Iğdır', value: "Iğdır"),
+        DropDownValueModel(name: 'Isparta', value: "Isparta"),
+        DropDownValueModel(name: 'İstanbul', value: "İstanbul"),
+        DropDownValueModel(name: 'İzmir', value: "İzmir"),
+        DropDownValueModel(name: 'Kahramanmaraş', value: "Kahramanmaraş"),
+        DropDownValueModel(name: 'Karabük', value: "Karabük"),
+        DropDownValueModel(name: 'Karaman', value: "Karaman"),
+        DropDownValueModel(name: 'Kars', value: "Kars"),
+        DropDownValueModel(name: 'Kastamonu', value: "Kastamonu"),
+        DropDownValueModel(name: 'Kayseri', value: "Kayseri"),
+        DropDownValueModel(name: 'Kilis', value: "Kilis"),
+        DropDownValueModel(name: 'Kırıkkale', value: "Kırıkkale"),
+        DropDownValueModel(name: 'Kırklareli', value: "Kırklareli"),
+        DropDownValueModel(name: 'Kırşehir', value: "Kırşehir"),
+        DropDownValueModel(name: 'Kocaeli', value: "Kocaeli"),
+        DropDownValueModel(name: 'Konya', value: "Konya"),
+        DropDownValueModel(name: 'Kütahya', value: "Kütahya"),
+        DropDownValueModel(name: 'Malatya', value: "Malatya"),
+        DropDownValueModel(name: 'Manisa', value: "Manisa"),
+        DropDownValueModel(name: 'Mardin', value: "Mardin"),
+        DropDownValueModel(name: 'Mersin', value: "Mersin"),
+        DropDownValueModel(name: 'Muğla', value: "Muğla"),
+        DropDownValueModel(name: 'Muş', value: "Muş"),
+        DropDownValueModel(name: 'Nevşehir', value: "Nevşehir"),
+        DropDownValueModel(name: 'Niğde', value: "Niğde"),
+        DropDownValueModel(name: 'Ordu', value: "Ordu"),
+        DropDownValueModel(name: 'Osmaniye', value: "Osmaniye"),
+        DropDownValueModel(name: 'Rize', value: "Rize"),
+        DropDownValueModel(name: 'Sakarya', value: "Sakarya"),
+        DropDownValueModel(name: 'Samsun', value: "Samsun"),
+        DropDownValueModel(name: 'Şanlıurfa', value: "Şanlıurfa"),
+        DropDownValueModel(name: 'Siirt', value: "Siirt"),
+        DropDownValueModel(name: 'Sinop', value: "Sinop"),
+        DropDownValueModel(name: 'Sivas', value: "Sivas"),
+        DropDownValueModel(name: 'Şırnak', value: "Şırnak"),
+        DropDownValueModel(name: 'Tekirdağ', value: "Tekirdağ"),
+        DropDownValueModel(name: 'Tokat', value: "Tokat"),
+        DropDownValueModel(name: 'Trabzon', value: "Trabzon"),
+        DropDownValueModel(name: 'Tunceli', value: "Tunceli"),
+        DropDownValueModel(name: 'Uşak', value: "Uşak"),
+        DropDownValueModel(name: 'Van', value: "Van"),
+        DropDownValueModel(name: 'Yalova', value: "Yalova"),
+        DropDownValueModel(name: 'Yozgat', value: "Yozgat"),
+        DropDownValueModel(name: 'Zonguldak', value: "Zonguldak"),
+      ],
+      onChanged: (val) {
+        setState(() {
+          if (val == "") {
+            cityEvent = "";
+          } else {
+            cityEvent = val.value;
+          }
+        });
+      },
+    );
+  }
+
   Widget buildTaskBar(context, snapshot) {
     Map CurrUser = snapshot.data as Map;
     return Padding(
@@ -193,21 +346,14 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
             ],
           ),
           buildDateBar(),
-          FutureBuilder(
-            future: getEventsbyCity(CurrUser['city']),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildEventList(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
-          ),
+          SizedBox(height: 20),
         ]
       ),
     );
   }
 }
+
+
 
 class HomePageEventIcon extends StatelessWidget {
   const HomePageEventIcon({

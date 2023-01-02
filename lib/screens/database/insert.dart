@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -200,13 +202,14 @@ class _SignUpState extends State<SignUp> {
                         ),
                       );
                     } else {
+                      String rndString = generateRandomString(19);
                       Map<String, String> users = {
                         'name': name.text,
                         'phone_number': phoneN.text,
                         'surname': surname.text,
                         'city': selectedCity,
                         'age': age.text,
-                        'auth_uid': "",
+                        'auth_uid': rndString,
                         'photoURL':'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c'
                       };
 
@@ -239,6 +242,15 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+  String generateRandomString(int length) {
+    var rnd = new Random();
+    var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var result = '';
+    for (var i = 0; i < length; i++) {
+      result += characters[rnd.nextInt(characters.length)];
+    }
+    return result;
   }
 
   TextFormField buildNameFormField() {
