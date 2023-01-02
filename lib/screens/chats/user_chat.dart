@@ -226,7 +226,7 @@ class _userChatState extends State<userChat> {
         return Container(
           margin: const EdgeInsets.only(top: 10, bottom: 10),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: gWidth / 40),
+            padding: EdgeInsets.symmetric(horizontal: gWidth / 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

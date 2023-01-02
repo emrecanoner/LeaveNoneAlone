@@ -72,23 +72,20 @@ class _membersListState extends State<membersList> {
     return Container(
       height: 500,
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min, 
-          children: <Widget>[
-            SizedBox(height: gHeight / 40),
-            FutureBuilder(
-                future: getUserFriends(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return friendsListItem(context, snapshot);
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
-            SizedBox(height: gHeight / 40),
-            buildContinueButton(),
-            SizedBox(height: gHeight / 40),
-            Container(
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          SizedBox(height: gHeight / 40),
+          FutureBuilder(
+              future: getUserFriends(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return friendsListItem(context, snapshot);
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              }),
+          SizedBox(height: gHeight / 40),
+          Visibility(
+            child: Container(
               width: 50,
               height: 50,
               decoration: BoxDecoration(
@@ -100,15 +97,11 @@ class _membersListState extends State<membersList> {
                     style: TextStyle(color: Colors.white)),
               ),
             ),
-            SizedBox(height: gHeight / 40),
-            Visibility(
-              child: Text('People in the Group: ${group_members_selected.length}'),
-              visible: widget.boolKey,
-            ),
-            SizedBox(height: gHeight / 40),
-            buildContinueButton(),
-          ]
-        ),
+            visible: widget.boolKey,
+          ),
+          SizedBox(height: gHeight / 40),
+          buildContinueButton(),
+        ]),
       ),
     );
   }

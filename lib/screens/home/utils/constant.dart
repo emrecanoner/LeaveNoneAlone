@@ -67,28 +67,39 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
       child: Column(
         children: [
           // SizedBox(height: gHeight / 50),
-          FutureBuilder(
-            future: customerAccountDetails(
-                FirebaseAuth.instance.currentUser!.phoneNumber?.substring(3)),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildTaskBar(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: gWidth / 40),
+            child: FutureBuilder(
+                future: customerAccountDetails(FirebaseAuth
+                    .instance.currentUser!.phoneNumber
+                    ?.substring(3)),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return buildTaskBar(context, snapshot);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
           ),
-          buildCityDropdown(),
-          SizedBox(height: 10),
-          FutureBuilder(
-            future: getEventsbyCity(cityEvent),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return buildEventList(context, snapshot);
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }
+          SizedBox(height: gHeight / 100),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: gWidth / 40),
+            child: buildCityDropdown(),
+          ),
+          SizedBox(height: gHeight / 25),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FutureBuilder(
+                  future: getEventsbyCity(cityEvent),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return buildEventList(context, snapshot);
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  }),
+            ],
           ),
         ],
       ),
@@ -97,31 +108,47 @@ class _HomePageHomeIconState extends State<HomePageHomeIcon> {
 
   Widget buildEventList(context, snapshot) {
     List<LNAevent> eventmap = snapshot.data as List<LNAevent>;
-    return ListView.builder(
-      itemCount: eventmap.length,
-      itemBuilder: (BuildContext context, int index) {
-        LNAevent event = eventmap[index];
-        return ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: Image.network(
-              event.event_photo,
-              height: gHeight / 18,
-              width: gWidth / 9,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: gWidth / 30),
+      child: ListView.builder(
+        padding: EdgeInsets.only(top: 0),
+        itemCount: eventmap.length,
+        itemBuilder: (BuildContext context, int index) {
+          LNAevent event = eventmap[index];
+          return Container(
+            margin: EdgeInsets.only(bottom: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                width: 1.5,
+                color: buttonColor,
+              ),
             ),
-          ),
-          title: Text(event.event_title),
-          onTap: () async {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => eventAccount(eventName: event.event_title),
-                ));
-          },
-        );
-      },
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+            child: ListTile(
+              contentPadding: EdgeInsets.only(top: 2, left: 5),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.network(
+                  event.event_photo,
+                  height: gHeight / 18,
+                  width: gWidth / 9,
+                ),
+              ),
+              title: Text(event.event_title),
+              onTap: () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          eventAccount(eventName: event.event_title),
+                    ));
+              },
+            ),
+          );
+        },
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+      ),
     );
   }
 

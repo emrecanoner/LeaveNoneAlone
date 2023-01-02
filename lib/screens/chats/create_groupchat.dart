@@ -14,7 +14,13 @@ import 'package:lna/utils/default_button.dart';
 import 'package:lna/screens/chats/user_chatlist.dart';
 
 class createGroupChat extends StatefulWidget {
-  const createGroupChat({Key? key, required this.boolKey, required this.chatN, required this.chatP,required this.chatMap}) : super(key: key);
+  const createGroupChat(
+      {Key? key,
+      required this.boolKey,
+      required this.chatN,
+      required this.chatP,
+      required this.chatMap})
+      : super(key: key);
 
   final bool boolKey;
   final String chatN;
@@ -34,12 +40,19 @@ class _createGroupChatState extends State<createGroupChat> {
               Navigator.pop(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => createChat(chatN: widget.chatN, chatP: widget.chatP,chatMap: widget.chatMap),
+                    builder: (context) => createChat(
+                        chatN: widget.chatN,
+                        chatP: widget.chatP,
+                        chatMap: widget.chatMap),
                   ));
             },
             icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
-      body: membersList(boolKey: widget.boolKey, chatN: widget.chatN,chatP: widget.chatP,chatMap: widget.chatMap),
-    ); 
+      body: membersList(
+          boolKey: widget.boolKey,
+          chatN: widget.chatN,
+          chatP: widget.chatP,
+          chatMap: widget.chatMap),
+    );
   }
 }

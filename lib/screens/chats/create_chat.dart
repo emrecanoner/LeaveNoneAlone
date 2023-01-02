@@ -35,8 +35,7 @@ class _createChatState extends State<createChat> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Select Friend or Create Group'),
-        automaticallyImplyLeading: false,
-        /*leading: IconButton(
+        leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(
                   context,
@@ -44,7 +43,7 @@ class _createChatState extends State<createChat> {
                     builder: (context) => HomePage(),
                   ));
             },
-            icon: Icon(LineAwesomeIcons.arrow_left)),*/
+            icon: Icon(LineAwesomeIcons.arrow_left)),
       ),
       body: SingleChildScrollView(
         child: Column(
