@@ -1,31 +1,36 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lna/screens/database/splash/animated_splash_screen.dart';
-import 'package:lna/screens/database/terms_and_conditions.dart';
 import 'package:lna/screens/sign_in/components/body.dart';
 import 'package:lna/utils/default_button.dart';
 import 'package:lna/utils/constant.dart';
 import 'package:lna/utils/custom_snackbar.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:lna/screens/profile/splash/animated_splash_screen.dart';
+import 'package:lna/screens/profile/edit_picture.dart';
+import 'package:lna/screens/profile/phone_numberchange.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class Update extends StatefulWidget {
+  const Update({Key? key, required this.userK}) : super(key: key);
+
+  final String userK;
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<Update> createState() => _UpdateState();
 }
 
-class _RegisterState extends State<Register> {
+class _UpdateState extends State<Update> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('Edit Profile'),
       ),
       body: SafeArea(
         child: SizedBox(
@@ -37,25 +42,7 @@ class _RegisterState extends State<Register> {
                 SizedBox(
                   height: gHeight / 50,
                 ),
-                Text(
-                  'Register Account',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: gHeight / 1500,
-                ),
-                Text(
-                  "Complete your details",
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: gHeight / 10,
-                ),
-                SignUp(),
+                EditProfile(userKey: widget.userK),
               ],
             ),
           ),
@@ -65,14 +52,16 @@ class _RegisterState extends State<Register> {
   }
 }
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class EditProfile extends StatefulWidget {
+  const EditProfile({Key? key, required this.userKey}) : super(key: key);
+
+  final String userKey;
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _EditProfileState extends State<EditProfile> {
   final name = TextEditingController();
   final surname = TextEditingController();
   final age = TextEditingController();
@@ -83,15 +72,31 @@ class _SignUpState extends State<SignUp> {
 
   late DatabaseReference dbRef;
 
-  @override
+  String photo1 = FirebaseAuth.instance.currentUser!.photoURL.toString();
+  String photo2 =
+      'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c';
+
   void initState() {
-    city = SingleValueDropDownController();
+    setState(() {});
     super.initState();
+    city = SingleValueDropDownController();
     dbRef = FirebaseDatabase.instance.ref().child('Users');
+    getUserData();
+  }
+
+  void getUserData() async {
+    DataSnapshot snapshot = await dbRef.child(widget.userKey).get();
+
+    Map user = snapshot.value as Map;
+
+    name.text = user['name'];
+    phoneN.text = user['phone_number'];
+    surname.text = user['surname'];
+    age.text = user['age'];
+    selectedCity = user['city'];
   }
 
   void dispose() {
-    city.dispose();
     super.dispose();
   }
 
@@ -103,6 +108,7 @@ class _SignUpState extends State<SignUp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              buildProfilePicField(),
               SizedBox(height: gHeight / 40),
               buildNameFormField(),
               SizedBox(height: gHeight / 40),
@@ -113,8 +119,6 @@ class _SignUpState extends State<SignUp> {
               buildAgeFormField(),
               SizedBox(height: gHeight / 40),
               buildPhoneNumberFormField(),
-              SizedBox(height: gHeight / 40),
-              TermsAndConditions(),
               SizedBox(height: gHeight / 20),
               DefaultButton(
                 press: () async {
@@ -191,7 +195,11 @@ class _SignUpState extends State<SignUp> {
                     List<Customer> items = await customerListMaker();
 
                     for (var element in items) {
-                      phones.add(element.phone);
+                      if (element.phone == phoneN.text) {
+                        continue;
+                      } else {
+                        phones.add(element.phone);
+                      }
                     }
                     if (phones.contains(phoneN.text)) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -205,39 +213,54 @@ class _SignUpState extends State<SignUp> {
                         ),
                       );
                     } else {
-                      // String rndString = generateRandomString(19);
                       Map<String, String> users = {
                         'name': name.text,
                         'phone_number': phoneN.text,
                         'surname': surname.text,
                         'city': selectedCity,
                         'age': age.text,
-                        'auth_uid': '',
-                        'photoURL':'https://firebasestorage.googleapis.com/v0/b/leavenonealone.appspot.com/o/files%2Ficon.jpg?alt=media&token=10f30e44-905f-40da-8ebc-93f69339ac6c'
                       };
 
-                      dbRef.push().set(users);
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SplashScreenWAnimated(),
-                        ),
-                      );
-
-                      Fluttertoast.showToast(
-                        msg: "You are registered successfully",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: buttonColor,
-                        textColor: Colors.white,
-                        fontSize: 16,
-                      );
+                      dbRef
+                          .child(widget.userKey)
+                          .update(users)
+                          .then((value) => {});
+                      FirebaseAuth.instance.currentUser!
+                          .updateDisplayName(name.text);
+                      String? authcurrent = FirebaseAuth
+                          .instance.currentUser?.phoneNumber
+                          ?.substring(3);
+                      if (authcurrent.toString() != phoneN.text) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => phoneNumberChange(
+                              newPhone: phoneN.text,
+                              userK: widget.userKey,
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SplashScreenPAnimated(),
+                          ),
+                        );
+                        Fluttertoast.showToast(
+                          msg: "Your profile has been edited successfully",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: buttonColor,
+                          textColor: Colors.white,
+                          fontSize: 16,
+                        );
+                      }
                     }
                   }
                 },
-                text: 'Register',
+                text: 'Save Changes',
               ),
               SizedBox(height: gHeight / 50),
             ],
@@ -246,15 +269,91 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-  // String generateRandomString(int length) {
-  //   var rnd = new Random();
-  //   var characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  //   var result = '';
-  //   for (var i = 0; i < length; i++) {
-  //     result += characters[rnd.nextInt(characters.length)];
-  //   }
-  //   return result;
-  // }
+
+  Center buildProfilePicField() {
+    return Center(
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(width: 3, color: buttonColor),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                ((FirebaseAuth.instance.currentUser?.photoURL != null)
+                    ? photo1
+                    : photo2),
+                height: gHeight / 6,
+                width: gWidth / 3,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 4,
+                  color: Colors.white,
+                ),
+                color: buttonColor,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePicture(
+                        userKey: widget.userKey,
+                      ),
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    /*return ClipOval(
+      child: Container(
+        width: 220.0,
+        height: 220.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                (FirebaseAuth.instance.currentUser?.photoURL != null)
+                    ? photo1
+                    : photo2),
+          ),
+        ),
+        child: TextButton(
+            child: Padding(
+              padding: EdgeInsets.all(0.0),
+              child: null,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfilePicture(userKey: widget.userKey),
+                ),
+              );
+            }),
+      ),
+    );*/
+  }
 
   TextFormField buildNameFormField() {
     return TextFormField(
@@ -316,7 +415,8 @@ class _SignUpState extends State<SignUp> {
 
   DropDownTextField buildCityDropdown() {
     return DropDownTextField(
-      controller: city,
+      initialValue: selectedCity,
+      //controller: city,
       clearOption: true,
       enableSearch: true,
       dropDownIconProperty: IconProperty(color: buttonColor),
